@@ -1,0 +1,75 @@
+.layout,
+.content-row {
+    height: 100%;
+}
+
+.layout {
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    box-shadow: 0 0.125rem 0.25rem #e2e2e2;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    background: #fff;
+}
+
+.header-drop {
+    margin-left: auto;
+}
+
+
+.content {
+    flex: 100%;
+    background-color: #fff;
+    position: relative;
+}
+
+.content-row {
+    display: flex;
+    align-items: center;
+}
+
+.content-row-col1 {
+    text-align: center;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+}
+
+@media screen and (max-width:476px)  {
+    .content-row-col2{
+        position:unset
+    }
+    .card-login{
+        position: absolute;
+        top: 120px;
+    }
+}
+
+.content-row-col2 {
+    text-align: center;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-login{
+    margin: 1rem 8px;
+}
+
+.login-form{
+    width: 300px;
+    padding: 2rem 1rem .5rem 1rem;
+}
+
+.login-form-forgot {
+    float: right;
+  }
+
+  .login-form-button {
+    width: 100%;
+  }
