@@ -34,12 +34,7 @@ export const MyInput: React.FC<myInput> = props => {
      * 失去焦点
      */
     const blur = () => {
-        setEdit(false)
-        /* if (props.value !== val) {
-            setVal(props.value || '')
-            message.info('取消修改')
-        } */
-
+        setTimeout(() => setEdit(false), 100)
     }
 
     /**
@@ -47,11 +42,10 @@ export const MyInput: React.FC<myInput> = props => {
      * @param e 
      */
     const change = (e: any) => {
-        console.log(e.target);
         setVal(e.target.value)
-
-
     }
+
+
     return (
         props.textArea ?
             <Space>
@@ -69,7 +63,7 @@ export const MyInput: React.FC<myInput> = props => {
                 </Input.TextArea>
                 {
                     Edit ?
-                        <Button type="primary" onClick={save}>{props.okText || '保存'}</Button>
+                        <Button size="small" type="primary" onClick={save}>{props.okText || '保存'}</Button>
                         :
                         <span />
                 }
