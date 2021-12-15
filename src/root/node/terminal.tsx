@@ -2,23 +2,50 @@ import { Pie } from "@ant-design/charts";
 import { Col, Divider, Row } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import { pieConfig, pieData } from "../../common/charts";
-import { getTerminals } from "../../common/FecthRoot";
+import { getNodeInstructQuery, getTerminals } from "../../common/FecthRoot";
 import { RootMain } from "../../components/RootMain";
 import { TerminalsTable } from "../../components/terminalsTable";
 
+interface mountDevEx extends Uart.TerminalMountDevs {
+    Interval?: number
+}
+
+type terEx = Uart.Terminal & { mountDevs: mountDevEx[] }
+
+
 export const Terminals: React.FC = () => {
 
-    const [terminals, setTerminals] = useState<Uart.Terminal[]>([])
+    const [terminals, setTerminals] = useState<terEx[]>([])
 
-
-    const upTerminals = () => {
-        getTerminals()
-            .then(({ data }) => setTerminals(data.map(el => ({ ...el, key: el.DevMac }))))
-    }
 
     useEffect(() => {
-        upTerminals()
+        getTerminals()
+            .then(({ data }) => setTerminals(data.map(el => ({ ...el, key: el.DevMac }))))
     }, [])
+
+    
+    useEffect(() => {
+        if (terminals.length > 0) {
+            const inter = setInterval(() => {
+                getNodeInstructQuery()
+                    .then(({ data }) => {
+                        const ters = [...terminals]
+                        const queryMap = new Map(data.map(el => [el.TerminalMac + el.pid, el.Interval]))
+                        ters.forEach(el => {
+                            if (el.mountDevs && el.mountDevs.length > 0) {
+                                el.mountDevs.forEach(dev => {
+                                    (dev as any as mountDevEx).Interval = queryMap.get(el.DevMac + dev.pid) || 0
+    
+                                })
+                            }
+                        })
+
+                        setTerminals([...ters])
+                    })
+            }, 5e3)
+            return () => clearInterval(inter)
+        }
+    }, [terminals])
 
     const status = useMemo(() => {
         // 在线

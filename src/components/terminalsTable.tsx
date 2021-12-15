@@ -1,7 +1,10 @@
-import { CheckCircleFilled, WarningFilled, EyeFilled, DeleteFilled } from "@ant-design/icons";
-import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps } from "antd";
+import { CheckCircleFilled, WarningFilled, EyeFilled, DeleteFilled, SyncOutlined } from "@ant-design/icons";
+import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps, Modal } from "antd";
 import moment from "moment";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { delTerminalMountDev, refreshDevTimeOut } from "../common/Fetch";
+import { prompt } from "../common/prompt";
 import { getColumnSearchProp, tableColumnsFilter } from "../common/tableCommon";
 import { DevCard } from "./devCard";
 import { IconFont, devTypeIcon } from "./IconFont";
@@ -13,6 +16,53 @@ import { MyInput } from "./myInput";
  * @returns 
  */
 export const TerminalsTable: React.FC<TableProps<Uart.Terminal>> = props => {
+
+    const nav = useNavigate()
+
+    /**
+     * 删除挂载设备
+     * @param mac 
+     * @param pid 
+     */
+    const delMountDev = (mac: string, pid: number) => {
+        Modal.confirm({
+            content: `确认删除挂载设备:${mac}/${pid} ?`,
+            onOk() {
+                const key = 'delTerminalMountDev' + mac + pid
+                message.loading({ key })
+                delTerminalMountDev(mac, pid)
+                    .then(() => {
+                        message.success({ content: '删除成功', key })
+                    })
+            }
+        })
+    }
+
+    /**
+     * 刷新设备查询间隔
+     * @param mac 
+     * @param pid 
+     */
+    const refreshInterval = (mac: string, pid: number) => {
+        prompt({
+            title: '设置设备查询间隔',
+            placeholder: '输入间隔毫秒数,(值为x500的倍数),未设置则为默认值',
+            onOk(val) {
+                const n = Number(val)
+                if (val && !Number.isNaN(n)) {
+                    if (n < 500) {
+                        val = undefined
+                    } else if (n % 500 > 0) {
+                        val = String(n - n % 500)
+                    }
+                }
+                refreshDevTimeOut(mac, pid, Number(val)).then(() => {
+                    message.success("重置完成,等待数据刷新")
+                })
+                return true
+            }
+        })
+    }
 
     return (
         <Table dataSource={props.dataSource} size="small"
@@ -69,6 +119,7 @@ export const TerminalsTable: React.FC<TableProps<Uart.Terminal>> = props => {
                         compare: (a: any, b: any) => new Date(a.uptime).getDate() - new Date(b.uptime).getDate()
                     }
                 },
+                
                 {
                     key: 'oprate',
                     fixed: 'right',
@@ -129,7 +180,7 @@ export const TerminalsTable: React.FC<TableProps<Uart.Terminal>> = props => {
                         <Row>
                             {
                                 terminal?.mountDevs && terminal.mountDevs.map(el =>
-                                    <Col span={4} key={terminal.DevMac + el.pid}>
+                                    <Col span={24} md={8} key={terminal.DevMac + el.pid}>
                                         <DevCard
                                             img={`http://admin.ladishb.com/upload/${el.Type}.png`}
                                             title={<Space>
@@ -148,12 +199,18 @@ export const TerminalsTable: React.FC<TableProps<Uart.Terminal>> = props => {
                                                 <Tooltip title="删除" >
                                                     <Popconfirm
                                                         title={`确认删除设备[${el.mountDev}]?`}
-                                                        onConfirm={() => delMountDev(el)}
+                                                        onConfirm={() => delMountDev(terminal.DevMac, el.pid)}
                                                         onCancel={() => message.info('cancel')}
                                                     >
                                                         <DeleteFilled style={{ color: "#E6A23B" }} />
                                                     </Popconfirm>
+                                                </Tooltip>,
+
+                                                (el as any).Interval &&
+                                                <Tooltip title="查询间隔">
+                                                    <span onClick={() => refreshInterval(terminal.DevMac, el.pid)}>{(el as any).Interval / 1000}秒</span>
                                                 </Tooltip>
+
                                             ]}></DevCard>
                                     </Col>
                                 )

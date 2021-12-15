@@ -42,7 +42,7 @@ interface PromptConfig {
     rules?: Rule[];
     placeholder?: string;
     modalProps?: Partial<ModalProps>;
-    onOk?: (value?: string) => boolean | Promise<boolean>;
+    onOk?: (value?: string) => any;
 }
 
 interface PromptProps extends Props {

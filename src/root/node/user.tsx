@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { RootMain } from "../../components/RootMain";
-import { BindDev, getUserAlarmSetup, getUsersOnline, users as getUsers } from "../../common/FecthRoot"
-import { Col, Collapse, Descriptions, Divider, Row, Space, Spin, Table, Tag } from "antd";
+import { BindDev, getUserAlarmSetup, getUsersOnline, sendUserSocketInfo, users as getUsers } from "../../common/FecthRoot"
+import { Button, Col, Collapse, Descriptions, Divider, Row, Space, Spin, Table, Tag } from "antd";
 import { MehFilled, FrownFilled } from "@ant-design/icons";
 import Avatar from "antd/lib/avatar/avatar";
 import { getColumnSearchProp } from "../../common/tableCommon";
@@ -11,6 +11,7 @@ import { pieConfig, pieData } from "../../common/charts";
 import { Pie } from "@ant-design/charts";
 import { MyInput } from "../../components/myInput";
 import { TerminalsTable } from "../../components/terminalsTable";
+import { prompt } from "../../common/prompt";
 
 interface userEx extends Uart.UserInfo {
     alarm?: Uart.userSetup
@@ -72,6 +73,21 @@ export const User: React.FC = () => {
 
     }
 
+    /**
+     * 给在线用户发送消息
+     * @param user 
+     */
+    const sendUserInfo = (user: string) => {
+        prompt({
+            title: `给[${user}]发送消息`,
+            onOk(val) {
+                if (val) {
+                    sendUserSocketInfo(user, val)
+                }
+            }
+        })
+    }
+
     return (
         <RootMain>
             <Divider orientation="left">用户信息</Divider>
@@ -96,7 +112,7 @@ export const User: React.FC = () => {
                     {
                         dataIndex: 'avanter',
                         title: '头像',
-                        width: 30,
+                        width: 40,
                         render: (img?: string) => <Avatar src={img} alt="i"></Avatar>
                     },
                     {
@@ -148,7 +164,11 @@ export const User: React.FC = () => {
                         title: '操作',
                         key: 'oprate',
                         width: 120,
-                        render: (_, user) => { }
+                        render: (_, user) => <>
+                            {
+                                user.online && <Button type="dashed" onClick={() => sendUserInfo(user.user)}>发送实时消息</Button>
+                            }
+                        </>
                     }
                 ] as ColumnsType<userEx>}
 

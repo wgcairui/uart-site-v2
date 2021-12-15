@@ -95,26 +95,6 @@ export const RootMain: React.FC = props => {
       ],
     },
     {
-      title: '在线状态',
-      ico: "el-icon-connection",
-      child: [
-        {
-          to: {
-            name: "root/socket/nodeInstruct",
-          },
-          text: "节点指令状态",
-          ico: "\uEB64",
-        },
-        {
-          to: {
-            name: "root/socket/user",
-          },
-          text: "用户",
-          ico: "\uEB6f",
-        },
-      ],
-    },
-    {
       title: '设备数据',
       ico: "el-icon-coin",
       child: [

@@ -423,6 +423,8 @@ export function ClientResults(start?: string, end?: string, id?: string) {
     return fecth<Uart.queryResult[]>("ClientResults", { start, end, id })
 }
 
+export interface queryResultSave extends Uart.queryResultSave { _id: string, parentId: string }
+
 /**
  * 获取设备解析数据
  * @param start 
@@ -431,7 +433,7 @@ export function ClientResults(start?: string, end?: string, id?: string) {
  * @returns 
  */
 export function ClientResult(start?: string, end?: string, id?: string) {
-    return fecth<Uart.queryResultSave[]>("ClientResult", { start, end, id })
+    return fecth<queryResultSave[]>("ClientResult", { start, end, id })
 }
 
 /**
@@ -439,7 +441,7 @@ export function ClientResult(start?: string, end?: string, id?: string) {
  * @returns 
  */
 export function ClientResultSingle() {
-    return fecth<Uart.queryResultSave[]>("ClientResultSingle")
+    return fecth<queryResultSave[]>("ClientResultSingle")
 }
 
 /**

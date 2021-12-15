@@ -22,6 +22,9 @@ import { DevModel } from "./root/node/devModel"
 import { Nodes } from "./root/node/nodes"
 import { Terminals } from "./root/node/terminal"
 import { User } from "./root/node/user"
+import { WxUser } from "./root/wx/user"
+import { WxMaterials_list } from "./root/wx/materials_list"
+import { ClientResultSingle } from "./root/data/ClientResultSingle"
 
 export const App: React.FC = () => {
 
@@ -71,6 +74,8 @@ export const App: React.FC = () => {
         switch (userGroup) {
             case "user":
             case "test":
+            case "admin":
+            case "root":
                 return (
                     <Routes>
                         <Route path="/" element={<UserIndex />} />
@@ -82,12 +87,7 @@ export const App: React.FC = () => {
                         <Route path="/terminal/:id" element={<Terminal />} />
                         <Route path="/addterminal" element={<AddTerminal />} />
                         <Route path="/user" element={<UserInfo />} />
-                    </Routes>
-                )
-            case "admin":
-            case "root":
-                return (
-                    <Routes>
+
                         <Route path="/root" element={<RootIndex />} />
                         <Route path="/user" element={<UserInfo />} />
                         <Route path="/root/node/Secret" element={<Secret />} />
@@ -96,6 +96,11 @@ export const App: React.FC = () => {
                         <Route path="/root/node/addNode" element={<Nodes />} />
                         <Route path="/root/node/Terminal" element={<Terminals />} />
                         <Route path="/root/node/user" element={<User />} />
+
+                        <Route path="/root/wx/users" element={<WxUser />} />
+                        <Route path="/root/wx/materials_list" element={<WxMaterials_list />} />
+
+                        <Route path="/root/data/ClientResultSingle" element={<ClientResultSingle />} />
                     </Routes>
                 )
             default:
