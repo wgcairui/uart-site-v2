@@ -23,29 +23,28 @@ export const Terminals: React.FC = () => {
             .then(({ data }) => setTerminals(data.map(el => ({ ...el, key: el.DevMac }))))
     }, [])
 
-    
+
     useEffect(() => {
-        if (terminals.length > 0) {
-            const inter = setInterval(() => {
-                getNodeInstructQuery()
-                    .then(({ data }) => {
-                        const ters = [...terminals]
-                        const queryMap = new Map(data.map(el => [el.TerminalMac + el.pid, el.Interval]))
+        const inter = setInterval(() => {
+            getNodeInstructQuery()
+                .then(({ data }) => {
+                    const queryMap = new Map(data.map(el => [el.TerminalMac + el.pid, el.Interval]))
+                    setTerminals(ters => {
                         ters.forEach(el => {
                             if (el.mountDevs && el.mountDevs.length > 0) {
                                 el.mountDevs.forEach(dev => {
                                     (dev as any as mountDevEx).Interval = queryMap.get(el.DevMac + dev.pid) || 0
-    
+
                                 })
                             }
                         })
-
-                        setTerminals([...ters])
+                        return [...ters]
                     })
-            }, 5e3)
-            return () => clearInterval(inter)
-        }
-    }, [terminals])
+                })
+        }, 5e3)
+        return () => clearInterval(inter)
+
+    }, [])
 
     const status = useMemo(() => {
         // 在线

@@ -423,7 +423,7 @@ export function ClientResults(start?: string, end?: string, id?: string) {
     return fecth<Uart.queryResult[]>("ClientResults", { start, end, id })
 }
 
-export interface queryResultSave extends Uart.queryResultSave { _id: string, parentId: string }
+export interface queryResultSave extends Uart.queryResultSave { _id: string, parentId: string, content?: any }
 
 /**
  * 获取设备解析数据

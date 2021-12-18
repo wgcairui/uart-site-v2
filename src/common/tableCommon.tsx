@@ -96,3 +96,26 @@ export const tableColumnsFilter = <T extends Record<string, any>>(data: T[], key
         onFilter: (value: string | number | boolean, record: T) => record[key] === value
     }
 }
+
+
+type tableData<T> = T extends Array<infer P> ? (P & { key: string })[] : T
+
+/**
+ * antd table生成key键
+ * @param tableData 
+ * @param key 
+ * @returns 
+ */
+export const generateTableKey = <T extends Array<any>>(tableData: T, key: T extends Array<infer P> ? keyof P : string): tableData<T> => {
+    try {
+        return tableData.map(el => ({ ...el, key: el[key] })) as any
+    } catch (error) {
+        console.log('[]');
+        
+        return [] as any
+    }
+
+}
+
+
+

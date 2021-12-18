@@ -24,7 +24,9 @@ import { Terminals } from "./root/node/terminal"
 import { User } from "./root/node/user"
 import { WxUser } from "./root/wx/user"
 import { WxMaterials_list } from "./root/wx/materials_list"
-import { ClientResultSingle } from "./root/data/ClientResultSingle"
+import { ClientResult, ClientResultSingle } from "./root/data/clientResult"
+import { Redis } from "./root/data/redis"
+import { LogMail, LogNode, LogSms, LogTerminal, LogUartTerminalDatatransfinites } from "./root/log/log"
 
 export const App: React.FC = () => {
 
@@ -101,6 +103,14 @@ export const App: React.FC = () => {
                         <Route path="/root/wx/materials_list" element={<WxMaterials_list />} />
 
                         <Route path="/root/data/ClientResultSingle" element={<ClientResultSingle />} />
+                        <Route path="/root/data/ClientResult" element={<ClientResult />} />
+                        <Route path="/root/data/redis" element={<Redis />} />
+
+                        <Route path="/root/log/node" element={<LogNode />} />
+                        <Route path="/root/log/terminal" element={<LogTerminal />} />
+                        <Route path="/root/log/sms" element={<LogSms />} />
+                        <Route path="/root/log/mail" element={<LogMail />} />
+                        <Route path="/root/log/uartterminaldatatransfinites" element={<LogUartTerminalDatatransfinites />} />
                     </Routes>
                 )
             default:
