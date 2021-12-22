@@ -16,7 +16,7 @@ export const WxMaterials_list: React.FC = () => {
     }, [])
 
     return (
-        <RootMain>
+        <>
             {
                 list ?
                     <Table dataSource={list.item.map(el => ({ ...el, key: el.media_id }))}
@@ -56,6 +56,6 @@ export const WxMaterials_list: React.FC = () => {
             }
 
 
-        </RootMain>
+        </>
     )
 }

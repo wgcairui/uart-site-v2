@@ -1,9 +1,7 @@
 import { Tabs, Form, Input, Button, Spin, message, Modal } from "antd";
-import React, { useState } from "react";
-import { useAsync } from "react-use";
+import React, {  } from "react";
 import { get_Secret, set_Secret } from "../../common/FecthRoot";
-import { MyInput } from "../../components/myInput";
-import { RootMain } from "../../components/RootMain";
+import { usePromise } from "../../use/usePromise";
 
 interface key {
     remark: string;
@@ -13,14 +11,61 @@ interface key {
     secret?: string
 }
 
+const Content: React.FC<{ type: Uart.secretType }> = ({ type }) => {
+
+    const { loading, data, fecth } = usePromise(async () => {
+        const { data } = await get_Secret(type)
+        return data
+    })
+
+    const submit = (newType: Uart.Secret_app) => {
+        const oldType = data
+        if (newType.appid !== oldType.appid || newType.secret !== oldType.secret) {
+            Modal.confirm({
+                content: `appid:${newType.appid} \n
+                         secret:${newType.secret}`,
+                onOk() {
+                    set_Secret({ ...newType, type })
+                        .then(() => {
+                            message.success("更新成功")
+                            fecth()
+                        })
+                }
+            })
+        } else {
+            message.info('没有修改')
+        }
+
+    }
+
+
+    return (
+        loading
+            ? <Spin />
+            :
+            <Form
+                onFinish={submit}
+                initialValues={data}
+            >
+                <Form.Item label="appId" name='appid'>
+                    <Input ></Input>
+                </Form.Item>
+                <Form.Item label="secret" name='secret'>
+                    <Input />
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit">Save</Button>
+                </Form.Item>
+            </Form>
+    )
+}
+
 export const Secret: React.FC = () => {
     const types = [
         {
             remark: '阿里云短信平台',
             type: 'aliSms',
             text: 'aliyunSMS',
-            appid: "",
-            secret: ""
         },
         {
             type: "mail",
@@ -54,72 +99,18 @@ export const Secret: React.FC = () => {
         }
     ]
 
-    const [tabKey, setTabKey] = useState("aliSms")
-
-    const secret = useAsync(async () => {
-        const { data } = await get_Secret(tabKey as any)
-
-        const type = types.find(el => el.type === tabKey)!
-        const { appid, secret } = data!
-        return { ...type, appid: appid || '', secret: secret || '' } as Uart.Secret_app
-    }, [tabKey])
-
-    const updateSecret = (val: string, isAppId: boolean = true) => {
-        const type = types.find(el => el.type === tabKey)!
-        if (isAppId) type.appid = val
-        else type.secret = val
-    }
-
-    const submit = () => {
-        const type = types.find(el => el.type === tabKey)!
-        const oldType = secret.value!
-
-        console.log({ type, oldType });
-
-
-        if (type.appid || type.secret) {
-            const appid = type.appid || oldType.appid
-            const secret = type.secret || oldType.secret
-            Modal.confirm({
-                content: `appid:${appid} \n
-                         secret:${secret}`,
-                onOk() {
-                    set_Secret({ ...oldType, appid, secret })
-                        .then(() => {
-                            message.success("更新成功")
-                        })
-                }
-            })
-        } else {
-            message.info('没有修改')
-        }
-
-    }
-
     return (
-        <RootMain>
-            <Tabs onChange={setTabKey}>
+        <>
+            <Tabs>
                 {
                     types.map(type =>
                         <Tabs.TabPane key={type.type} tab={type.remark}>
-                            {
-                                secret.loading
-                                    ? <Spin />
-                                    :
-                                    <Form>
-                                        <Form.Item label="appId">
-                                            <MyInput value={secret.value?.appid || ''} onSave={val => updateSecret(val)}></MyInput>
-                                        </Form.Item>
-                                        <Form.Item label="secret">
-                                            <MyInput value={secret.value?.secret || ''} onSave={val => updateSecret(val, false)}></MyInput>
-                                        </Form.Item>
-                                    </Form>
-                            }
+                            <Content type={type.type as any} />
                         </Tabs.TabPane>)
                 }
             </Tabs>
-
-            <Button type="primary" onClick={submit}>Save</Button>
-        </RootMain>
+        </>
     )
 }
+
+

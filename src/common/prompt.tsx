@@ -12,28 +12,28 @@ interface Props {
     onPressEnter?: () => void;
 }
 
-const PromptForm = forwardRef(
-    ({ rules, placeholder, onPressEnter, value }: Props, ref: any) => {
-        const [formInstance] = Form.useForm();
+const PromptForm = forwardRef(({ rules, placeholder, onPressEnter, value }: Props, ref: any) => {
+    const [formInstance] = Form.useForm();
 
-        useEffect(() => {
-            formInstance.setFieldsValue({ input: value });
-        }, []);
+    useEffect(() => {
+        formInstance.setFieldsValue({ input: value });
+    }, []);
 
-        useImperativeHandle(ref, () => ({
-            validate: () => {
-                return formInstance.validateFields().then((res) => res.input);
-            },
-        }));
+    useImperativeHandle(ref, () => ({
+        validate: async () => {
+            const res = await formInstance.validateFields();
+            return res.input;
+        },
+    }));
 
-        return (
-            <Form form={formInstance}>
-                <Form.Item name="input" rules={rules}>
-                    <Input placeholder={placeholder} onPressEnter={onPressEnter} />
-                </Form.Item>
-            </Form>
-        );
-    }
+    return (
+        <Form form={formInstance}>
+            <Form.Item name="input" rules={rules}>
+                <Input placeholder={placeholder} onPressEnter={onPressEnter} />
+            </Form.Item>
+        </Form>
+    );
+}
 );
 
 interface PromptConfig {
@@ -54,17 +54,7 @@ interface PromptProps extends Props {
     afterClose?: () => void;
 }
 
-function Prompt({
-    rules,
-    placeholder,
-    modalProps = {},
-    visible,
-    submit,
-    close,
-    title,
-    value,
-    afterClose,
-}: PromptProps) {
+function Prompt({ rules, placeholder, modalProps = {}, visible, submit, close, title, value, afterClose, }: PromptProps) {
     const formRef = useRef<any>(null);
     const handleOk = async () => {
         try {
@@ -95,9 +85,7 @@ function Prompt({
     );
 }
 
-export function prompt(
-    config: PromptConfig
-): Promise<string | undefined> {
+export function prompt(config: PromptConfig): Promise<string | undefined> {
     return new Promise((resolve, reject) => {
         const div = document.createElement('div');
         document.body.appendChild(div);

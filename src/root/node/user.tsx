@@ -89,7 +89,7 @@ export const User: React.FC = () => {
     }
 
     return (
-        <RootMain>
+        <>
             <Divider orientation="left">用户信息</Divider>
 
             <Row gutter={36}>
@@ -306,6 +306,6 @@ export const User: React.FC = () => {
                     onExpand: addExpend
                 }}
             />
-        </RootMain>
+        </>
     )
 }

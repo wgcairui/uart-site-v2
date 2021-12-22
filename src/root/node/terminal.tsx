@@ -1,49 +1,17 @@
 import { Pie } from "@ant-design/charts";
 import { Col, Divider, Row } from "antd";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { pieConfig, pieData } from "../../common/charts";
-import { getNodeInstructQuery, getTerminals } from "../../common/FecthRoot";
-import { RootMain } from "../../components/RootMain";
+import { getTerminals } from "../../common/FecthRoot";
+import { generateTableKey } from "../../common/tableCommon";
 import { TerminalsTable } from "../../components/terminalsTable";
-
-interface mountDevEx extends Uart.TerminalMountDevs {
-    Interval?: number
-}
-
-type terEx = Uart.Terminal & { mountDevs: mountDevEx[] }
-
+import { usePromise } from "../../use/usePromise";
 
 export const Terminals: React.FC = () => {
 
-    const [terminals, setTerminals] = useState<terEx[]>([])
-
-
-    useEffect(() => {
-        getTerminals()
-            .then(({ data }) => setTerminals(data.map(el => ({ ...el, key: el.DevMac }))))
-    }, [])
-
-
-    useEffect(() => {
-        const inter = setInterval(() => {
-            getNodeInstructQuery()
-                .then(({ data }) => {
-                    const queryMap = new Map(data.map(el => [el.TerminalMac + el.pid, el.Interval]))
-                    setTerminals(ters => {
-                        ters.forEach(el => {
-                            if (el.mountDevs && el.mountDevs.length > 0) {
-                                el.mountDevs.forEach(dev => {
-                                    (dev as any as mountDevEx).Interval = queryMap.get(el.DevMac + dev.pid) || 0
-
-                                })
-                            }
-                        })
-                        return [...ters]
-                    })
-                })
-        }, 5e3)
-        return () => clearInterval(inter)
-
+    const { data: terminals, loading, setData } = usePromise(async () => {
+        const { data } = await getTerminals()
+        return data
     }, [])
 
     const status = useMemo(() => {
@@ -88,7 +56,7 @@ export const Terminals: React.FC = () => {
 
     }, [terminals])
     return (
-        <RootMain>
+        <>
             <Divider orientation="left">所有挂载设备,总数{terminals.length}</Divider>
             <Row gutter={36}>
                 <Col span={12} key="onlines">
@@ -104,7 +72,7 @@ export const Terminals: React.FC = () => {
                     <Pie data={status.devs} {...pieConfig({ angleField: 'value', colorField: 'type', radius: .5 })}> </Pie>
                 </Col>
             </Row>
-            <TerminalsTable dataSource={terminals}></TerminalsTable>
-        </RootMain>
+            <TerminalsTable loading={loading} dataSource={generateTableKey(terminals, 'DevMac')} setData={setData}></TerminalsTable>
+        </>
     )
 }

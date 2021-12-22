@@ -55,7 +55,7 @@ export const WxUser: React.FC = () => {
 
 
     return (
-        <RootMain>
+        <>
             <Divider orientation="right">
                 所有微信关注用户
                 <Button shape="round" type="primary" size="small" onClick={() => updateUsers()} style={{ marginLeft: 8 }}>更新用户库</Button>
@@ -123,6 +123,6 @@ export const WxUser: React.FC = () => {
 
             </Table>
 
-        </RootMain>
+        </>
     )
 }

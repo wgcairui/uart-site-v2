@@ -179,7 +179,7 @@ export const RootIndex: React.FC = () => {
     }, [runInfo])
 
     return (
-        <RootMain>
+        <>
             <Tabs>
                 <Tabs.TabPane key="main" tab="Server运行状态">
                     {
@@ -252,6 +252,6 @@ export const RootIndex: React.FC = () => {
                     </AmapLoader>
                 </Tabs.TabPane>
             </Tabs>
-        </RootMain>
+        </>
     )
 }

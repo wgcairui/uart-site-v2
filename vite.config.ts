@@ -6,7 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server:{
     proxy:{
-      "/api":"https://uart.ladishb.com"
+      //"/api":"https://uart.ladishb.com"
+      "/api":"http://localhost:9010"
     }
   }
 })

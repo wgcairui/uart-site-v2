@@ -18,7 +18,7 @@ export const Nodes: React.FC = () => {
         return nodes.map(el => ({ type: el.Name, value: el.count || 0 }))
     }, [nodes])
     return (
-        <RootMain>
+        <>
             <Divider orientation="left">节点信息</Divider>
             <Pie data={status} {...pieConfig({angleField:'value',colorField:'type',radius:.8})}/>
             <Table dataSource={nodes} {...tableConfig}>
@@ -30,6 +30,6 @@ export const Nodes: React.FC = () => {
                 <Table.Column dataIndex="online" title="在线设备"></Table.Column>
                 <Table.Column key="oprate" title="操作"></Table.Column>
             </Table>
-        </RootMain>
+        </>
     )
 }

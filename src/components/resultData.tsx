@@ -2,11 +2,11 @@ import { Card, Divider, Table, Tag } from "antd"
 import { ColumnsType } from "antd/lib/table"
 import moment from "moment"
 import { useState } from "react"
-import { MyCopy } from "../components/myCopy"
+import { MyCopy } from "./myCopy"
 import { usePromise } from "../use/usePromise"
-import { ClientResult, ClientResults } from "./FecthRoot"
-import { getTerminalDatas } from "./Fetch"
-import { generateTableKey, getColumnSearchProp } from "./tableCommon"
+import { ClientResult, ClientResults } from "../common/FecthRoot"
+import { getTerminalDatas } from "../common/Fetch"
+import { generateTableKey, getColumnSearchProp } from "../common/tableCommon"
 
 /**
  * 展示设备原始数据

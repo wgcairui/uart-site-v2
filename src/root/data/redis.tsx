@@ -50,7 +50,7 @@ export const Redis: React.FC = () => {
     }
 
     return (
-        <RootMain>
+        <>
             <Form layout="inline">
                 <Form.Item label="key">
                     <Input value={key} placeholder="输入键+*匹配" onChange={e => setKey(e.target.value)} />
@@ -87,6 +87,6 @@ export const Redis: React.FC = () => {
                 ]}
             >
             </Table>
-        </RootMain>
+        </>
     )
 }

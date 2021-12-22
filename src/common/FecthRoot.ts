@@ -393,6 +393,14 @@ export function getNodeInstructQuery() {
 }
 
 /**
+ * 获取单个节点指令发送运行状态
+ * @returns 
+ */
+export function getNodeInstructQueryMac(mac: string, pid: number | string) {
+    return fecth<number>("getNodeInstructQueryMac", { mac, pid })
+}
+
+/**
  * 获取所有连接的socket客户端用户
  * @returns 
  */

@@ -13,7 +13,7 @@ export interface pieData {
  * 饼图配置
  */
 
-export const pieConfig = (config: Pick<PieConfig, 'angleField' | 'colorField' | 'radius'>):any => {
+export const pieConfig = (config: Pick<PieConfig, 'angleField' | 'colorField' | 'radius'> & { onClick?: (type: string) => void }): any => {
 
     return {
         angleField: config.angleField,
@@ -32,5 +32,10 @@ export const pieConfig = (config: Pick<PieConfig, 'angleField' | 'colorField' | 
                 type: 'element-active',
             },
         ],
+        onReady: (p: any) => {
+            p.on('plot:click', (e: any) => {
+                if (config.onClick) config.onClick(e.data.data.type)
+            })
+        }
     }
 }   

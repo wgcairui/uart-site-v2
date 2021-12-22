@@ -26,7 +26,9 @@ import { WxUser } from "./root/wx/user"
 import { WxMaterials_list } from "./root/wx/materials_list"
 import { ClientResult, ClientResultSingle } from "./root/data/clientResult"
 import { Redis } from "./root/data/redis"
-import { LogMail, LogNode, LogSms, LogTerminal, LogUartTerminalDatatransfinites } from "./root/log/log"
+import { LogDataClean, LogMail, LogNode, LogSms, LogTerminal, LogUartTerminalDatatransfinites, LogUserlogins, LogUserrequsts, LogWxEvent, LogWxSubscribe } from "./root/log/log"
+import { RootMain } from "./components/RootMain"
+import { Main } from "./components/Main"
 
 export const App: React.FC = () => {
 
@@ -76,42 +78,54 @@ export const App: React.FC = () => {
         switch (userGroup) {
             case "user":
             case "test":
+                return (
+                    <Main>
+                        <Routes>
+                            <Route path="/" element={<UserIndex />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/alarm" element={<Alarm />} />
+                            <Route path="/devmanage" element={<DevManage />} />
+                            <Route path="/dev/:id" element={<Dev />} />
+                            <Route path="/devline/:id" element={<DevLine />} />
+                            <Route path="/terminal/:id" element={<Terminal />} />
+                            <Route path="/addterminal" element={<AddTerminal />} />
+                            <Route path="/user" element={<UserInfo />} />
+                        </Routes>
+                    </Main>
+                )
             case "admin":
             case "root":
                 return (
-                    <Routes>
-                        <Route path="/" element={<UserIndex />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/alarm" element={<Alarm />} />
-                        <Route path="/devmanage" element={<DevManage />} />
-                        <Route path="/dev/:id" element={<Dev />} />
-                        <Route path="/devline/:id" element={<DevLine />} />
-                        <Route path="/terminal/:id" element={<Terminal />} />
-                        <Route path="/addterminal" element={<AddTerminal />} />
-                        <Route path="/user" element={<UserInfo />} />
+                    <RootMain>
+                        <Routes>
+                            <Route path="/root" element={<RootIndex />} />
+                            <Route path="/user" element={<UserInfo />} />
+                            <Route path="/root/node/Secret" element={<Secret />} />
+                            <Route path="/root/node/Protocols" element={<Protocols />} />
+                            <Route path="/root/node/addDev" element={<DevModel />} />
+                            <Route path="/root/node/addNode" element={<Nodes />} />
+                            <Route path="/root/node/Terminal" element={<Terminals />} />
+                            <Route path="/root/node/user" element={<User />} />
 
-                        <Route path="/root" element={<RootIndex />} />
-                        <Route path="/user" element={<UserInfo />} />
-                        <Route path="/root/node/Secret" element={<Secret />} />
-                        <Route path="/root/node/Protocols" element={<Protocols />} />
-                        <Route path="/root/node/addDev" element={<DevModel />} />
-                        <Route path="/root/node/addNode" element={<Nodes />} />
-                        <Route path="/root/node/Terminal" element={<Terminals />} />
-                        <Route path="/root/node/user" element={<User />} />
+                            <Route path="/root/wx/users" element={<WxUser />} />
+                            <Route path="/root/wx/materials_list" element={<WxMaterials_list />} />
 
-                        <Route path="/root/wx/users" element={<WxUser />} />
-                        <Route path="/root/wx/materials_list" element={<WxMaterials_list />} />
+                            <Route path="/root/data/ClientResultSingle" element={<ClientResultSingle />} />
+                            <Route path="/root/data/ClientResult" element={<ClientResult />} />
+                            <Route path="/root/data/redis" element={<Redis />} />
 
-                        <Route path="/root/data/ClientResultSingle" element={<ClientResultSingle />} />
-                        <Route path="/root/data/ClientResult" element={<ClientResult />} />
-                        <Route path="/root/data/redis" element={<Redis />} />
-
-                        <Route path="/root/log/node" element={<LogNode />} />
-                        <Route path="/root/log/terminal" element={<LogTerminal />} />
-                        <Route path="/root/log/sms" element={<LogSms />} />
-                        <Route path="/root/log/mail" element={<LogMail />} />
-                        <Route path="/root/log/uartterminaldatatransfinites" element={<LogUartTerminalDatatransfinites />} />
-                    </Routes>
+                            <Route path="/root/log/node" element={<LogNode />} />
+                            <Route path="/root/log/terminal" element={<LogTerminal />} />
+                            <Route path="/root/log/sms" element={<LogSms />} />
+                            <Route path="/root/log/mail" element={<LogMail />} />
+                            <Route path="/root/log/uartterminaldatatransfinites" element={<LogUartTerminalDatatransfinites />} />
+                            <Route path="/root/log/userlogins" element={<LogUserlogins />} />
+                            <Route path="/root/log/userrequsts" element={<LogUserrequsts />} />
+                            <Route path="/root/log/dataClean" element={<LogDataClean />} />
+                            <Route path="/root/log/wxEvent" element={<LogWxEvent />} />
+                            <Route path="/root/log/wxSubscribe" element={<LogWxSubscribe />} />
+                        </Routes>
+                    </RootMain>
                 )
             default:
                 return (<Login></Login>)
@@ -125,3 +139,4 @@ export const App: React.FC = () => {
         )
     }
 }
+

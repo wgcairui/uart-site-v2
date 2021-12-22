@@ -1,21 +1,78 @@
-import { CheckCircleFilled, WarningFilled, EyeFilled, DeleteFilled, SyncOutlined } from "@ant-design/icons";
+import { CheckCircleFilled, WarningFilled, EyeFilled, DeleteFilled, LoadingOutlined } from "@ant-design/icons";
 import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps, Modal } from "antd";
 import moment from "moment";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getNodeInstructQueryMac } from "../common/FecthRoot";
 import { delTerminalMountDev, refreshDevTimeOut } from "../common/Fetch";
 import { prompt } from "../common/prompt";
 import { getColumnSearchProp, tableColumnsFilter } from "../common/tableCommon";
+import { usePromise } from "../use/usePromise";
 import { DevCard } from "./devCard";
 import { IconFont, devTypeIcon } from "./IconFont";
 import { MyInput } from "./myInput";
 
 /**
+ * 显示设备查询间隔
+ * @param param0 
+ * @returns 
+ */
+const InterValToop: React.FC<{ mac: string, pid: number, show: boolean }> = ({ mac, pid, show }) => {
+    const { data: Interval, loading, fecth } = usePromise(async () => {
+        const { data } = await getNodeInstructQueryMac(mac, pid)
+        return data
+    }, 0, [mac, pid])
+
+
+    useEffect(() => {
+        const i = setInterval(() => {
+            show && fecth()
+        }, 5000)
+        return () => clearInterval(i)
+    }, [show])
+
+    /**
+     * 刷新设备查询间隔
+     * @param mac 
+     * @param pid 
+     */
+    const refreshInterval = () => {
+        prompt({
+            title: '设置设备查询间隔',
+            placeholder: '输入间隔毫秒数,(值为x500的倍数),未设置则为默认值',
+            onOk(val) {
+                const n = Number(val)
+                if (val && !Number.isNaN(n)) {
+                    if (n < 500) {
+                        val = undefined
+                    } else if (n % 500 > 0) {
+                        val = String(n - n % 500)
+                    }
+                }
+                refreshDevTimeOut(mac, pid, Number(val)).then(() => {
+                    message.success("重置完成,等待数据刷新")
+                })
+                return true
+            }
+        })
+    }
+
+
+    return (
+        loading ? <LoadingOutlined /> :
+            <Tooltip title="查询间隔">
+                <span onClick={() => refreshInterval()}>{Interval / 1000}秒</span>
+            </Tooltip>
+    )
+}
+
+type i = React.Dispatch<React.SetStateAction<(Record<string, any> & Uart.Terminal)[]>> | React.Dispatch<React.SetStateAction<(Record<string, any> & Uart.Terminal)[] | undefined>>
+/**
  * 格式化表格显示设备
  * @param props 
  * @returns 
  */
-export const TerminalsTable: React.FC<TableProps<Uart.Terminal>> = props => {
+export const TerminalsTable: React.FC<TableProps<Uart.Terminal> & { setData: i }> = props => {
 
     const nav = useNavigate()
 
@@ -39,30 +96,23 @@ export const TerminalsTable: React.FC<TableProps<Uart.Terminal>> = props => {
     }
 
     /**
-     * 刷新设备查询间隔
+     * 重命名设备
      * @param mac 
-     * @param pid 
+     * @param name 
      */
-    const refreshInterval = (mac: string, pid: number) => {
-        prompt({
-            title: '设置设备查询间隔',
-            placeholder: '输入间隔毫秒数,(值为x500的倍数),未设置则为默认值',
-            onOk(val) {
-                const n = Number(val)
-                if (val && !Number.isNaN(n)) {
-                    if (n < 500) {
-                        val = undefined
-                    } else if (n % 500 > 0) {
-                        val = String(n - n % 500)
-                    }
-                }
-                refreshDevTimeOut(mac, pid, Number(val)).then(() => {
-                    message.success("重置完成,等待数据刷新")
-                })
-                return true
-            }
-        })
+    const rename = (mac:string,name:string)=>{
+
     }
+
+    /**
+     * 备注设备
+     * @param name 
+     * @param remark 
+     */
+    const remark = (name:string,remark:string)=>{
+
+    }
+
 
     return (
         <Table dataSource={props.dataSource} size="small"
@@ -119,21 +169,19 @@ export const TerminalsTable: React.FC<TableProps<Uart.Terminal>> = props => {
                         compare: (a: any, b: any) => new Date(a.uptime).getDate() - new Date(b.uptime).getDate()
                     }
                 },
-                
+
                 {
                     key: 'oprate',
+                    title: '操作',
                     fixed: 'right',
-                    render(_, recrod) {
-                        return <>
-                            <Button type="link">重命名</Button>
-                            <Button type="link">备注</Button>
-                        </>
-                    }
+                    render: (_, recrod) => <Space size={0} wrap>
+                        <Button type="link">更新</Button>
+                    </Space>
                 }
             ]}
 
             expandable={{
-                expandedRowRender: (terminal: Uart.Terminal & { user?: string }) =>
+                expandedRowRender: (terminal: Uart.Terminal & { user?: string }, i, id, ex) =>
                     <Card>
                         <Descriptions title={terminal.name}>
                             <Descriptions.Item label="mac">
@@ -205,12 +253,7 @@ export const TerminalsTable: React.FC<TableProps<Uart.Terminal>> = props => {
                                                         <DeleteFilled style={{ color: "#E6A23B" }} />
                                                     </Popconfirm>
                                                 </Tooltip>,
-
-                                                (el as any).Interval &&
-                                                <Tooltip title="查询间隔">
-                                                    <span onClick={() => refreshInterval(terminal.DevMac, el.pid)}>{(el as any).Interval / 1000}秒</span>
-                                                </Tooltip>
-
+                                                <InterValToop mac={terminal.DevMac} pid={el.pid} show={ex} />
                                             ]}></DevCard>
                                     </Col>
                                 )

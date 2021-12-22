@@ -4,9 +4,9 @@ import React, { SetStateAction, useEffect, useState } from "react";
 /**
  * 
  */
-export type IusePromiseData<T> = T extends Array<infer P> ? (Record<string, any> & P)[] : T & Record<string, any> 
+export type IusePromiseData<T> = T extends Array<infer P> ? (Record<string, any> & P)[] : T & Record<string, any>
 
-type data<T> = T extends Array<infer P> ? (Record<string, any> & P)[] : T & Record<string, any>
+type data<T> = T extends Array<infer P> ? (Record<string, any> & P)[] : T extends Record<string, any> ? T & Record<string, any> : T
 
 
 /**

@@ -69,7 +69,7 @@ export const MyInput: React.FC<myInput> = props => {
                 }
             </Space>
             :
-            <Input.Group compact style={{ width: 'auto', display: 'flex' }}>
+            <Input.Group compact style={{ width: 'auto', display: 'flex', alignItems: 'center' }}>
                 <Input
                     bordered={false}
                     value={val}
@@ -82,8 +82,8 @@ export const MyInput: React.FC<myInput> = props => {
                 {
                     Edit ?
                         <Button size="small" shape="round" type="primary" onClick={save}>{props.okText || '保存'}</Button>
-                        :
-                        <Button size="small" shape="round" type="dashed" icon={<EditFilled />} ></Button>
+                        : <EditFilled />
+                    //<Button size="small" shape="round" type="dashed" icon={} ></Button>
                 }
             </Input.Group>
 

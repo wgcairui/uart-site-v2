@@ -6,7 +6,7 @@ import moment from "moment";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../../common/tableCommon";
 import { ColumnsType } from "antd/lib/table";
 import { IusePromiseData, usePromise } from "../../use/usePromise";
-import { ResultDataOriginal } from "../../common/resultData";
+import { ResultDataOriginal } from "../../components/resultData";
 
 
 
@@ -54,7 +54,7 @@ export const ClientResultSingle: React.FC = () => {
 
 
     return (
-        <RootMain>
+        <>
             <Divider orientation="left">设备数据最新</Divider>
             <Table
                 loading={list.loading}
@@ -89,7 +89,7 @@ export const ClientResultSingle: React.FC = () => {
                     expandedRowRender: clientResultExpandableExpandedRowRender
                 }}
             />
-        </RootMain>
+        </>
     )
 }
 
@@ -108,7 +108,7 @@ export const ClientResult: React.FC = () => {
     }, [], [date, time])
 
     return (
-        <RootMain>
+        <>
             <Divider >设备解析数据</Divider>
             <Form layout="inline">
                 <Form.Item label="查看日期">
@@ -156,6 +156,6 @@ export const ClientResult: React.FC = () => {
                     expandedRowRender: clientResultExpandableExpandedRowRender
                 }}
             />
-        </RootMain>
+        </>
     )
 }
