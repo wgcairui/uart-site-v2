@@ -134,6 +134,8 @@ export const modifyTerminal = (mac: string, name: string) => {
     return axios('modifyTerminal', { mac, name })
 }
 
+
+
 /**
 * 添加绑定设备
 * @param mac 
@@ -488,7 +490,7 @@ interface AmapResonpAutonavi extends AmapResonp {
 export const Amap_gps2AutonaviPosition = async (gps: string, window: Window & typeof globalThis) => {
     const sgps = gps
         .split(",")
-        .map((el: string) => parseFloat(el)) as [number, number];
+        .map((el: string) => parseFloat(el)) as [number, number] as any
     return await new Promise<AMap.LngLat>(res => {
         window.AMap.convertFrom(sgps, "gps", (stat: any, result: { locations: any[]; }) => {
             const jws = result.locations[0];

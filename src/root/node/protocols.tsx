@@ -4,7 +4,7 @@ import { getProtocols } from "../../common/FecthRoot";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter, tableConfig } from "../../common/tableCommon";
 import { pieConfig } from "../../common/charts";
 import { Pie } from "@ant-design/charts";
-import { usePromise } from "../../use/usePromise";
+import { usePromise } from "../../hook/usePromise";
 
 export const Protocols: React.FC = () => {
 

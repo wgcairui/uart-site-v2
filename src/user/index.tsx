@@ -78,7 +78,7 @@ export const UserIndex: React.FC = (props) => {
     }
 
     return (
-        <Main>
+        <>
 
             <Row>
                 <Col span={24} lg={18}>
@@ -177,6 +177,6 @@ export const UserIndex: React.FC = (props) => {
 
                 </Col>
             </Row>
-        </Main>
+        </>
     )
 }

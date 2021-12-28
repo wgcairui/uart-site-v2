@@ -1,16 +1,22 @@
-import { CheckCircleFilled, WarningFilled, EyeFilled, DeleteFilled, LoadingOutlined } from "@ant-design/icons";
-import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps, Modal } from "antd";
+import { CheckCircleFilled, WarningFilled, EyeFilled, DeleteFilled, LoadingOutlined, ReloadOutlined, MoreOutlined, SyncOutlined } from "@ant-design/icons";
+import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps, Modal, Spin, Dropdown, Menu } from "antd";
+import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getNodeInstructQueryMac } from "../common/FecthRoot";
-import { delTerminalMountDev, refreshDevTimeOut } from "../common/Fetch";
+import { BindDev, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryMac, getTerminals, initTerminal, IotQueryCardFlowInfo, IotQueryCardInfo, IotQueryIotCardOfferDtl, iotRemoteUrl, modifyTerminalRemark } from "../common/FecthRoot";
+import { delTerminalMountDev, getTerminal, modifyTerminal, refreshDevTimeOut } from "../common/Fetch";
 import { prompt } from "../common/prompt";
-import { getColumnSearchProp, tableColumnsFilter } from "../common/tableCommon";
-import { usePromise } from "../use/usePromise";
+import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../common/tableCommon";
+import { useNav } from "../hook/useNav";
+import { usePromise } from "../hook/usePromise";
 import { DevCard } from "./devCard";
+import { DevPosition } from "./devPosition";
 import { IconFont, devTypeIcon } from "./IconFont";
+import { MyCopy } from "./myCopy";
 import { MyInput } from "./myInput";
+
+
 
 /**
  * 显示设备查询间隔
@@ -66,15 +72,36 @@ const InterValToop: React.FC<{ mac: string, pid: number, show: boolean }> = ({ m
     )
 }
 
-type i = React.Dispatch<React.SetStateAction<(Record<string, any> & Uart.Terminal)[]>> | React.Dispatch<React.SetStateAction<(Record<string, any> & Uart.Terminal)[] | undefined>>
+
+interface infoProps {
+    /**
+     * 设备数据
+     */
+    terminal: Uart.Terminal & { user?: string }
+    /**
+     * 是否一直展开
+     */
+    ex: boolean
+    /**
+     * 更新数据
+     */
+    update: (mac: string) => void
+    /**
+     * 是否显示标题
+     */
+    showTitle?: boolean
+}
+
 /**
- * 格式化表格显示设备
- * @param props 
+ * 列出设备下挂载的子设备
+ * @param param0 
  * @returns 
  */
-export const TerminalsTable: React.FC<TableProps<Uart.Terminal> & { setData: i }> = props => {
+export const TerminalMountDevs: React.FC<infoProps> = (props) => {
 
     const nav = useNavigate()
+
+    const { terminal, ex, update, showTitle } = { showTitle: true, ...props, }
 
     /**
      * 删除挂载设备
@@ -90,179 +117,407 @@ export const TerminalsTable: React.FC<TableProps<Uart.Terminal> & { setData: i }
                 delTerminalMountDev(mac, pid)
                     .then(() => {
                         message.success({ content: '删除成功', key })
+                        update(mac)
                     })
             }
         })
     }
 
+    return (
+        <>
+            {
+                showTitle && <Divider plain orientation="center">挂载设备</Divider>
+            }
+            <Row>
+                {
+                    terminal?.mountDevs && terminal.mountDevs.map(el =>
+                        <Col span={24} md={8} key={terminal.DevMac + el.pid}>
+                            <DevCard
+                                img={`http://admin.ladishb.com/upload/${el.Type}.png`}
+                                title={<Space>
+                                    <Tooltip title={el.online ? '在线' : '离线'}>
+                                        {el.online ? <CheckCircleFilled style={{ color: "#67C23A" }} /> : <WarningFilled style={{ color: "#E6A23C" }} />}
+                                    </Tooltip>
+                                    {el.mountDev}
+                                </Space>}
+                                avatar={devTypeIcon[el.Type]}
+                                subtitle={terminal.DevMac + '-' + el.pid}
+                                actions={[
+                                    <Tooltip title="编辑查看">
+                                        <EyeFilled style={{ color: "#67C23B" }} onClick={() => nav("/dev/" + terminal.DevMac + el.pid)} />
+                                    </Tooltip>,
+
+                                    <Tooltip title="删除" >
+                                        <Popconfirm
+                                            title={`确认删除设备[${el.mountDev}]?`}
+                                            onConfirm={() => delMountDev(terminal.DevMac, el.pid)}
+                                            onCancel={() => message.info('cancel')}
+                                        >
+                                            <DeleteFilled style={{ color: "#E6A23B" }} />
+                                        </Popconfirm>
+                                    </Tooltip>,
+                                    <InterValToop mac={terminal.DevMac} pid={el.pid} show={ex} />
+                                ]}></DevCard>
+                        </Col>
+                    )
+                }
+            </Row>
+        </>
+    )
+}
+
+
+/**
+ * 展示设备信息
+ * @param param0 
+ * @returns 
+ */
+export const TerminalInfo: React.FC<infoProps> = (props) => {
+
+    const { terminal, ex, update } = props
+
     /**
-     * 重命名设备
+     * 更新别名
      * @param mac 
      * @param name 
      */
-    const rename = (mac:string,name:string)=>{
-
+    const rename = (name?: string) => {
+        const mac = terminal.DevMac
+        if (name) {
+            modifyTerminal(mac, name).then(el => {
+                if (el.code) {
+                    message.success('更新成功')
+                    update(mac)
+                }
+                else message.error("更新失败")
+            })
+        } else {
+            message.error("名称不能为空")
+        }
     }
+
 
     /**
-     * 备注设备
-     * @param name 
+     * 更新设备备注
+     * @param mac 
      * @param remark 
      */
-    const remark = (name:string,remark:string)=>{
-
+    const remark = (remark: string) => {
+        const mac = terminal.DevMac
+        modifyTerminalRemark(mac, remark).then(el => {
+            if (el.code) {
+                message.success('更新成功')
+                update(mac)
+            }
+            else message.error("更新失败")
+        })
     }
+
+
 
 
     return (
-        <Table dataSource={props.dataSource} size="small"
-            columns={[
-                {
-                    dataIndex: 'online',
-                    title: '状态',
-                    width: 50,
-                    render: (val) => <Tooltip title={val ? '在线' : '离线'}>
-                        <IconFont
-                            type={val ? 'icon-zaixianditu' : 'icon-lixian'}
-                            style={{ fontSize: 22 }}
-                        />
-                    </Tooltip>
-                },
-                {
-                    dataIndex: 'name',
-                    title: '名称',
-                    ellipsis: true,
-                    ...getColumnSearchProp<Uart.Terminal>('name')
-                },
-                {
-                    dataIndex: 'DevMac',
-                    title: 'mac',
-                    width: 140,
-                    ...getColumnSearchProp<Uart.Terminal>('DevMac')
-                },
-                {
-                    dataIndex: 'user',
-                    title: '用户',
-                    width: 140,
-                    ellipsis: true,
-                    ...getColumnSearchProp<any>('user')
-                },
-                {
-                    dataIndex: 'ICCID',
-                    title: 'ICCID',
-                    ellipsis: true,
-                    width: 120,
-                    ...getColumnSearchProp<Uart.Terminal>("ICCID")
-                },
-                {
-                    dataIndex: 'mountNode',
-                    title: '节点',
-                    width: 80,
-                    ...tableColumnsFilter(props.dataSource as any, 'mountNode')
-                },
-                {
-                    dataIndex: 'uptime',
-                    title: '更新时间',
-                    width: 165,
-                    render: val => moment(val || "1970-01-01").format("YYYY-MM-DD H:m:s"),
-                    sorter: {
-                        compare: (a: any, b: any) => new Date(a.uptime).getDate() - new Date(b.uptime).getDate()
-                    }
-                },
+        <Card>
+            <Descriptions title={terminal.name}>
+                <Descriptions.Item label="别名">
+                    <MyInput value={terminal.name} onSave={rename}></MyInput>
+                </Descriptions.Item>
+                <Descriptions.Item label="用户">{terminal.user}</Descriptions.Item>
+                <Descriptions.Item label="mac">{terminal.DevMac}</Descriptions.Item>
+                <Descriptions.Item label="AT支持">
+                    <Tag color="cyan">{terminal.AT ? '支持' : '不支持'}</Tag>
+                </Descriptions.Item>
+                <Descriptions.Item label="ICCID">{terminal.ICCID}</Descriptions.Item>
+                <Descriptions.Item label="PID">{terminal.PID}</Descriptions.Item>
+                <Descriptions.Item label="设备IP">{terminal.ip}</Descriptions.Item>
+                <Descriptions.Item label="设备定位">{terminal.jw}</Descriptions.Item>
+                <Descriptions.Item label="挂载节点">{terminal.mountNode}</Descriptions.Item>
+                <Descriptions.Item label="TCP端口">{terminal.port}</Descriptions.Item>
+                <Descriptions.Item label="串口参数">{terminal.uart}</Descriptions.Item>
+                <Descriptions.Item label="iot">{terminal.iotStat}</Descriptions.Item>
+                <Descriptions.Item label="Gver">{terminal.Gver}</Descriptions.Item>
+                <Descriptions.Item label="ver">{terminal.ver}</Descriptions.Item>
+                <Descriptions.Item label="共享状态">{terminal.share ? '开启' : '关闭'}</Descriptions.Item>
+                <Descriptions.Item label="更新时间">{moment(terminal.uptime).format('YYYY-MM-DD H:m:s')}</Descriptions.Item>
+                <Descriptions.Item label="备注">
+                    <MyInput
+                        value={terminal.remark}
+                        onSave={remark}
+                    ></MyInput>
+                </Descriptions.Item>
+            </Descriptions>
+            {
+                terminal.iccidInfo &&
+                <>
+                    <Divider orientation="left" plain>SIM卡</Divider>
+                    <Descriptions>
+                        <Descriptions.Item label="起始时间">{terminal.iccidInfo.validDate}</Descriptions.Item>
+                        <Descriptions.Item label="终止时间">{terminal.iccidInfo.expireDate}</Descriptions.Item>
+                        <Descriptions.Item label="套餐名称">{terminal.iccidInfo.resName}</Descriptions.Item>
+                        <Descriptions.Item label="全部流量">{terminal.iccidInfo.flowResource / 1024}MB</Descriptions.Item>
+                        <Descriptions.Item label="使用流量" >{(terminal.iccidInfo.flowUsed / 1024).toFixed(0)}MB</Descriptions.Item>
+                        <Descriptions.Item label="使用比例" >{((terminal.iccidInfo.flowUsed / terminal.iccidInfo.flowResource) * 100).toFixed(0)}%</Descriptions.Item>
+                    </Descriptions>
+                </>
+            }
 
-                {
-                    key: 'oprate',
-                    title: '操作',
-                    fixed: 'right',
-                    render: (_, recrod) => <Space size={0} wrap>
-                        <Button type="link">更新</Button>
-                    </Space>
+
+        </Card>
+    )
+}
+
+
+interface props {
+    title?: string
+    /**
+     * 如果有用户信息,就检索用户所属mac
+     */
+    user?: string
+    /**
+     * 数据下载完成
+     */
+    readyData?: (data: Uart.Terminal[]) => void
+}
+
+/**
+ * 格式化表格显示设备
+ * @param props 
+ * @returns 
+ */
+export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSource'> & props> = props => {
+
+    const nav = useNav()
+
+    const { data: terminals, loading, fecth, setData } = usePromise<(Uart.Terminal & { user: string })[]>(async () => {
+        return props.user ? await BindDev(props.user).then(el => el.data.UTs as any) : await getTerminals().then(el => el.data)
+    }, [])
+
+    useEffect(() => {
+        if (props.readyData) props.readyData(terminals)
+    }, [terminals])
+
+
+    /**
+     * 更新设备信息
+     */
+    const updateDev = async (mac: string) => {
+        const loading = message.loading({ content: 'loading' })
+        const i = terminals.findIndex(el => el.DevMac === mac)
+        const { data } = await getTerminal(mac)
+        if (terminals[i].user) (data as any).user = terminals[i].user
+        terminals.splice(i, 1, data as any)
+        setData([...terminals])
+        loading()
+    }
+
+    const itoRemoteUrl = (mac: string) => {
+        iotRemoteUrl(mac).then(el => {
+            if (el.code) {
+                if (/remote_code=$/.test(el.data)) {
+                    message.error('远程调试地址获取失败,请确认设备是否联网和iot设置是否打开')
+                } else
+                    window.open(el.data, "_blank");
+            }
+        })
+    }
+
+    const deleteRegisterTerminalm = (DevMac: string) => {
+        Modal.confirm({
+            content: `是否确定删除DTU:${DevMac} ??`,
+            onOk: async () => {
+                const key = 'deleteRegisterTerminalm'
+                message.loading({ key })
+                const { code, data } = await deleteRegisterTerminal(DevMac)
+
+                if (code) {
+                    message.success({ content: '删除成功', key })
+                    const index = terminals.findIndex(el => el.DevMac === DevMac)
+                    terminals.splice(index, 1)
+                    setData([...terminals])
+                } else {
+                    message.error({ content: `用户:${data} 已绑定设备`, key, duration: 3 })
                 }
-            ]}
+            }
+        })
+    }
 
-            expandable={{
-                expandedRowRender: (terminal: Uart.Terminal & { user?: string }, i, id, ex) =>
-                    <Card>
-                        <Descriptions title={terminal.name}>
-                            <Descriptions.Item label="mac">
-                                <MyInput value={terminal.DevMac} onSave={val => terminal.DevMac = val}></MyInput>
-                            </Descriptions.Item>
-                            <Descriptions.Item label="用户">{terminal.user}</Descriptions.Item>
-                            <Descriptions.Item label="别名">{terminal.name}</Descriptions.Item>
-                            <Descriptions.Item label="AT支持">
-                                <Tag color="cyan">{terminal.AT ? '支持' : '不支持'}</Tag>
-                            </Descriptions.Item>
-                            <Descriptions.Item label="ICCID">{terminal.ICCID}</Descriptions.Item>
-                            <Descriptions.Item label="PID">{terminal.PID}</Descriptions.Item>
-                            <Descriptions.Item label="设备IP">{terminal.ip}</Descriptions.Item>
-                            <Descriptions.Item label="设备定位">{terminal.jw}</Descriptions.Item>
-                            <Descriptions.Item label="挂载节点">{terminal.mountNode}</Descriptions.Item>
-                            <Descriptions.Item label="TCP端口">{terminal.port}</Descriptions.Item>
-                            <Descriptions.Item label="串口参数">{terminal.uart}</Descriptions.Item>
-                            <Descriptions.Item label="iot">{terminal.iotStat}</Descriptions.Item>
-                            <Descriptions.Item label="Gver">{terminal.Gver}</Descriptions.Item>
-                            <Descriptions.Item label="ver">{terminal.ver}</Descriptions.Item>
-                            <Descriptions.Item label="更新时间">{moment(terminal.uptime).format('YYYY-MM-DD H:m:s')}</Descriptions.Item>
-                            <Descriptions.Item label="备注">
-                                <MyInput
-                                    value={terminal.remark}
-                                    textArea
-                                ></MyInput>
-                            </Descriptions.Item>
-                        </Descriptions>
-                        {
-                            terminal.iccidInfo &&
-                            <>
-                                <Divider orientation="left" plain>SIM卡</Divider>
-                                <Descriptions>
-                                    <Descriptions.Item label="起始时间">{terminal.iccidInfo.validDate}</Descriptions.Item>
-                                    <Descriptions.Item label="终止时间">{terminal.iccidInfo.expireDate}</Descriptions.Item>
-                                    <Descriptions.Item label="套餐名称">{terminal.iccidInfo.resName}</Descriptions.Item>
-                                    <Descriptions.Item label="全部流量">{terminal.iccidInfo.flowResource / 1024}MB</Descriptions.Item>
-                                    <Descriptions.Item label="使用流量" >{(terminal.iccidInfo.flowUsed / 1024).toFixed(0)}MB</Descriptions.Item>
-                                    <Descriptions.Item label="使用比例" >{((terminal.iccidInfo.flowUsed / terminal.iccidInfo.flowResource) * 100).toFixed(0)}%</Descriptions.Item>
-                                </Descriptions>
-                            </>
-                        }
-                        <Divider orientation="left" plain>挂载设备</Divider>
-                        <Row>
+    /**
+     * 初始化设备
+     */
+    const initTerminalm = (DevMac: string) => {
+        Modal.confirm({
+            content: `是否确定初始化DTU:${DevMac} ??`,
+            onOk: async () => {
+                const key = 'initTerminalm'
+                const { code, data, msg } = await initTerminal(DevMac)
+                if (code) {
+                    message.success({ content: `删除成功,耗时${data}ms`, key })
+                } else {
+                    message.error({ content: msg, key })
+                }
+            }
+        })
+    }
+
+    /**
+     * 更新单个设备iccid信息
+     * @param iccid 
+     */
+    const iccdInfo = async (iccid: string, mac: string) => {
+        const key = 'iccdInfo' + Math.random()
+        message.loading({ key })
+        await IotQueryCardInfo(iccid)
+        await IotQueryCardFlowInfo(iccid)
+        await IotQueryIotCardOfferDtl(iccid)
+        setTimeout(() => {
+            message.info({ content: 'ok', key })
+            updateDev(mac)
+        }, 5000);
+    }
+
+
+    /**
+     * 解绑用户设备
+     * @param mac 
+     * @param user 
+     */
+    const unbindDev = (mac: string, user?: string) => {
+        if (user) {
+            Modal.confirm({
+                content: `是否删除用户[${user}]绑定设备{${mac}}?`,
+                onOk() {
+                    delUserTerminal(user, mac).then((el) => {
+                        message.success("解绑成功");
+                        fecth()
+                    });
+                }
+            })
+        }
+    }
+
+    return (
+        <>
+            <Space style={{ marginBottom: 16 }}>
+                <Button type="primary" size="small" onClick={() => fecth()} icon={<SyncOutlined />}>更新信息</Button>
+            </Space>
+            <Table
+                loading={loading}
+                dataSource={generateTableKey(terminals, "DevMac")}
+                size="small"
+                scroll={{ x: 1000 }}
+                columns={[
+                    {
+                        dataIndex: 'online',
+                        title: '状态',
+                        width: 50,
+                        fixed: 'left',
+                        onFilter: (val) => val === '在线',
+                        render: (val) => <Tooltip title={val ? '在线' : '离线'}>
+                            <IconFont
+                                type={val ? 'icon-zaixianditu' : 'icon-lixian'}
+                                style={{ fontSize: 22 }}
+                            />
+                        </Tooltip>
+                    },
+                    {
+                        dataIndex: 'name',
+                        title: '名称',
+                        ellipsis: true,
+                        width:180,
+                        ...getColumnSearchProp<Uart.Terminal>('name')
+                    },
+                    {
+                        dataIndex: 'DevMac',
+                        title: 'mac',
+                        width: 140,
+                        ...getColumnSearchProp<Uart.Terminal>('DevMac'),
+                        render: val => <MyCopy value={val}></MyCopy>
+                    },
+                    {
+                        dataIndex: 'user',
+                        title: '用户',
+                        width: 140,
+                        ellipsis: true,
+                        ...getColumnSearchProp<any>('user')
+                    },
+                    {
+                        dataIndex: 'ICCID',
+                        title: 'ICCID',
+                        ellipsis: true,
+                        width: 120,
+                        ...getColumnSearchProp<Uart.Terminal>("ICCID"),
+                        render: val => val && <MyCopy value={val}></MyCopy>
+                    },
+                    {
+                        dataIndex: 'mountNode',
+                        title: '节点',
+                        width: 80,
+                        ...tableColumnsFilter(terminals, 'mountNode')
+                    },
+                    {
+                        dataIndex: 'PID',
+                        title: '型号',
+                        width: 80,
+                        ...tableColumnsFilter(terminals, 'PID')
+                    },
+                    {
+                        title: '挂载设备',
+                        dataIndex: 'mountDevs',
+                        width: 180,
+                        filters: [...new Set(terminals.filter(el => el.mountDevs).map(el => el.mountDevs.map(e => e.mountDev)).flat())].map(value => ({ value, text: value })),
+                        onFilter: (val: any, re: Uart.Terminal) => re.mountDevs && re.mountDevs.some(el => el.mountDev === val),
+                        render: (val: Uart.TerminalMountDevs[]) => <>
                             {
-                                terminal?.mountDevs && terminal.mountDevs.map(el =>
-                                    <Col span={24} md={8} key={terminal.DevMac + el.pid}>
-                                        <DevCard
-                                            img={`http://admin.ladishb.com/upload/${el.Type}.png`}
-                                            title={<Space>
-                                                <Tooltip title={el.online ? '在线' : '离线'}>
-                                                    {el.online ? <CheckCircleFilled style={{ color: "#67C23A" }} /> : <WarningFilled style={{ color: "#E6A23C" }} />}
-                                                </Tooltip>
-                                                {el.mountDev}
-                                            </Space>}
-                                            avatar={devTypeIcon[el.Type]}
-                                            subtitle={terminal.DevMac + '-' + el.pid}
-                                            actions={[
-                                                <Tooltip title="编辑查看">
-                                                    <EyeFilled style={{ color: "#67C23B" }} onClick={() => nav("/dev/" + terminal.DevMac + el.pid)} />
-                                                </Tooltip>,
-
-                                                <Tooltip title="删除" >
-                                                    <Popconfirm
-                                                        title={`确认删除设备[${el.mountDev}]?`}
-                                                        onConfirm={() => delMountDev(terminal.DevMac, el.pid)}
-                                                        onCancel={() => message.info('cancel')}
-                                                    >
-                                                        <DeleteFilled style={{ color: "#E6A23B" }} />
-                                                    </Popconfirm>
-                                                </Tooltip>,
-                                                <InterValToop mac={terminal.DevMac} pid={el.pid} show={ex} />
-                                            ]}></DevCard>
-                                    </Col>
-                                )
+                                val && val.map(el => <Tag color={el.online ? 'green' : 'warning'} key={el.pid}>{el.mountDev}</Tag>)
                             }
-                        </Row>
+                        </>
 
-                    </Card>
-            }}
-        >
-        </Table>
+
+                    },
+                    {
+                        dataIndex: 'uptime',
+                        title: '更新时间',
+                        width: 165,
+                        render: val => moment(val || "1970-01-01").format("YYYY-MM-DD H:m:s"),
+                        sorter: {
+                            compare: (a: any, b: any) => new Date(a.uptime).getDate() - new Date(b.uptime).getDate()
+                        }
+                    },
+
+                    {
+                        key: 'oprate',
+                        title: '操作',
+                        fixed: 'right',
+                        width: 120,
+                        render: (_, t) => <Space size={0} wrap>
+                            <Button type="link" onClick={() => nav('/root/node/Terminal/info?mac=' + t.DevMac)}>查看</Button>
+                            <Button type="link" onClick={() => updateDev(t.DevMac)}>更新</Button>
+                            <Dropdown overlay={
+                                <Menu>
+                                    <Menu.Item onClick={() => itoRemoteUrl(t.DevMac)} key={1}>远程配置</Menu.Item>
+                                    <Menu.Item onClick={() => deleteRegisterTerminalm(t.DevMac)} key={2}>delete</Menu.Item>
+                                    <Menu.Item onClick={() => initTerminalm(t.DevMac)} key={3}>初始化</Menu.Item>
+                                    {t.ICCID && <Menu.Item onClick={() => iccdInfo(t.ICCID!, t.DevMac)} key={4}>ICCID更新</Menu.Item>}
+                                    {
+                                        props.user && <Menu.Item onClick={() => unbindDev(t.DevMac, props.user)} key={5}>解绑设备</Menu.Item>
+                                    }
+                                </Menu>
+                            }>
+                                <MoreOutlined />
+                            </Dropdown>
+                        </Space>
+                    }
+                ] as ColumnsType<Uart.Terminal>}
+
+                expandable={{
+                    expandedRowRender: (re, _, __, ex) => <>
+                        <TerminalInfo terminal={re} ex={ex} update={updateDev} />
+                        <TerminalMountDevs terminal={re} ex={ex} update={updateDev}></TerminalMountDevs>
+                        <DevPosition terminal={re} />
+                    </>
+                }}
+            >
+            </Table>
+        </>
     )
 }

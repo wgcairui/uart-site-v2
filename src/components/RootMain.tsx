@@ -1,7 +1,8 @@
 import React from "react"
-import { Layout, Menu, Breadcrumb } from "antd"
+import { Layout, Menu, Breadcrumb, Image } from "antd"
 import "./RootMain.css"
 import { Link } from "react-router-dom"
+import { UserDropDown } from "./userDropDown"
 
 interface navi {
   title: string
@@ -64,14 +65,7 @@ export const RootMain: React.FC = props => {
           },
           text: "用户",
           ico: "\uEB6f",
-        },
-        {
-          to: {
-            name: "root/node/AT",
-          },
-          text: "DTU调试",
-          ico: "\uEC63",
-        },
+        }
       ],
     },
     {
@@ -201,43 +195,48 @@ export const RootMain: React.FC = props => {
 
   return (
     <Layout className="layout">
-      <Layout.Header style={{ height: 56 }} >
-        <h3 style={{ color: "white" }}>百事服后台</h3>
-      </Layout.Header>
+      {/* <Layout.Header className="user-header">
+        <Link to="/">
+          <Image src="http://admin.ladishb.com/upload/LADS_witdh.png" preview={false} height={20}></Image>
+        </Link>
+        <div className="user-header-menu">
+
+          <UserDropDown />
+        </div>
+      </Layout.Header> */}
       <Layout>
-        <Layout.Sider width={200} className="site-layout-background">
+        <Layout.Sider width={200} className="site-layout-background" style={{ backgroundColor: "#011529", marginRight: 24 }}>
+          <div style={{ padding: 12 }}>
+            <Link to="/">
+              <Image src="http://admin.ladishb.com/upload/LADS_witdh.png" preview={false} height={30}></Image>
+            </Link>
+          </div>
           <Menu
             theme="dark"
             mode="inline"
-            style={{ height: '100%', borderRight: 0 }}
+            style={{ borderRight: 0 }}
           >
             {
               nav.map(el =>
                 <Menu.SubMenu key={el.title} title={el.title}>
                   {
                     el.child.map(child =>
-                      <Menu.Item key={child.text+el.title} >
-                        <Link to={'/'+child.to.name}>{child.text}</Link>
+                      <Menu.Item key={child.text + el.title} >
+                        <Link to={'/' + child.to.name}>{child.text}</Link>
                       </Menu.Item>)
                   }
                 </Menu.SubMenu>)
             }
           </Menu>
+          <UserDropDown />
         </Layout.Sider>
-        <Layout style={{ padding: '0 24px 24px' }}>
+        <Layout>
           <Breadcrumb style={{ margin: '16px 0' }}>
             <Breadcrumb.Item>Home</Breadcrumb.Item>
             <Breadcrumb.Item>List</Breadcrumb.Item>
             <Breadcrumb.Item>App</Breadcrumb.Item>
           </Breadcrumb>
-          <Layout.Content
-            className="site-layout-background"
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-              overflow:"auto"
-            }}
+          <Layout.Content className="content"
           >
             {
               props.children

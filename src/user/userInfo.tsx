@@ -83,7 +83,7 @@ export const UserInfo: React.FC = props => {
 
 
     return (
-        <Main>
+        <>
             <Row justify="center" align="middle">
                 <Col span={24} md={12}>
                     <Space direction="vertical">
@@ -131,6 +131,6 @@ export const UserInfo: React.FC = props => {
                     </Space>
                 </Col>
             </Row>
-        </Main>
+        </>
     )
 }

@@ -109,7 +109,7 @@ export const DevLine: React.FC = () => {
     }, [lineDate, page])
 
     return (
-        <Main>
+        <>
             <Breadcrumb>
                 <Breadcrumb.Item href="/">
                     <HomeOutlined />
@@ -170,6 +170,6 @@ export const DevLine: React.FC = () => {
                     }
                 </Space>
             </Card>
-        </Main>
+        </>
     )
 }

@@ -1,7 +1,7 @@
 
 import { EditFilled } from "@ant-design/icons";
 import { Button, Input, message, Space } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface myInput {
     textArea?: boolean
@@ -20,7 +20,11 @@ export const MyInput: React.FC<myInput> = props => {
 
     const [Edit, setEdit] = useState(false)
 
-    const [val, setVal] = useState(() => props.value || '')
+    const [val, setVal] = useState(props.value || '')
+
+    useEffect(() => {
+        setVal(props.value || '')
+    }, [props.value])
 
     /**
      * 保存内容
@@ -56,7 +60,6 @@ export const MyInput: React.FC<myInput> = props => {
                     value={val}
                     onChange={change}
                     onFocus={() => setEdit(true)}
-                    onPressEnter={save}
                     onBlur={blur}
                     size="small"
                 >

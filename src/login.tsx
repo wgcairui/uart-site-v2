@@ -4,8 +4,8 @@ import { Layout, Image, Menu, Dropdown, Row, Col, Card, Tabs, Form, Input, Butto
 import { UserOutlined, LockOutlined, WechatFilled } from "@ant-design/icons"
 import "./login.css"
 import { IconFont } from "./components/IconFont";
-import { Link, useNavigate } from "react-router-dom";
-import { Get, Post } from "./common/Fetch";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Get, Post, wxlogin } from "./common/Fetch";
 import { universalResult } from "./typing";
 
 const menu = (
@@ -178,3 +178,23 @@ export const Login: React.FC = () => {
     )
 }
 
+
+
+export const LoginWx: React.FC = () => {
+
+    const nav = useNavigate()
+
+    const [param] = useSearchParams()
+
+    const [code, state] = [param.get("code"), param.get("state")]
+
+    if (!code || !state) {
+        nav("/login")
+    }
+    wxlogin(code!, state!).then(el => {
+        localStorage.setItem('token', 'bearer%20' + (el as any).token)
+        nav("/")
+    })
+
+    return (<></>)
+}

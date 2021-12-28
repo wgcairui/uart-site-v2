@@ -1,18 +1,13 @@
 import { Pie } from "@ant-design/charts";
-import { Col, Divider, Row } from "antd";
-import React, { useMemo } from "react";
+import { Button, Col, Divider, message, Modal, Row, Space } from "antd";
+import React, { useMemo, useState } from "react";
 import { pieConfig, pieData } from "../../common/charts";
-import { getTerminals } from "../../common/FecthRoot";
-import { generateTableKey } from "../../common/tableCommon";
+import { UpdateIccids } from "../../common/FecthRoot";
 import { TerminalsTable } from "../../components/terminalsTable";
-import { usePromise } from "../../use/usePromise";
 
 export const Terminals: React.FC = () => {
 
-    const { data: terminals, loading, setData } = usePromise(async () => {
-        const { data } = await getTerminals()
-        return data
-    }, [])
+    const [terminals, setterminals] = useState<Uart.Terminal[]>([])
 
     const status = useMemo(() => {
         // 在线
@@ -55,24 +50,59 @@ export const Terminals: React.FC = () => {
         } as Record<string, pieData[]>
 
     }, [terminals])
+
+    /**
+     * 更新所有iccid
+     */
+    const updateICCIDs = async () => {
+        Modal.confirm({
+            title: "更新ICCID",
+            content: '确认需要更新所有4G模块的物联卡信息吗?频繁操作将导致api锁死',
+            onOk() {
+                message.loading({ content: 'loading', key: 'updateICCIDs' })
+                UpdateIccids().then(el => {
+                    message.success({ content: `已更新完成,耗时${el.data.time},更新${el.data.length}条`, key: 'updateICCIDs' })
+                })
+            }
+        })
+    }
+
     return (
         <>
             <Divider orientation="left">所有挂载设备,总数{terminals.length}</Divider>
+            <Space>
+                <Button onClick={() => updateICCIDs()}>更新ICCID</Button>
+                <Button>批量注册设备</Button>
+            </Space>
             <Row gutter={36}>
                 <Col span={12} key="onlines">
-                    <Pie data={status.onlines} {...pieConfig({ angleField: 'value', colorField: 'type', radius: .5 })}> </Pie>
+                    <Pie
+                        data={status.onlines}
+                        {...pieConfig({ angleField: 'value', colorField: 'type', radius: .5, })}
+                    > </Pie>
                 </Col>
                 <Col span={12} key="nodes">
-                    <Pie data={status.nodes} {...pieConfig({ angleField: 'value', colorField: 'type', radius: .5 })}> </Pie>
+                    <Pie
+                        data={status.nodes}
+                        {...pieConfig({ angleField: 'value', colorField: 'type', radius: .5, })}
+                    > </Pie>
                 </Col>
                 <Col span={12} key="pids">
-                    <Pie data={status.pids} {...pieConfig({ angleField: 'value', colorField: 'type', radius: .5 })}> </Pie>
+                    <Pie
+                        data={status.pids}
+                        {...pieConfig({ angleField: 'value', colorField: 'type', radius: .5, })}
+                    > </Pie>
                 </Col>
                 <Col span={12} key="devs">
-                    <Pie data={status.devs} {...pieConfig({ angleField: 'value', colorField: 'type', radius: .5 })}> </Pie>
+                    <Pie
+                        data={status.devs}
+                        {...pieConfig({ angleField: 'value', colorField: 'type', radius: .5, })}
+                    > </Pie>
                 </Col>
             </Row>
-            <TerminalsTable loading={loading} dataSource={generateTableKey(terminals, 'DevMac')} setData={setData}></TerminalsTable>
+            <TerminalsTable
+                readyData={setterminals}
+            ></TerminalsTable>
         </>
     )
 }

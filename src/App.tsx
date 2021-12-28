@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import "./App.css"
-import { Login } from "./login"
+import { Login, LoginWx } from "./login"
 import { BindDev, Get, userInfo } from "./common/Fetch"
 import { Spin } from "antd"
 import { UserIndex } from "./user"
@@ -29,6 +29,8 @@ import { Redis } from "./root/data/redis"
 import { LogDataClean, LogMail, LogNode, LogSms, LogTerminal, LogUartTerminalDatatransfinites, LogUserlogins, LogUserrequsts, LogWxEvent, LogWxSubscribe } from "./root/log/log"
 import { RootMain } from "./components/RootMain"
 import { Main } from "./components/Main"
+import { TerminalInfos } from "./root/node/terminalInfo"
+import { UserInfo as RootUserInfo } from "./root/node/userInfo"
 
 export const App: React.FC = () => {
 
@@ -67,10 +69,12 @@ export const App: React.FC = () => {
             } else {
                 localStorage.removeItem("token")
                 setUserGroup("login")
+                nav("/login")
             }
         }).catch(() => {
             localStorage.removeItem("token")
             setUserGroup("login")
+            nav("/login")
         })
     }, [])
 
@@ -105,7 +109,9 @@ export const App: React.FC = () => {
                             <Route path="/root/node/addDev" element={<DevModel />} />
                             <Route path="/root/node/addNode" element={<Nodes />} />
                             <Route path="/root/node/Terminal" element={<Terminals />} />
+                            <Route path="/root/node/Terminal/info" element={<TerminalInfos />} />
                             <Route path="/root/node/user" element={<User />} />
+                            <Route path="/root/node/user/userInfo" element={<RootUserInfo />} />
 
                             <Route path="/root/wx/users" element={<WxUser />} />
                             <Route path="/root/wx/materials_list" element={<WxMaterials_list />} />
@@ -128,7 +134,13 @@ export const App: React.FC = () => {
                     </RootMain>
                 )
             default:
-                return (<Login></Login>)
+                return (
+                    <Routes>
+                        <Route path="/" element={<App />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/loginwx" element={<LoginWx />} />
+                    </Routes>
+                )
         }
 
     } else {

@@ -26,8 +26,6 @@ export const Main: React.FC<universalProps> = (props) => {
 
     const exit = () => {
         localStorage.removeItem("token")
-        console.log(localStorage.getItem("token"));
-
         nav("/login")
     }
 

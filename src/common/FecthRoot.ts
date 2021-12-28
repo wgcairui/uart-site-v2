@@ -409,6 +409,15 @@ export function getUsersOnline() {
 }
 
 /**
+ * 获取指定用户在线状态
+ * @param user 
+ * @returns 
+ */
+export function getUserOnlineStat(user: string) {
+    return fecth<boolean>("getUserOnlineStat", { user })
+}
+
+/**
  * 发送socket消息给用户
  * @param user 
  * @param msg 
@@ -666,4 +675,45 @@ export function UpdateIccids() {
 */
 export function delUserTerminal(user: string, mac: string) {
     return fecth("delUserTerminal", { user, mac })
+}
+
+/**
+* 修改用户设备备注
+* @param mac 
+* @param remark 
+* @returns 
+*/
+export const modifyTerminalRemark = (mac: string, remark: string) => {
+    return fecth('modifyTerminalRemark', { mac, remark })
+}
+
+/**
+* 修改用户备注
+* @param user 
+* @param remark 
+* @returns 
+*/
+export const modifyUserRemark = (user: string, remark: string) => {
+    return fecth('modifyUserRemark', { user, remark })
+}
+
+/**
+ * 获取用户信息
+ * @param user 
+ * @returns 
+ */
+export const getUser = (user: string) => {
+    return fecth<Uart.UserInfo>('getUser', { user })
+}
+
+
+/**
+ * 获取用户告警
+ * @param user 
+ * @param start 
+ * @param end 
+ * @returns 
+ */
+export const getAlarm = (user: string, start: number, end: number) => {
+    return fecth<Uart.uartAlarmObject[]>("userLoguartterminaldatatransfinites", { user, start, end })
 }

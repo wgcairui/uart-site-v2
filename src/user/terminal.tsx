@@ -116,7 +116,7 @@ export const Terminal: React.FC = () => {
 
 
     return (
-        <Main>
+        <>
             <Modal title="添加设备" visible={visible} confirmLoading={!mountDev.protocol} onCancel={() => setVisible(false)} onOk={postMountDev}>
                 <Form>
                     {<Form.Item label="设备协议">
@@ -203,6 +203,6 @@ export const Terminal: React.FC = () => {
                     </Col>
                 </Row>
             </Card>
-        </Main>
+        </>
     )
 }

@@ -4,7 +4,7 @@ import React, { useMemo, useState } from "react";
 import { pieConfig } from "../../common/charts";
 import { DevTypes } from "../../common/FecthRoot";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../../common/tableCommon";
-import { usePromise } from "../../use/usePromise";
+import { usePromise } from "../../hook/usePromise";
 
 export const DevModel: React.FC = () => {
 

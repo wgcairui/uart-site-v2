@@ -60,7 +60,7 @@ export const AddTerminal: React.FC = () => {
     }
 
     return (
-        <Main>
+        <>
             <Breadcrumb>
                 <Breadcrumb.Item href="/">
                     <HomeOutlined />
@@ -119,6 +119,6 @@ export const AddTerminal: React.FC = () => {
                     )
                 }
             </Card>
-        </Main>
+        </>
     )
 }

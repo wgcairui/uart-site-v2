@@ -1,7 +1,7 @@
 import { Tabs, Form, Input, Button, Spin, message, Modal } from "antd";
 import React, {  } from "react";
 import { get_Secret, set_Secret } from "../../common/FecthRoot";
-import { usePromise } from "../../use/usePromise";
+import { usePromise } from "../../hook/usePromise";
 
 interface key {
     remark: string;

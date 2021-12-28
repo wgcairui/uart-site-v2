@@ -37,7 +37,9 @@ export const MyCopy: React.FC<copy> = props => {
             <Tooltip title={props.value}>
                 <p>{props.value}</p>
             </Tooltip>
-            <CopyOutlined onClick={() => copy()} />
+            {
+                (props.value && props.value.length > 5) && <CopyOutlined onClick={() => copy()} />
+            }
             {
                 /(^http|^<.*>$)/.test(props.value) &&
                 <IeOutlined onClick={() => show()} />

@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Col, Row, Table, Spin, Card, DatePicker, Space, Form, Breadcrumb, Pagination, Tooltip, Tag, Divider } from "antd";
 import { useParams, Link } from "react-router-dom";
-import { Main } from "../components/Main";
 import { State } from "../store";
 import { storeUser } from "../store/user";
 import { getAlarmProtocol, getTerminalData, getUserAlarmProtocol, getTerminalDatas } from "../common/Fetch"
@@ -161,7 +160,7 @@ export const Dev: React.FC = () => {
 
 
     return (
-        <Main>
+        <>
             <Breadcrumb>
                 <Breadcrumb.Item href="/">
                     <HomeOutlined />
@@ -230,6 +229,6 @@ export const Dev: React.FC = () => {
                     </Row>
                 </Col>
             </Row>
-        </Main>
+        </>
     )
 }

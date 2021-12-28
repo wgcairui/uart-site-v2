@@ -5,7 +5,7 @@ import { Button, Card, DatePicker, Divider, Form, Table, Tag, TimePicker } from 
 import moment from "moment";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../../common/tableCommon";
 import { ColumnsType } from "antd/lib/table";
-import { IusePromiseData, usePromise } from "../../use/usePromise";
+import { IusePromiseData, usePromise } from "../../hook/usePromise";
 import { ResultDataOriginal } from "../../components/resultData";
 
 

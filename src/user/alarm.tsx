@@ -66,7 +66,7 @@ export const Alarm: React.FC = () => {
 
 
     return (
-        <Main>
+        <>
             <Form layout="inline" style={{ margin: 8 }}>
                 <Form.Item label="选择时间区间">
                     <DatePicker.RangePicker defaultValue={[moment(dates[0], 'YYYY-MM-DD'), moment(dates[1], 'YYYY-MM-DD')]} onChange={(value, dates) => setDates(dates)} />
@@ -112,6 +112,6 @@ export const Alarm: React.FC = () => {
                 </Row>
             </Card>
 
-        </Main>
+        </>
     )
 }

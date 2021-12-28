@@ -1,4 +1,4 @@
-import { Button, Card, Col, DatePicker, Descriptions, Divider, Empty, Form, Row, Table, Tag, } from "antd";
+import { Button, Card, Col, DatePicker, Descriptions, Divider, Empty, Form, Row, Space, Table, Tag, } from "antd";
 import { TableProps } from "antd/lib/table";
 import moment from "moment";
 import React, { useMemo, useState } from "react";
@@ -6,9 +6,10 @@ import { logdataclean, logmailsends, lognodes, logsmssends, logterminals, loguar
 import { ResultDataParse } from "../../components/resultData";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../../common/tableCommon";
 import { MyCopy } from "../../components/myCopy";
-import { usePromise } from "../../use/usePromise";
+import { usePromise } from "../../hook/usePromise";
 import { Pie, Plot } from "@ant-design/charts";
 import { pieConfig, pieData } from "../../common/charts";
+import { MyDatePickerRange } from "../../components/myDatePickerRange";
 
 interface pieArg {
     key: string
@@ -90,13 +91,13 @@ const Log: React.FC<log> = (props) => {
         /**
          * 检查是否包含刷选配置
          */
-            const s = new Set([...props.cfilter || [], ...props.cPie?.map(el => typeof el === 'string' ? el : el.key) || []])
-            arr.forEach((el: any) => {
-                if (s.has(el.dataIndex)) {
-                    Object.assign(el, { filteredValue: filter[el.dataIndex] || [], ...tableColumnsFilter(list.data, el.dataIndex) })
-                }
-            })
-        
+        const s = new Set([...props.cfilter || [], ...props.cPie?.map(el => typeof el === 'string' ? el : el.key) || []])
+        arr.forEach((el: any) => {
+            if (s.has(el.dataIndex)) {
+                Object.assign(el, { filteredValue: filter[el.dataIndex] || [], ...tableColumnsFilter(list.data, el.dataIndex) })
+            }
+        })
+
         return arr
     }, [filter])
 
@@ -151,20 +152,12 @@ const Log: React.FC<log> = (props) => {
 
     return (
         <>
-            <Form layout="inline" style={{ marginBottom: 12 }}>
-                <Form.Item label="查询时间段">
-                    <DatePicker.RangePicker
-                        value={[date[0], date[1]]}
-                        onChange={(_, d) => setDate(d.map(el => moment(el)))}
-                    ></DatePicker.RangePicker>
-                </Form.Item>
-                <Form.Item>
+            <MyDatePickerRange lastDay={props.lastDay} onChange={setDate}>
+                <Space>
                     <Button type="primary" onClick={() => list.fecth()}>刷新</Button>
-                </Form.Item>
-                <Form.Item>
                     <Button type="default" onClick={() => clearFilter()}>清除刷选配置</Button>
-                </Form.Item>
-            </Form>
+                </Space>
+            </MyDatePickerRange>
 
             <Row >
                 {

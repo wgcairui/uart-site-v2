@@ -111,7 +111,7 @@ export const generateTableKey = <T extends Array<any>>(tableData: T, key: T exte
         return tableData.map(el => ({ ...el, key: el[key] })) as any
     } catch (error) {
         console.log('[]');
-        
+
         return [] as any
     }
 
