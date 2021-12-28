@@ -1,10 +1,13 @@
 import { Line } from "@ant-design/charts";
-import { LinkOutlined } from "@ant-design/icons";
-import { Button, Card, Checkbox, Col, Collapse, DatePicker, Divider, Dropdown, Form, Input, message, Row, Select, Space, Timeline } from "antd";
+import { FundFilled, InfoCircleFilled, LinkOutlined, SyncOutlined } from "@ant-design/icons";
+import { Button, Card, Checkbox, Col, Collapse, DatePicker, Divider, Dropdown, Form, Input, message, Row, Select, Space, Spin, Table, Timeline, Tooltip } from "antd";
+import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { getDtuBusy, getUseBtyes, logAggs, logterminalAggs, sendATInstruct, SendProcotolInstructSet } from "../common/FecthRoot";
-import { getTerminal } from "../common/Fetch";
+import { getTerminal, getTerminalData } from "../common/Fetch";
+import { generateTableKey, getColumnSearchProp, tableConfig } from "../common/tableCommon";
 import { usePromise } from "../hook/usePromise";
 
 
@@ -357,5 +360,66 @@ export const TerminalRunLog: React.FC<props> = ({ mac }) => {
                 </Timeline>
             </Card>
         </>
+    )
+}
+
+/**
+ * 设备数据
+ * @param param0 
+ * @returns 
+ */
+export const TerminalRunData: React.FC<props & { pid: number | string }> = ({ mac, pid }) => {
+
+    const { data, loading, fecth } = usePromise(async () => {
+        const { data } = await getTerminalData(mac, pid)
+        return data
+    }, undefined)
+    return (
+        !data ? <Spin />
+            :
+            <section>
+                <Space>
+                    <span>
+                        {
+                            moment(data.time).isBefore(moment().startOf("day"))
+                                ? moment(data.time).format("YYYY/M/D H:mm:ss")
+                                : moment(data.time).format("H:mm:ss")
+                        }
+                    </span>
+                    <SyncOutlined onClick={() => fecth()} />
+                </Space>
+                <Table dataSource={generateTableKey(data.result, "name")}
+                    loading={loading}
+                    {...tableConfig}
+                    columns={[
+                        {
+                            dataIndex: 'name',
+                            title: '参数',
+                            ...getColumnSearchProp("name")
+                        },
+                        {
+                            dataIndex: 'parseValue',
+                            title: '值',
+                            render: (value, record) => (
+                                <span>{value + (!record.issimulate ? record.unit : '')}
+                                    {
+                                        (record.issimulate || !record.unit)
+                                            ? <a />
+                                            : <Tooltip color="cyan" title={`查看[${record.name}]的历史记录`}>
+                                                <Link to={`/devline/?name=${record.name}`}>
+                                                    <FundFilled style={{ marginLeft: 8 }} />
+                                                </Link>
+                                            </Tooltip>
+                                    }
+                                    {
+                                        record.alarm ? <InfoCircleFilled style={{ color: "#E6A23C" }} /> : <a />
+                                    }
+
+                                </span>
+                            )
+                        }
+                    ] as ColumnsType<Uart.queryResultArgument>}
+                />
+            </section>
     )
 }

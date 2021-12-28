@@ -86,7 +86,7 @@ export const Dev: React.FC = () => {
      */
     useEffect(() => {
         setTableloading(true)
-        if (mountDev) {
+        if (mountDev) { 
             Promise.all([getUserAlarmProtocol(mountDev.protocol), getAlarmProtocol(mountDev.protocol)])
                 .then(([user, sys]) => {
                     setShowTag((user.data.ShowTag && user.data.ShowTag.length > 0) ? user.data.ShowTag : sys.data.ShowTag)

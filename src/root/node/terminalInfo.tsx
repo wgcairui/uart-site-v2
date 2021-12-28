@@ -1,9 +1,9 @@
-import { Spin, Tabs } from "antd";
+import { Col, Row, Spin, Tabs } from "antd";
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { getTerminal } from "../../common/Fetch";
 import { DevPosition } from "../../components/devPosition";
-import { TerminalAT, TerminalBusyStat, TerminalOprate, TerminalRunLog, TerminalUseBytes } from "../../components/terminalData";
+import { TerminalAT, TerminalBusyStat, TerminalOprate, TerminalRunData, TerminalRunLog, TerminalUseBytes } from "../../components/terminalData";
 import { TerminalInfo, TerminalMountDevs } from "../../components/terminalsTable";
 import { usePromise } from "../../hook/usePromise";
 
@@ -56,7 +56,11 @@ export const TerminalInfos: React.FC<props> = (props) => {
                     </Tabs.TabPane>
                     {
                         data.mountDevs && data.mountDevs.map(dev => <Tabs.TabPane tab={dev.mountDev + dev.pid} key={dev.mountDev + dev.pid}>
-                            
+                            <Row>
+                                <Col span={10}>
+                                    <TerminalRunData mac={data.DevMac} pid={dev.pid} />
+                                </Col>
+                            </Row>
                         </Tabs.TabPane>
                         )
                     }
