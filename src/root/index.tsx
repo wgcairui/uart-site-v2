@@ -96,7 +96,7 @@ export const RootIndex: React.FC = () => {
                         } else {
                             return V2_API_Aamp_ip2local(el.ip!)
                                 .then(data => {
-                                    const position = data.data ? stringToLngLat(data.data) : undefined
+                                    const position = data
                                     return ({ ...el, position })
                                 })
                                 .catch(() => ({ ...el }))

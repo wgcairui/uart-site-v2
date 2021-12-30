@@ -7,7 +7,8 @@ export default defineConfig({
   server:{
     proxy:{
       //"/api":"https://uart.ladishb.com"
-      "/api":"http://localhost:9010"
+      "/api":"http://localhost:9010",
+      "/client":"http://localhost:9010"
     }
   }
 })

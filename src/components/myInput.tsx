@@ -66,7 +66,7 @@ export const MyInput: React.FC<myInput> = props => {
                 </Input.TextArea>
                 {
                     Edit ?
-                        <Button size="small" type="primary" onClick={save}>{props.okText || '保存'}</Button>
+                        <Button size="small" type="primary" onClick={() => save()}>{props.okText || '保存'}</Button>
                         :
                         <span />
                 }
@@ -84,7 +84,7 @@ export const MyInput: React.FC<myInput> = props => {
                 </Input>
                 {
                     Edit ?
-                        <Button size="small" shape="round" type="primary" onClick={save}>{props.okText || '保存'}</Button>
+                        <Button size="small" shape="round" type="primary" onClick={() => save()}>{props.okText || '保存'}</Button>
                         : <EditFilled />
                     //<Button size="small" shape="round" type="dashed" icon={} ></Button>
                 }

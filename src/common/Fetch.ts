@@ -33,6 +33,18 @@ export const Get = async <T>(path: string, data?: { [x: string]: string }): Prom
 
 
 /**
+ * 获取协议告警数据集合
+ * @param protocol 
+ * @param type 
+ * @param user 
+ * @returns 
+ */
+export const getProtocolSetup = (protocol: string, type: Uart.ConstantThresholdType, user?: string) => {
+    return axios<{ sys: any[], user: any[] }>("getProtocolSetup", { protocol, type, user })
+}
+
+
+/**
    * 添加用户
    * @param name 
    * @param user 
@@ -383,8 +395,21 @@ export const V2_API_Aamp_gps2autoanvi = (locations: string | string[], coordsys:
 }
 
 // V2 ip转gps
-export const V2_API_Aamp_ip2local = async (ip: string) => {
-    return ip ? await axios<string>("util/AMap/IP2loction", { ip }) : { data: '114.2083633,29.75025723' }
+export const V2_API_Aamp_ip2local = async (ip: string = '114.2083633,29.75025723') => {
+    const { data } = await axios<string>("util/AMap/IP2loction", { ip })
+    const [l, n] = data.split(",").map(Number)
+    return new AMap.LngLat(l, n)
+}
+
+
+/**
+ * a根据mac和pid获取挂载设备
+ * @param mac 
+ * @param pid 
+ * @returns 
+ */
+export const getTerminalPidProtocol = (mac: string, pid: number | string) => {
+    return axios("getTerminalPidProtocol", { mac, pid })
 }
 
 

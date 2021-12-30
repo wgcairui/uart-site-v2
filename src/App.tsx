@@ -31,6 +31,7 @@ import { RootMain } from "./components/RootMain"
 import { Main } from "./components/Main"
 import { TerminalInfos } from "./root/node/terminalInfo"
 import { UserInfo as RootUserInfo } from "./root/node/userInfo"
+import { socketClient } from "./common/socket"
 
 export const App: React.FC = () => {
 
@@ -54,6 +55,7 @@ export const App: React.FC = () => {
                 userInfo().then(el => {
                     Dispatch(setUser(el.data))
                     setUserGroup(data.userGroup)
+                    socketClient.connect(data.user)
 
                     if (['user', 'test'].includes(data.userGroup)) {
                         BindDev().then(el => {

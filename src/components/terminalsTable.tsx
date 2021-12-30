@@ -4,12 +4,13 @@ import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BindDev, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryMac, getTerminals, initTerminal, IotQueryCardFlowInfo, IotQueryCardInfo, IotQueryIotCardOfferDtl, iotRemoteUrl, modifyTerminalRemark } from "../common/FecthRoot";
+import { BindDev, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryMac, getTerminals, getTerminalUser, initTerminal, IotQueryCardFlowInfo, IotQueryCardInfo, IotQueryIotCardOfferDtl, iotRemoteUrl, modifyTerminalRemark } from "../common/FecthRoot";
 import { delTerminalMountDev, getTerminal, modifyTerminal, refreshDevTimeOut } from "../common/Fetch";
 import { prompt } from "../common/prompt";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../common/tableCommon";
 import { useNav } from "../hook/useNav";
 import { usePromise } from "../hook/usePromise";
+import { useTerminalUpdate } from "../hook/useTerminalData";
 import { DevCard } from "./devCard";
 import { DevPosition } from "./devPosition";
 import { IconFont, devTypeIcon } from "./IconFont";
@@ -83,10 +84,6 @@ interface infoProps {
      */
     ex: boolean
     /**
-     * 更新数据
-     */
-    update: (mac: string) => void
-    /**
      * 是否显示标题
      */
     showTitle?: boolean
@@ -101,7 +98,7 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
 
     const nav = useNavigate()
 
-    const { terminal, ex, update, showTitle } = { showTitle: true, ...props, }
+    const { terminal, ex, showTitle } = { showTitle: true, ...props, }
 
     /**
      * 删除挂载设备
@@ -117,7 +114,6 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
                 delTerminalMountDev(mac, pid)
                     .then(() => {
                         message.success({ content: '删除成功', key })
-                        update(mac)
                     })
             }
         })
@@ -168,13 +164,30 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
 
 
 /**
+ * 显示mac绑定用户
+ * @param param0 
+ * @returns 
+ */
+const TerminalUser: React.FC<{ mac: string }> = ({ mac }) => {
+
+    const { data, loading } = usePromise(async () => {
+        const { data } = await getTerminalUser(mac)
+        return data
+    })
+    return (
+        loading ? <Spin /> : <>{data}</>
+    )
+}
+
+
+/**
  * 展示设备信息
  * @param param0 
  * @returns 
  */
 export const TerminalInfo: React.FC<infoProps> = (props) => {
 
-    const { terminal, ex, update } = props
+    const { terminal } = props
 
     /**
      * 更新别名
@@ -183,11 +196,13 @@ export const TerminalInfo: React.FC<infoProps> = (props) => {
      */
     const rename = (name?: string) => {
         const mac = terminal.DevMac
+
+        console.log(name, mac);
+
         if (name) {
             modifyTerminal(mac, name).then(el => {
                 if (el.code) {
                     message.success('更新成功')
-                    update(mac)
                 }
                 else message.error("更新失败")
             })
@@ -207,7 +222,6 @@ export const TerminalInfo: React.FC<infoProps> = (props) => {
         modifyTerminalRemark(mac, remark).then(el => {
             if (el.code) {
                 message.success('更新成功')
-                update(mac)
             }
             else message.error("更新失败")
         })
@@ -222,7 +236,9 @@ export const TerminalInfo: React.FC<infoProps> = (props) => {
                 <Descriptions.Item label="别名">
                     <MyInput value={terminal.name} onSave={rename}></MyInput>
                 </Descriptions.Item>
-                <Descriptions.Item label="用户">{terminal.user}</Descriptions.Item>
+                <Descriptions.Item label="用户">
+                    <TerminalUser mac={terminal.DevMac} />
+                </Descriptions.Item>
                 <Descriptions.Item label="mac">{terminal.DevMac}</Descriptions.Item>
                 <Descriptions.Item label="AT支持">
                     <Tag color="cyan">{terminal.AT ? '支持' : '不支持'}</Tag>
@@ -288,7 +304,7 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
 
     const nav = useNav()
 
-    const { data: terminals, loading, fecth, setData } = usePromise<(Uart.Terminal & { user: string })[]>(async () => {
+    const { data: terminals, loading, fecth, setData } = usePromise<(Uart.Terminal)[]>(async () => {
         return props.user ? await BindDev(props.user).then(el => el.data.UTs as any) : await getTerminals().then(el => el.data)
     }, [])
 
@@ -296,11 +312,26 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
         if (props.readyData) props.readyData(terminals)
     }, [terminals])
 
+    /**
+     * 监听设备状态变更,有变更则更新列表
+     */
+    useTerminalUpdate(terminals.map(el => el.DevMac), setData)
+
+    /* useEffect(() => {
+        if (MacUpdate.data) {
+            const ter = MacUpdate.data
+            const i = terminals.findIndex(el => el.DevMac === ter.DevMac)
+            if (terminals[i].user) (ter as any).user = terminals[i].user
+            terminals.splice(i, 1, ter as any)
+            setData([...terminals])
+        }
+    }, [MacUpdate.data]) */
+
 
     /**
      * 更新设备信息
      */
-    const updateDev = async (mac: string) => {
+    /* const updateDev = async (mac: string) => {
         const loading = message.loading({ content: 'loading' })
         const i = terminals.findIndex(el => el.DevMac === mac)
         const { data } = await getTerminal(mac)
@@ -308,7 +339,7 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
         terminals.splice(i, 1, data as any)
         setData([...terminals])
         loading()
-    }
+    } */
 
     const itoRemoteUrl = (mac: string) => {
         iotRemoteUrl(mac).then(el => {
@@ -371,7 +402,6 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
         await IotQueryIotCardOfferDtl(iccid)
         setTimeout(() => {
             message.info({ content: 'ok', key })
-            updateDev(mac)
         }, 5000);
     }
 
@@ -423,7 +453,7 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                         dataIndex: 'name',
                         title: '名称',
                         ellipsis: true,
-                        width:180,
+                        width: 180,
                         ...getColumnSearchProp<Uart.Terminal>('name')
                     },
                     {
@@ -491,7 +521,7 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                         width: 120,
                         render: (_, t) => <Space size={0} wrap>
                             <Button type="link" onClick={() => nav('/root/node/Terminal/info?mac=' + t.DevMac)}>查看</Button>
-                            <Button type="link" onClick={() => updateDev(t.DevMac)}>更新</Button>
+                            {/* <Button type="link" onClick={() => updateDev(t.DevMac)}>更新</Button> */}
                             <Dropdown overlay={
                                 <Menu>
                                     <Menu.Item onClick={() => itoRemoteUrl(t.DevMac)} key={1}>远程配置</Menu.Item>
@@ -511,8 +541,8 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
 
                 expandable={{
                     expandedRowRender: (re, _, __, ex) => <>
-                        <TerminalInfo terminal={re} ex={ex} update={updateDev} />
-                        <TerminalMountDevs terminal={re} ex={ex} update={updateDev}></TerminalMountDevs>
+                        <TerminalInfo terminal={re} ex={ex} />
+                        <TerminalMountDevs terminal={re} ex={ex}></TerminalMountDevs>
                         <DevPosition terminal={re} />
                     </>
                 }}

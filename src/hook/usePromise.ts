@@ -7,8 +7,10 @@ import React, { SetStateAction, useEffect, useState } from "react";
 export type IusePromiseData<T> = T extends Array<infer P> ? (Record<string, any> & P)[] : T & Record<string, any>
 
 //type data<T> = T extends Array<infer P> ? (Record<string, any> & P)[] : T extends Record<string, any> ? T & Record<string, any> : T
-type data<T> = T extends Array<infer P> ? P[] : T 
+type data<T> = T extends Array<infer P> ? P[] : T
 
+
+type setData<T> = T extends Array<any> ? React.Dispatch<SetStateAction<data<T>>> : React.Dispatch<SetStateAction<data<T> | undefined>>
 
 /**
  * usePromise 返回值
@@ -32,7 +34,7 @@ export interface IusePromise<T> {
      * 重新请求
      */
     fecth: () => void
-    setData: React.Dispatch<React.SetStateAction<data<T>>> | React.Dispatch<SetStateAction<data<T> | undefined>>
+    setData: React.Dispatch<React.SetStateAction<data<T>>> | setData<T>
 }
 
 
@@ -71,6 +73,6 @@ export const usePromise = <T>(fn: () => Promise<T>, initValue?: data<T> | (() =>
         data: data as any,
         err,
         fecth,
-        setData
+        setData: setData as any
     }
 }

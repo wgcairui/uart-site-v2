@@ -717,3 +717,12 @@ export const getUser = (user: string) => {
 export const getAlarm = (user: string, start: number, end: number) => {
     return fecth<Uart.uartAlarmObject[]>("userLoguartterminaldatatransfinites", { user, start, end })
 }
+
+/**
+ * 根据设备id获取绑定用户
+ * @param mac 
+ * @returns 
+ */
+export const getTerminalUser = (mac: string) => {
+    return fecth<string>('getTerminalUser', { mac })
+}

@@ -1,14 +1,15 @@
 import { Line } from "@ant-design/charts";
 import { FundFilled, InfoCircleFilled, LinkOutlined, SyncOutlined } from "@ant-design/icons";
-import { Button, Card, Checkbox, Col, Collapse, DatePicker, Divider, Dropdown, Form, Input, message, Row, Select, Space, Spin, Table, Timeline, Tooltip } from "antd";
+import { Button, Card, Checkbox, Col, Collapse, DatePicker, Divider, Form, Input, message, Row, Select, Space, Spin, Table, Timeline, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { getDtuBusy, getUseBtyes, logAggs, logterminalAggs, sendATInstruct, SendProcotolInstructSet } from "../common/FecthRoot";
-import { getTerminal, getTerminalData } from "../common/Fetch";
+import { getTerminal } from "../common/Fetch";
 import { generateTableKey, getColumnSearchProp, tableConfig } from "../common/tableCommon";
 import { usePromise } from "../hook/usePromise";
+import { useTerminalData } from "../hook/useTerminalData";
 
 
 interface props {
@@ -370,10 +371,7 @@ export const TerminalRunLog: React.FC<props> = ({ mac }) => {
  */
 export const TerminalRunData: React.FC<props & { pid: number | string }> = ({ mac, pid }) => {
 
-    const { data, loading, fecth } = usePromise(async () => {
-        const { data } = await getTerminalData(mac, pid)
-        return data
-    }, undefined)
+    const { data, loading, fecth } = useTerminalData(mac, pid)
     return (
         !data ? <Spin />
             :
@@ -389,7 +387,7 @@ export const TerminalRunData: React.FC<props & { pid: number | string }> = ({ ma
                     <SyncOutlined onClick={() => fecth()} />
                 </Space>
                 <Table dataSource={generateTableKey(data.result, "name")}
-                    loading={loading}
+                    loading={loading && !data}
                     {...tableConfig}
                     columns={[
                         {

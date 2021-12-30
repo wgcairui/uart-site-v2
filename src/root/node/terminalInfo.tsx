@@ -1,11 +1,12 @@
 import { Col, Row, Spin, Tabs } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getTerminal } from "../../common/Fetch";
 import { DevPosition } from "../../components/devPosition";
 import { TerminalAT, TerminalBusyStat, TerminalOprate, TerminalRunData, TerminalRunLog, TerminalUseBytes } from "../../components/terminalData";
 import { TerminalInfo, TerminalMountDevs } from "../../components/terminalsTable";
 import { usePromise } from "../../hook/usePromise";
+import { useTerminalUpdate } from "../../hook/useTerminalData";
 
 
 interface props {
@@ -19,10 +20,20 @@ interface props {
 export const TerminalInfos: React.FC<props> = (props) => {
 
     const [query] = useSearchParams()
-    const { data, loading, fecth } = usePromise(async () => {
-        const { data } = await getTerminal(query.get('mac') || props.mac || '')
+
+    const mac = query.get('mac') || props.mac || ''
+    const { data, loading, setData } = usePromise(async () => {
+        const { data } = await getTerminal(mac)
         return data
     })
+
+    const ter = useTerminalUpdate([mac])
+
+    useEffect(() => {
+        if (ter.data) {
+            setData(ter.data)
+        }
+    }, [ter.data])
 
     return (
         loading ? <Spin />
@@ -31,10 +42,10 @@ export const TerminalInfos: React.FC<props> = (props) => {
                 <h2>{data.DevMac}/{data.name}</h2>
                 <Tabs>
                     <Tabs.TabPane tab="详细信息" key="info">
-                        <TerminalInfo terminal={data} update={fecth} ex={true} showTitle={false}></TerminalInfo>
+                        <TerminalInfo terminal={data} ex={true} showTitle={false}></TerminalInfo>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="挂载设备" key="mountDevs">
-                        <TerminalMountDevs terminal={data} update={fecth} ex={true} showTitle={false}></TerminalMountDevs>
+                        <TerminalMountDevs terminal={data} ex={true} showTitle={false}></TerminalMountDevs>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="设备定位" key="position">
                         <DevPosition terminal={data}></DevPosition>
