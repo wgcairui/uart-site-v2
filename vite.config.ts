@@ -1,14 +1,25 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+const server = "https://uart.ladishb.com"
+//const server = "http://localhost:9010"
+
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server:{
-    proxy:{
+  server: {
+    open: true,
+    
+    proxy: {
       //"/api":"https://uart.ladishb.com"
-      "/api":"http://localhost:9010",
-      "/client":"http://localhost:9010"
+      "/api": server,
+      "/client": server
     }
+  },
+  preview: {
+    port: 9005,
+    host: "0.0.0.0",
   }
+
 })

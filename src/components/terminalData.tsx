@@ -1,13 +1,14 @@
 import { Line } from "@ant-design/charts";
 import { FundFilled, InfoCircleFilled, LinkOutlined, SyncOutlined } from "@ant-design/icons";
-import { Button, Card, Checkbox, Col, Collapse, DatePicker, Divider, Form, Input, message, Row, Select, Space, Spin, Table, Timeline, Tooltip } from "antd";
+import { Button, Card, Checkbox, Col, Collapse, DatePicker, Divider, Empty, Form, Input, message, Row, Select, Space, Spin, Table, Timeline, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { getDtuBusy, getUseBtyes, logAggs, logterminalAggs, sendATInstruct, SendProcotolInstructSet } from "../common/FecthRoot";
-import { getTerminal } from "../common/Fetch";
+import { getProtocolSetup, getTerminal, getTerminalDatas, getTerminalDatasV2, getTerminalPidProtocol } from "../common/Fetch";
 import { generateTableKey, getColumnSearchProp, tableConfig } from "../common/tableCommon";
+import { RepeatFilter } from "../common/util";
 import { usePromise } from "../hook/usePromise";
 import { useTerminalData } from "../hook/useTerminalData";
 
@@ -315,23 +316,7 @@ export const TerminalRunLog: React.FC<props> = ({ mac }) => {
 
     const { data, loading, fecth } = usePromise(async () => {
         const { data } = await logterminalAggs(mac, date[0].format(), date[1].format())
-        const t: Uart.logTerminalsType = "dtu主动断开"
-        let i = false
-        const arr: logAggs<number>[] = []
-        data.forEach(el => {
-            if (el.type) {
-                if (el.type === t) {
-                    if (!i) {
-                        arr.push(el)
-                        i = true
-                    }
-                } else {
-                    i = false
-                    arr.push(el)
-                }
-            }
-        })
-        return arr
+        return RepeatFilter(data)
     }, [], [date])
 
     return (
@@ -365,13 +350,78 @@ export const TerminalRunLog: React.FC<props> = ({ mac }) => {
 }
 
 /**
+ * 用户设备数据
+ */
+export interface DevDataProps extends props {
+    /**
+     * 
+     */
+    pid: number | string
+    /**
+     * 设置用户,如果有用户的话,下载用户显示配置
+     */
+    user?: string
+}
+
+/**
+ * 用户设备数据列表
+ */
+interface UserRunDataProps extends DevDataProps {
+    /**
+     * 是否关闭刷选
+     */
+    closeFilter?: boolean
+
+    /**
+     * 数据更新是更新数据
+     */
+    OnUpdate?: (result: Uart.queryResultArgument[], data?: Uart.queryResultSave) => void
+}
+
+/**
  * 设备数据
  * @param param0 
  * @returns 
  */
-export const TerminalRunData: React.FC<props & { pid: number | string }> = ({ mac, pid }) => {
+export const TerminalRunData: React.FC<UserRunDataProps> = ({ mac, pid, user, closeFilter, OnUpdate }) => {
 
+    /**
+     * 订阅设备数据变更
+     */
     const { data, loading, fecth } = useTerminalData(mac, pid)
+
+    /**
+     * 如果有更新函数,运行
+     */
+    useEffect(() => {
+        if (OnUpdate) {
+            OnUpdate(data ? data.result : [], data)
+        }
+    }, [data])
+
+    /**
+     * 获取用户协议配置
+     */
+    const { data: ShowTag } = usePromise(async () => {
+        const protocol = await getTerminalPidProtocol(mac, pid)
+        const { data } = await getProtocolSetup<string>(protocol.data.protocol, 'ShowTag', user)
+        return new Set([data.sys, data.user].flat())
+    }, new Set())
+
+    /**
+     * 获取显示的参数
+     */
+    const result = useMemo(() => {
+        if (data) {
+            if (!closeFilter && ShowTag.size > 0) {
+                return data.result.filter(el => ShowTag.has(el.name))
+            } else
+                return data.result
+        } else {
+            return []
+        }
+    }, [data, ShowTag])
+
     return (
         !data ? <Spin />
             :
@@ -386,7 +436,7 @@ export const TerminalRunData: React.FC<props & { pid: number | string }> = ({ ma
                     </span>
                     <SyncOutlined onClick={() => fecth()} />
                 </Space>
-                <Table dataSource={generateTableKey(data.result, "name")}
+                <Table dataSource={generateTableKey(result, "name")}
                     loading={loading && !data}
                     {...tableConfig}
                     columns={[
@@ -419,5 +469,72 @@ export const TerminalRunData: React.FC<props & { pid: number | string }> = ({ ma
                     ] as ColumnsType<Uart.queryResultArgument>}
                 />
             </section>
+    )
+}
+
+/**
+ * 用户设备数据告警约束状态
+ * @param param0 
+ * @returns 
+ */
+export const TerminalRunDataThresoldLine: React.FC<DevDataProps & { time?: string | number }> = ({ mac, pid, user, time }) => {
+
+    const [date, setDate] = useState<[moment.Moment, moment.Moment]>([moment(time).subtract(10, "minute"), moment(time)])
+
+    const { data, fecth, loading } = usePromise(async () => {
+        const protocol = await getTerminalPidProtocol(mac, pid)
+        const setup = await getProtocolSetup<Uart.Threshold>(protocol.data.protocol, 'Threshold', user)
+            .then(({ data: { sys, user } }) => {
+                const sMap = new Map(sys.map(el => [el.name, el]))
+                if (user.length > 0) {
+                    const uMap = new Map(user.map(el => [el.name, el]))
+                    sMap.forEach((_, key) => {
+                        if (uMap.has(key)) {
+                            sMap.set(key, uMap.get(key)!)
+                        }
+                    })
+                }
+                return sMap
+            })
+
+        /**
+         * 如果选择的时间间隔超过一天,把时间收束到一天
+         */
+        /* if (date[0].diff(date[1], "day") > 1) {
+            setDate(el => {
+                el[1] = el[0].add(1, "day")
+                return [...el]
+            })
+        } */
+        const { data } = await getTerminalDatasV2(mac, pid, [...setup.keys()] || [], date[0].valueOf(), date[1].valueOf())
+        return data.map(el => ({ ...el, time: moment(el.time).format("M/D H:m:s"), value: parseFloat(el.value) }))
+    }, [], [date])
+
+    const max = (n: number[]) => {
+        const m = Math.max(...n)
+        return m > 100 ? m + 100 : 100
+    }
+
+    return (
+        <>
+            <Divider orientation="left" plain>展示告警约束参数的运行状态</Divider>
+            <Form layout="inline">
+                <Form.Item label="选择时间">
+                    <DatePicker.RangePicker
+                        showTime={{ format: 'HH:mm:ss' }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        value={date} onOk={(val: any) => setDate(val)}
+                    />
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" onClick={() => fecth()}>刷新</Button>
+                </Form.Item>
+            </Form>
+            {
+                data.length > 0
+                    ? <Line autoFit loading={loading} xField="time" yField="value" yAxis={{ max: max(data.map(el => el.value)) }} seriesField="name" data={data} renderer="svg"></Line>
+                    : <Empty description="没有数据" style={{ marginTop: 36 }}></Empty>
+            }
+        </>
     )
 }

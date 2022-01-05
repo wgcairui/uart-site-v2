@@ -1,5 +1,5 @@
 import { CheckCircleFilled, WarningFilled, EyeFilled, DeleteFilled, LoadingOutlined, ReloadOutlined, MoreOutlined, SyncOutlined } from "@ant-design/icons";
-import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps, Modal, Spin, Dropdown, Menu } from "antd";
+import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps, Modal, Spin, Dropdown, Menu, notification } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useEffect } from "react";
@@ -8,6 +8,7 @@ import { BindDev, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryM
 import { delTerminalMountDev, getTerminal, modifyTerminal, refreshDevTimeOut } from "../common/Fetch";
 import { prompt } from "../common/prompt";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../common/tableCommon";
+import { CopyClipboard } from "../common/util";
 import { useNav } from "../hook/useNav";
 import { usePromise } from "../hook/usePromise";
 import { useTerminalUpdate } from "../hook/useTerminalData";
@@ -315,7 +316,17 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
     /**
      * 监听设备状态变更,有变更则更新列表
      */
-    useTerminalUpdate(terminals.map(el => el.DevMac), setData)
+    useTerminalUpdate(terminals.map(el => el.DevMac), setData, t => {
+        notification.open({
+            message: `设备状态变更`,
+            description: `设备${t.name}状态:${t.online ? '在线' : '离线'}`,
+            onClick: () => {
+                CopyClipboard(t.DevMac)
+                message.success(`已复制mac:${t.DevMac}到粘贴板`)
+            }
+        })
+    }
+    )
 
     /* useEffect(() => {
         if (MacUpdate.data) {
@@ -439,9 +450,20 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                     {
                         dataIndex: 'online',
                         title: '状态',
-                        width: 50,
+                        width: 70,
                         fixed: 'left',
-                        onFilter: (val) => val === '在线',
+                        filters: [
+                            {
+                                text: '在线',
+                                value: true
+                            },
+                            {
+                                text: '离线',
+                                value: false
+                            }
+                        ],
+                        onFilter: (val, re) => re.online === val,
+                        defaultSortOrder: "descend",
                         render: (val) => <Tooltip title={val ? '在线' : '离线'}>
                             <IconFont
                                 type={val ? 'icon-zaixianditu' : 'icon-lixian'}

@@ -19,7 +19,7 @@ const Content: React.FC<{ type: Uart.secretType }> = ({ type }) => {
     })
 
     const submit = (newType: Uart.Secret_app) => {
-        const oldType = data
+        const oldType = data!
         if (newType.appid !== oldType.appid || newType.secret !== oldType.secret) {
             Modal.confirm({
                 content: `appid:${newType.appid} \n
@@ -45,7 +45,7 @@ const Content: React.FC<{ type: Uart.secretType }> = ({ type }) => {
             :
             <Form
                 onFinish={submit}
-                initialValues={data}
+                initialValues={data!}
             >
                 <Form.Item label="appId" name='appid'>
                     <Input ></Input>

@@ -39,8 +39,8 @@ export const Get = async <T>(path: string, data?: { [x: string]: string }): Prom
  * @param user 
  * @returns 
  */
-export const getProtocolSetup = (protocol: string, type: Uart.ConstantThresholdType, user?: string) => {
-    return axios<{ sys: any[], user: any[] }>("getProtocolSetup", { protocol, type, user })
+export const getProtocolSetup = <T = string>(protocol: string, type: Uart.ConstantThresholdType, user?: string) => {
+    return axios<{ sys: T[], user: T[] }>("getProtocolSetup", { protocol, type, user })
 }
 
 
@@ -273,11 +273,31 @@ export const getTerminalData = (mac: string, pid: number | string) => {
  * @param pid 
  * @param name 
  * @param datetime 
+ * @deprecated 请使用getTerminalDatasV2
  * @returns 
  */
 export const getTerminalDatas = (mac: string, pid: number | string, name: string | string[], datetime: string) => {
     const names = typeof name === "string" ? name : (name.length > 1 ? name : name[0])
     return axios<Uart.queryResultSave[]>("getTerminalDatas", { mac, pid, name: names, datetime })
+}
+
+interface datas {
+    name: string;
+    value: string;
+    time: number;
+}[]
+
+/**
+ * 获取用户设备历史运行数据
+ * @param mac 
+ * @param pid 
+ * @param name 
+ * @param datetime 
+ * @returns 
+ */
+export const getTerminalDatasV2 = (mac: string, pid: number | string, name: string | string[], start: number, end: number) => {
+    const names = typeof name === "string" ? name : (name.length > 1 ? name : name[0] || [])
+    return axios<datas[]>("getTerminalDatasV2", { mac, pid, name: names, start, end })
 }
 
 /**
@@ -295,7 +315,7 @@ export const refreshDevTimeOut = (mac: string, pid: number, interVal?: number) =
 * @param item 
 * @returns 
 */
-export const SendProcotolInstructSet = (query: Uart.instructQueryArg, item: Uart.OprateInstruct) => {
+export const SendProcotolInstructSet = (query: Pick<Uart.instructQueryArg, 'DevMac' | 'pid' | "protocol" | "mountDev">, item: Uart.OprateInstruct) => {
     return axios<Uart.ApolloMongoResult>("SendProcotolInstructSet", { query, item })
 }
 
@@ -409,7 +429,7 @@ export const V2_API_Aamp_ip2local = async (ip: string = '114.2083633,29.75025723
  * @returns 
  */
 export const getTerminalPidProtocol = (mac: string, pid: number | string) => {
-    return axios("getTerminalPidProtocol", { mac, pid })
+    return axios<Uart.TerminalMountDevs>("getTerminalPidProtocol", { mac, pid })
 }
 
 

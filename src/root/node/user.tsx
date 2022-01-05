@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { deleteUser, getUser, sendUserSocketInfo, users as getUsers } from "../../common/FecthRoot"
-import { Button, Col, Divider, message, Modal, Row, Table, Tag } from "antd";
+import { Button, Col, Divider, message, Modal, Progress, Row, Table, Tag } from "antd";
 import Avatar from "antd/lib/avatar/avatar";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../../common/tableCommon";
 import { ColumnsType } from "antd/lib/table";
@@ -21,6 +21,10 @@ export const User: React.FC = () => {
         return data
     }, [])
 
+
+    /**
+     * 
+     */
     const status = useMemo(() => {
         // 用户分类
         const types = new Map<string, number>()
@@ -30,8 +34,35 @@ export const User: React.FC = () => {
             }
         })
         return {
+
             types: [...types.entries()].map(([type, value]) => ({ type, value }))
         } as Record<string, pieData[]>
+    }, [users])
+
+
+    const progress = useMemo(() => {
+        return [
+            /* {
+                text: '在线用户',
+                value: users.filter((el: any) => el.online).length,
+            }, */
+            {
+                text: "所有用户",
+                value: users.length,
+            },
+            {
+                text: "百事服用户",
+                value: users.filter(el => el.rgtype === "pesiv").length,
+            },
+            {
+                text: "微信用户",
+                value: users.filter(el => el.rgtype === "wx").length,
+            },
+            {
+                text: "web用户",
+                value: users.filter(el => el.rgtype === "web").length,
+            }
+        ]
     }, [users])
 
     /**
@@ -63,6 +94,10 @@ export const User: React.FC = () => {
         })
     }
 
+    /**
+     * 删除用户
+     * @param user 
+     */
     const deletUser = async (user: Uart.UserInfo) => {
         const p = await prompt({ title: '删除用户' + user.name, placeholder: '输入独立校验密码' })
         if (p) {
@@ -82,9 +117,16 @@ export const User: React.FC = () => {
             <Divider orientation="left">用户信息</Divider>
 
             <Row gutter={36}>
-
-                <Col span={24} key="types">
+                <Col span={12} key="types">
                     <Pie data={status.types} {...pieConfig({ angleField: 'value', colorField: 'type', radius: .5 })}> </Pie>
+                </Col>
+                <Col span={12}>
+                    {
+                        progress.map(el => <section key={el.text}>
+                            <span>{el.text}</span>
+                            <Progress percent={el.value * 100 / users.length} format={val => el.value} size="small" />
+                        </section>)
+                    }
                 </Col>
             </Row>
             <Table

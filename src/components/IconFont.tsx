@@ -1,11 +1,37 @@
 import { createFromIconfontCN } from '@ant-design/icons';
+import React, { CSSProperties, useMemo } from 'react';
+import "./IconFont.css"
+
+
+const alicdn = `//at.alicdn.com/t/font_1579455_gcv4v9jrnah.js`
 
 /**
  * aliIcon
  */
 export const IconFont = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_1579455_0um9hviway6d.js',
+  scriptUrl: alicdn
 });
+
+
+export const IconFontSpin: React.FC<CSSProperties & { type: string }> = (opt) => {
+  const IFS = useMemo(() => {
+    return createFromIconfontCN({
+      scriptUrl: alicdn,
+      extraCommonProps: {
+        className: 'anmi',
+        style: {
+          fontSize: opt.fontSize || 48,
+          animationDuration: opt.animationDuration || `0s`,
+          color: opt.color
+        }
+      }
+    });
+  }, [opt])
+
+  return (
+    <IFS type={opt.type}></IFS>
+  )
+}
 
 /**
  * 设备类型

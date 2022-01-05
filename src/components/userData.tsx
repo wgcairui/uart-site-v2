@@ -5,6 +5,7 @@ import moment from "moment";
 import { useState } from "react";
 import { getUserOnlineStat, getUserAlarmSetup, toggleUserGroup, modifyUserRemark, initUserAlarmSetup, logUserAggs, getAlarm } from "../common/FecthRoot";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter, tableConfig } from "../common/tableCommon";
+import { RepeatFilter } from "../common/util";
 import { usePromise } from "../hook/usePromise";
 import { MyDatePickerRange } from "./myDatePickerRange";
 import { MyInput } from "./myInput";
@@ -290,10 +291,10 @@ export const UserLog: React.FC<props> = ({ user }) => {
             <Card >
                 <Row>
                     <Col span={16} style={{ maxHeight: 600, overflow: 'auto' }}>
-                        <Table 
-                        {...tableConfig}
-                        dataSource={generateTableKey(alarm.data.reverse(), "timeStamp")} 
-                        loading={alarm.loading}
+                        <Table
+                            {...tableConfig}
+                            dataSource={generateTableKey(alarm.data.reverse(), "timeStamp")}
+                            loading={alarm.loading}
                             rowClassName={re => re.isOk ? '' : 'alarm'}
                             columns={[
                                 {
@@ -330,7 +331,7 @@ export const UserLog: React.FC<props> = ({ user }) => {
                                     dataIndex: 'timeStamp',
                                     title: '时间',
                                     render: (val: string) => moment(val).format('YYYY-MM-DD HH:mm:ss'),
-                    
+
                                 }
                             ] as ColumnsType<Uart.uartAlarmObject>}
 
@@ -343,7 +344,10 @@ export const UserLog: React.FC<props> = ({ user }) => {
                     <Col span={8} style={{ maxHeight: 600, overflow: 'auto' }}>
                         <Timeline mode='left'>
                             {
-                                data.map(({ msg, type, timeStamp }, i) =>
+                                RepeatFilter(data.map(el => {
+                                    if (!el.msg) el.msg = el.type
+                                    return el
+                                }), 'msg').map(({ msg, type, timeStamp }, i) =>
                                     <Timeline.Item
                                         color={type === '请求' as any ? 'blue' : 'green'}
                                         key={timeStamp + i}

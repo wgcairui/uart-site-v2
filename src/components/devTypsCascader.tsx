@@ -1,8 +1,16 @@
 import React, { useState } from "react";
-import { DataNode } from "rc-cascader";
-import * as CascaderProps from "rc-cascader/lib/Cascader";
 import { getDevTypes } from "../common/Fetch";
 import { Cascader } from "antd";
+
+interface DataNode {
+    label: React.ReactNode;
+    /** Customize hover title */
+    title?: string;
+    value: string | number;
+    disabled?: boolean;
+    children?: DataNode[];
+    isLeaf?: boolean;
+}
 
 /**
  * 通用设备级联选择模板

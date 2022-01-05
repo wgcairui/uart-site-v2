@@ -35,11 +35,12 @@ type setTerminals = (value: React.SetStateAction<Uart.Terminal[]> & React.SetSta
 
 /**
  * 监听设备变更
- * @param macs 
- * @param set
+ * @param macs 监听设备mac数组
+ * @param set 设备变更set
+ * @param Call 获取设备设备数据回调
  * @returns 
  */
-export const useTerminalUpdate = (macs: string[], setData?: setTerminals) => {
+export const useTerminalUpdate = (macs: string[], setData?: setTerminals, Call?: (data: Uart.Terminal) => void) => {
 
     const [mac, setMac] = useState<string>('')
 
@@ -49,7 +50,6 @@ export const useTerminalUpdate = (macs: string[], setData?: setTerminals) => {
     useEffect(() => {
         const sets = new Set(macs)
         const n = subscribeEvent("MacUpdate", ({ data }) => {
-            console.log({ data });
             if (sets.has(data.mac)) {
                 setMac(data.mac)
             }
@@ -64,6 +64,7 @@ export const useTerminalUpdate = (macs: string[], setData?: setTerminals) => {
     const ter = usePromise(async () => {
         if (mac) {
             const { data } = await getTerminal(mac)
+            Call && Call(data)
             return data
         }
     }, undefined, [mac])
