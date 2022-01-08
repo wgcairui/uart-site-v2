@@ -1,12 +1,17 @@
-import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Dropdown, Layout, Menu, Avatar, Image } from "antd";
-import { storeUser } from "../store/user"
-import "./Main.css"
-import { State } from "../store";
-import { devTypeIcon, IconFont } from "./IconFont";
-import { Link, useNavigate } from "react-router-dom";
+import "./UserMain.css"
+import { Link, Outlet } from "react-router-dom";
 import { universalProps } from "../typing";
+import { State } from "../store";
+import { setTerminals, storeUser } from "../store/user";
+import { IconFont, devTypeIcon } from "../components/IconFont";
+import { BindDev } from "../common/Fetch";
+import { useNav } from "../hook/useNav";
+import { useTerminalUpdate } from "../hook/useTerminalData";
+import { subscribeEvent, unSubscribeEvent } from "../common/socket";
+import { UserDropDown } from "../components/userDropDown";
 
 /**
  * 用户侧通用页面
@@ -15,26 +20,54 @@ import { universalProps } from "../typing";
  */
 export const Main: React.FC<universalProps> = (props) => {
 
-    const nav = useNavigate()
+    const nav = useNav()
 
-    const { user, terminals } = useSelector<State, storeUser>(state => state.User)
+    const Dispatch = useDispatch()
+
+    const [terminals, setTer] = useState<Uart.Terminal[]>([])
+
+    /**
+     * 获取绑定设备
+     * @returns 
+     */
+    const getBind = async () => {
+        const { data } = await BindDev()
+        const uts = data.UTs as any as Uart.Terminal[]
+        setTer([...uts])
+    }
+
+    useEffect(() => {
+        getBind()
+    }, [])
+
+    useEffect(() => {
+        Dispatch(setTerminals(uts))
+    }, [terminals])
+
+
+    /**
+     * 监听绑定设备变更
+     */
+    useEffect(() => {
+        const lists: { event: string, pid: number }[] = []
+
+        terminals.forEach(el => {
+            const event = "MacUpdate" + el.DevMac
+            const pid = subscribeEvent(event, () => getBind())
+            lists.push({ event, pid })
+        })
+        return () => {
+            lists.forEach(({ event, pid }) => {
+                unSubscribeEvent(event, pid)
+            })
+        }
+    }, [terminals])
 
     const uts = useMemo(() => {
         return terminals
             .map(el => (el.mountDevs || []).map(el2 => ({ ...el2, online: el.online, mac: el.DevMac, name: el.name }))).flat()
     }, [terminals])
 
-    const exit = () => {
-        localStorage.removeItem("token")
-        nav("/login")
-    }
-
-    const menu = (
-        <Menu>
-            <Menu.Item key="userInfo" onClick={()=>nav("/user")}>用户信息</Menu.Item>
-            <Menu.Item key="logout" onClick={() => exit()}>退出</Menu.Item>
-        </Menu>
-    )
     return (
         <main className="user-main">
             <Layout className="user-main">
@@ -54,20 +87,16 @@ export const Main: React.FC<universalProps> = (props) => {
                                 }
                             </Menu.SubMenu>
                             <Menu.Item key="2" icon={<IconFont type="icon-tixingshixin" />} onClick={() => nav("/alarm")}>告警管理</Menu.Item>
-                           {/*  <Menu.Item key="3" icon={<IconFont type="icon-zuzhiqunzu" />} onClick={() => nav("/devmanage")}>设备管理</Menu.Item> */}
                             <Menu.SubMenu key="4" title="languga" icon={<IconFont type="icon-zuzhiqunzu" />}>
                                 <Menu.Item key="4-1">中文</Menu.Item>
                                 <Menu.Item key="4-2">EN</Menu.Item>
                             </Menu.SubMenu>
                         </Menu>
-                        <Dropdown overlay={menu}><Avatar src={user.avanter} size="large"></Avatar>
-                        </Dropdown>
+                        <UserDropDown></UserDropDown>
                     </div>
                 </Layout.Header>
                 <Layout.Content style={{ padding: 9, height: "100%", backgroundColor: "#ffffff" }}>
-                    {
-                        props.children
-                    }
+                    <Outlet />
                 </Layout.Content>
             </Layout>
 

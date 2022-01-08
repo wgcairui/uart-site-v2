@@ -726,3 +726,13 @@ export const getAlarm = (user: string, start: number, end: number) => {
 export const getTerminalUser = (mac: string) => {
     return fecth<string>('getTerminalUser', { mac })
 }
+
+/**
+ * 修改协议备注
+ * @param protocol 
+ * @param remark 
+ * @returns 
+ */
+export const modifyProtocolRemark = (protocol: string, remark: string) => {
+    return fecth("modifyProtocolRemark", { protocol, remark })
+}

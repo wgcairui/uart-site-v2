@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Main } from "../components/Main";
+import { Main } from "../components/UserMain";
 import { getAlarm, confrimAlarm } from "../common/Fetch";
 import { Card, Row, Col, DatePicker, Table, Space, Button, Form, Popconfirm, message, Divider } from "antd"
 import { Line, Pie } from "@ant-design/charts";

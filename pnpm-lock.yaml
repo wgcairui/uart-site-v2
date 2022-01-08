@@ -26,7 +26,7 @@ specifiers:
   react-use: ^17.3.1
   reflect-metadata: ^0.1.13
   socket.io-client: ^4.4.0
-  types-uart: ^2.0.3
+  types-uart: ^2.0.4
   typescript: ^4.5.2
   vite: ^2.6.4
 
@@ -58,7 +58,7 @@ devDependencies:
   classnames: 2.3.1
   lodash-es: 4.17.21
   reflect-metadata: 0.1.13
-  types-uart: 2.0.3
+  types-uart: 2.0.4
   typescript: 4.5.2
   vite: 2.7.1
 
@@ -119,7 +119,7 @@ packages:
   /@alicloud/tea-typescript/1.7.2:
     resolution: {integrity: sha512-vDOU6qUp9ZAGlHSLC7lqVLgxUbmkcDXTEXyiIipvPWcq7dqwDDO6SeLlU7nBYI+yYWpbfOazEGkMTlHMhvA5Tw==}
     dependencies:
-      '@types/node': 12.20.39
+      '@types/node': 12.20.41
       httpx: 2.2.7
     transitivePeerDependencies:
       - supports-color
@@ -1395,8 +1395,8 @@ packages:
     resolution: {integrity: sha512-i1KGxqcvJaLQali+WuypQnXwcplhtNtjs66eNsZpp2P2FL/trJJxx/VWsM0YCL2iMoIJrbXje48lvIQAQ4p2ZA==}
     dev: true
 
-  /@types/node/12.20.39:
-    resolution: {integrity: sha512-U7PMwkDmc3bnL0e4U8oA0POpi1vfsYDc+DEUS2+rPxm9NlLcW1dBa5JcRhO633PoPUcCSWMNXrMsqhmAVEo+IQ==}
+  /@types/node/12.20.41:
+    resolution: {integrity: sha512-f6xOqucbDirG7LOzedpvzjP3UTmHttRou3Mosx3vL9wr9AIQGhcPgVnqa8ihpZYnxyM1rxeNCvTyukPKZtq10Q==}
     dev: true
 
   /@types/node/14.18.0:
@@ -4485,8 +4485,8 @@ packages:
     resolution: {integrity: sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=}
     dev: false
 
-  /types-uart/2.0.3:
-    resolution: {integrity: sha512-dmT4+yqzBtF3UWq6CwPEiAVXRzMFAwU/qZpzZ5Y/ndZ0aQ81fJjxrznzSDp4MVU2u0RmM6+khWcjXcgY8c3GAg==}
+  /types-uart/2.0.4:
+    resolution: {integrity: sha512-8tnwVBILoEJudZr+EXRXvystDnLlYq/1n0Jxhp/AMojyfZu7dCk03QU2ddmU1pVLPyO9eQS0OEZL8M8+nQxV/Q==}
     dev: true
 
   /typescript/4.5.2:

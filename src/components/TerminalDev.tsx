@@ -1,12 +1,14 @@
 import { Liquid } from "@ant-design/charts";
 import { DownOutlined } from "@ant-design/icons";
-import { Col, Divider, Dropdown, Image, Menu, Modal, Row, Space, Spin, Switch } from "antd";
+import { Col, Descriptions, Divider, Dropdown, Form, Image, Menu, message, Modal, Progress, Row, Select, Space, Spin, Switch, Tabs } from "antd";
 import React, { useCallback, useMemo, useState } from "react";
-import { getProtocolSetup, getTerminalPidProtocol } from "../common/Fetch";
+import { addTerminalMountDev, getProtocolSetup, getTerminal, getTerminalPidProtocol } from "../common/Fetch";
 import { sendOprateInstruct } from "../common/util";
 import { usePromise } from "../hook/usePromise";
+import { DevTypesCascader } from "./Selects";
 import { IconFontSpin } from "./IconFont";
 import { DevDataProps, TerminalRunData, TerminalRunDataThresoldLine } from "./terminalData";
+import "./TerminalDev.css"
 
 interface result extends DevDataProps {
     result: Uart.queryResultArgument[]
@@ -226,7 +228,7 @@ export const TerminalDevAir: React.FC<result> = ({ mac, pid, result }) => {
     return (
         <Row style={{ padding: 12 }}>
             <Col span={24} md={12} style={{ backgroundColor: "black", padding: 12 }}>
-                <Image src="http://admin.ladishb.com/upload/1_4_2022_ac3.a7b63d5.png" preview={false} />
+                <Image src="https://www.ladishb.com/upload/1_4_2022_ac3.a7b63d5.png" preview={false} />
             </Col>
             <Col span={24} md={12}>
                 <Row>
@@ -302,10 +304,6 @@ export const TerminalDevAir: React.FC<result> = ({ mac, pid, result }) => {
                                 </section>
                             </Col>
                         </Row>
-
-                        <span style={{ float: "right" }}>
-                            <TerminalOprate mac={mac} pid={pid} result={[]} />
-                        </span>
                     </Col>
                 </Row>
             </Col>
@@ -316,7 +314,7 @@ export const TerminalDevAir: React.FC<result> = ({ mac, pid, result }) => {
 
 
 /**
- * 展示空调页面
+ * 展示ups页面
  * @param param0 
  * @returns 
  */
@@ -349,12 +347,118 @@ export const TerminalDevUps: React.FC<result> = ({ mac, pid, result }) => {
             stat.OutStat = result.filter(el => Constant.OutStat.includes(el.name))
         }
         console.log(stat);
-        
+
         return stat
     }, [result, Constant])
 
+    const workPic = useMemo<string>(() => {
+        switch (ups.WorkMode) {
+            case "在线模式":
+                return 'https://www.ladishb.com/upload/342021__ups3.gif'
+            case "旁路模式":
+                return 'https://www.ladishb.com/upload/342021__ups2.gif'
+            case "电池模式":
+                return "https://www.ladishb.com/upload/342021__ups1.gif"
+            default:
+                return 'https://www.ladishb.com/upload/342021__ups.gif'
+        }
+    }, [ups.WorkMode])
+
+
+    /**
+     * 开关机
+     * @param val 
+     */
+    const OnOff = (val: boolean) => {
+        Modal.confirm({
+            content: `确定${!val ? '关闭' : '打开'}UPS??`,
+            onOk: () => {
+                sendOprateInstruct(mac, pid, !val ? '关机' : '开机')
+            }
+        })
+    }
     return (
-        <></>
+        <Row gutter={24}>
+            <Col span={24} md={12}>
+                <div>
+                    <span>{ups.WorkMode}</span>
+                    <Switch
+                        checked={ups.Switch === '开机'}
+                        checkedChildren={ups.Switch}
+                        unCheckedChildren={ups.Switch}
+                        onChange={OnOff}
+                    ></Switch>
+                </div>
+                <Image src={workPic} preview={false} />
+            </Col>
+            <Col span={24} md={12}>
+                <Tabs>
+                    <Tabs.TabPane tab="ups状态" key="upsStat">
+                        <Descriptions>
+                            {
+                                (ups.UpsStat as Uart.queryResultArgument[]).map(el =>
+                                    <Descriptions.Item label={el.name} key={el.name}>
+                                        {el.parseValue}
+                                    </Descriptions.Item>)
+                            }
+                        </Descriptions>
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab="电池信息" key="betty">
+                        <section className="upsTabStat">
+                            {
+                                (ups.BettyStat as Uart.queryResultArgument[]).map(el =>
+                                    <div key={el.name}>
+                                        <span>{el.name}</span>
+                                        <Progress
+                                            percent={Number(el.parseValue)}
+                                            format={_ => el.parseValue + el.unit}
+                                            key={el.name}
+                                            size="small"
+                                        >
+                                        </Progress>
+                                    </div>
+                                )
+                            }
+                        </section>
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab="输入状态" key="input">
+                        <section className="upsTabStat">
+                            {
+                                (ups.InputStat as Uart.queryResultArgument[]).map(el =>
+                                    <div key={el.name}>
+                                        <span>{el.name}</span>
+                                        <Progress
+                                            percent={Number(el.parseValue) * 100 / (Number(el.parseValue) < 300 ? ((Number(el.parseValue)) <= 100 ? 100 : 250) : 420)}
+                                            format={_ => el.parseValue + el.unit}
+                                            key={el.name}
+                                            size="small"
+                                        >
+                                        </Progress>
+                                    </div>
+                                )
+                            }
+                        </section>
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab="输出状态" key="out">
+                        <section className="upsTabStat">
+                            {
+                                (ups.OutStat as Uart.queryResultArgument[]).map(el =>
+                                    <div key={el.name}>
+                                        <span>{el.name}</span>
+                                        <Progress
+                                            percent={Number(el.parseValue) * 100 / (Number(el.parseValue) < 300 ? ((Number(el.parseValue)) <= 100 ? 100 : 250) : 420)}
+                                            format={_ => el.parseValue + el.unit}
+                                            size="small"
+                                        >
+                                        </Progress>
+                                    </div>)
+                            }
+                        </section>
+
+                    </Tabs.TabPane>
+                </Tabs>
+            </Col>
+        </Row>
     )
 
 }
@@ -407,6 +511,11 @@ export const TerminalDevPage: React.FC<DevDataProps> = ({ mac, pid, user }) => {
             {
                 devType === 'UPS' && <TerminalDevUps mac={mac} pid={pid} user={user} result={result} key="ups" />
             }
+            <div>
+                <span style={{ float: "right" }}>
+                    <TerminalOprate mac={mac} pid={pid} result={[]} />
+                </span>
+            </div>
 
             <Row gutter={22}>
                 <Col span={8}>
@@ -417,5 +526,96 @@ export const TerminalDevPage: React.FC<DevDataProps> = ({ mac, pid, user }) => {
                 </Col>
             </Row>
         </Space>
+    )
+}
+
+
+interface addMountDev {
+    /**
+     * 是否显示
+     */
+    visible: boolean
+    /**
+     * 
+     */
+    mac: string
+
+    onCancel?: () => void;
+}
+
+/**
+ * 添加挂载设备
+ * @returns 
+ */
+export const TerminalAddMountDev: React.FC<addMountDev> = ({ visible, mac, onCancel }) => {
+
+    /**
+         * 新的挂载
+         */
+    const [mountDev, setMountDev] = useState<Uart.TerminalMountDevs>({
+        pid: 1,
+        protocol: '',
+        mountDev: '',
+        Type: "UPS"
+    })
+
+
+    /**
+     * 获取设备挂载下已使用的pids
+     */
+    const { data: mountDevPids } = usePromise(async () => {
+        const { data } = await getTerminal(mac)
+        return data.mountDevs ? data.mountDevs.map(el => el.pid) : []
+    }, [])
+
+
+
+
+    const pids = useMemo(() => {
+        const ns: number[] = []
+        const pidSet = new Set(mountDevPids)
+        for (let index = 0; index < 255; index++) {
+            if (!pidSet.has(index)) ns.push(index)
+        }
+        return ns
+    }, [mountDevPids])
+
+    const postMountDev = () => {
+        if (mountDev.protocol) {
+            Modal.confirm({
+                content: `确认添加地址[${mountDev.pid}]设备[${mountDev.mountDev}/${mountDev.protocol}]?`,
+                onOk: () => {
+                    const key = mac + mountDev.pid
+                    message.loading({ content: '正在添加', key })
+                    addTerminalMountDev(mac, mountDev).then(result => {
+                        if (result.code === 200) {
+                            message.success({ content: '添加成功', key })
+                            onCancel && onCancel()
+                        } else {
+                            message.warn({ content: "添加失败:" + result.msg, key })
+                        }
+                    })
+                }
+            })
+        }
+    }
+
+    return (
+        <Modal title="添加设备" visible={visible} confirmLoading={!mountDev.protocol} onCancel={onCancel} onOk={postMountDev}>
+            <Form>
+                {<Form.Item label="设备协议">
+                    <DevTypesCascader onChange={([Type, mountDe, protocol]) => {
+                        setMountDev({ ...mountDev, Type: Type as string, protocol: protocol as string, mountDev: mountDe as string })
+                    }}></DevTypesCascader>
+                </Form.Item>}
+                <Form.Item label="设备地址">
+                    <Select defaultValue={mountDev.pid} onSelect={pid => setMountDev({ ...mountDev, pid })}>
+                        {
+                            pids.map(n => <Select.Option value={n} key={n}>{n}</Select.Option>)
+                        }
+                    </Select>
+                </Form.Item>
+            </Form>
+        </Modal>
     )
 }

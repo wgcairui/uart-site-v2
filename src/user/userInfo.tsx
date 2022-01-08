@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { prompt } from "../common/prompt";
 import { RegexMail, RegexTel } from "../common/util";
-import { Main } from "../components/Main";
+import { Main } from "../components/UserMain";
 import { getUserAlarmSetup, modifyUserAlarmSetupTel, mpTicket, wpTicket } from "../common/Fetch";
 import { State } from "../store";
 import { storeUser } from "../store/user";

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import "./index.css"
-import { Main } from "../components/Main";
+import { Main } from "../components/UserMain";
 import { Col, Row, Tabs, Space, Tooltip, Popconfirm, message, Button, Dropdown, Menu } from "antd"
 import { useSelector } from "react-redux";
 import { storeUser } from "../store/user";

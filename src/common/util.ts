@@ -97,3 +97,67 @@ export const RepeatFilter = <T extends Record<string, any>>(data: T[], key: stri
     })
     return arr
 }
+
+/**
+ * 询问用户
+ * @param content 
+ * @returns 
+ */
+export const ModalConfirm = (content: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+        Modal.confirm({
+            content,
+            onOk() {
+                resolve(true)
+            },
+            onCancel() {
+                resolve(false)
+            }
+        })
+    })
+}
+
+
+/**
+     * 下载本地json
+     * @param data json字符串
+     * @param filename 文件名
+     */
+export const downJson = (data: string, filename: string) => {
+    const link = document.createElement("a")
+    link.download = filename
+    link.style.display = "none"
+    const blob = new Blob([data])
+    link.href = URL.createObjectURL(blob)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+}
+
+/**
+ * 下载链接
+ * @param url 链接地址 
+ * @param filename 文件名
+ */
+export const downloadWithBlob = (url: string, filename: string) => {
+    fetch(url).then(res => res.blob().then(blob => {
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }));
+}
+
+/**
+ * 协议指令参数单位解析为json
+ * @param item 
+ * @returns 
+ */
+export const ProtocolInstructFormrizeParse = (item: Uart.protocolInstructFormrize) => {
+    const objUnit = item.unit!.replaceAll('{', '{"').replaceAll(':', '":"').replaceAll(',', '","').replaceAll('}', '"}')
+    return {
+        name: item.name,
+        parse: JSON.parse(objUnit) as Record<string, string>
+    }
+}

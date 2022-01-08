@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import { Line } from "@ant-design/charts";
 import { devTypeIcon } from "../components/IconFont";
-import { Main } from "../components/Main";
+import { Main } from "../components/UserMain";
 import { getProtocol, getTerminalDatas } from "../common/Fetch";
 import { State } from "../store";
 import { storeUser } from "../store/user";

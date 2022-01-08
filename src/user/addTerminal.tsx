@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Divider, Card, Form, Button, Input, message, Spin, Descriptions, Tag, Table, Modal } from "antd";
-import { Main } from "../components/Main";
+import { Main } from "../components/UserMain";
 import { addUserTerminal, getTerminalOnline } from "../common/Fetch";
 import { useNavigate } from "react-router-dom";
 

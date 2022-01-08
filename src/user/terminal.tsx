@@ -4,7 +4,7 @@ import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { Main } from "../components/Main";
+import { Main } from "../components/UserMain";
 import { State } from "../store";
 import { storeUser } from "../store/user";
 import { Marker } from "@uiw/react-amap"
@@ -12,7 +12,7 @@ import { Aamp_ip2local, addTerminalMountDev, Amap_gps2AutonaviPosition, delTermi
 import { AmapLoader } from "../components/amaploader";
 import { DevCard } from "../components/devCard";
 import { devTypeIcon } from "../components/IconFont";
-import { DevTypesCascader } from "../components/devTypsCascader";
+import { DevTypesCascader } from "../components/Selects";
 
 /**
  * 透传网关设备详情页
@@ -39,25 +39,10 @@ export const Terminal: React.FC = () => {
      */
     const [position, setPosition] = useState<AMap.LngLat>()
 
-    /**
-     * 新的挂载
-     */
-    const [mountDev, setMountDev] = useState<Uart.TerminalMountDevs>({
-        pid: 1,
-        protocol: '',
-        mountDev: '',
-        Type: "UPS"
-    })
+    
     const [visible, setVisible] = useState(false)
 
 
-    const pids = () => {
-        const ns: number[] = []
-        for (let index = 1; index < 255; index++) {
-            ns.push(index)
-        }
-        return ns
-    }
 
 
 
@@ -94,24 +79,7 @@ export const Terminal: React.FC = () => {
         })
     }
 
-    const postMountDev = () => {
-        if (mountDev.protocol) {
-            Modal.confirm({
-                content: `确认添加地址[${mountDev.pid}]设备[${mountDev.mountDev}/${mountDev.protocol}]?`,
-                onOk: () => {
-                    const key = terminal.DevMac + mountDev.pid
-                    message.loading({ content: '正在添加', key })
-                    addTerminalMountDev(terminal.DevMac, mountDev).then(result => {
-                        if (result.code === 200) {
-                            message.success({ content: '添加成功', key })
-                        } else {
-                            message.warn({ content: "添加失败:" + result.msg, key })
-                        }
-                    })
-                }
-            })
-        }
-    }
+    
 
 
 

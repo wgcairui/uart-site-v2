@@ -114,7 +114,7 @@ export const User: React.FC = () => {
 
     return (
         <>
-            <Divider orientation="left">用户信息</Divider>
+            <Divider orientation="left">用户信息 / {users.length}</Divider>
 
             <Row gutter={36}>
                 <Col span={12} key="types">

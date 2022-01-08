@@ -1,6 +1,7 @@
 import { Spin, Tabs } from "antd";
 import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { getTerminalUser } from "../../common/FecthRoot";
 import { getTerminal } from "../../common/Fetch";
 import { DevPosition } from "../../components/devPosition";
 import { TerminalAT, TerminalBusyStat, TerminalOprate, TerminalRunLog, TerminalUseBytes } from "../../components/terminalData";
@@ -8,6 +9,7 @@ import { TerminalDevPage } from "../../components/TerminalDev";
 import { TerminalInfo, TerminalMountDevs } from "../../components/terminalsTable";
 import { usePromise } from "../../hook/usePromise";
 import { useTerminalUpdate } from "../../hook/useTerminalData";
+import { UserInfo } from "./userInfo";
 
 
 interface props {

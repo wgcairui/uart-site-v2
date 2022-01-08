@@ -1,8 +1,8 @@
-import React from "react"
-import { Layout, Menu, Breadcrumb, Image } from "antd"
+import React, { useEffect, useMemo } from "react"
+import { Layout, Menu, Breadcrumb, Image, BackTop } from "antd"
 import "./RootMain.css"
-import { Link } from "react-router-dom"
-import { UserDropDown } from "./userDropDown"
+import { Link, Outlet, useLocation } from "react-router-dom"
+import { UserDropDown } from "../components/userDropDown"
 
 interface navi {
   title: string
@@ -192,18 +192,18 @@ export const RootMain: React.FC = props => {
       ]
     }]
 
+  const navMap = new Map(nav.map(el => el.child).flat().map(el => ['/' + el.to.name, el.text]))
+
+  const loacl = useLocation()
+
+  const path = useMemo(() => {
+    const pathName = loacl.pathname.replace(/^\//, '').split("/")
+    return pathName
+  }, [loacl])
+
 
   return (
     <Layout className="layout">
-      {/* <Layout.Header className="user-header">
-        <Link to="/">
-          <Image src="http://admin.ladishb.com/upload/LADS_witdh.png" preview={false} height={20}></Image>
-        </Link>
-        <div className="user-header-menu">
-
-          <UserDropDown />
-        </div>
-      </Layout.Header> */}
       <Layout>
         <Layout.Sider width={200} className="site-layout-background" style={{ backgroundColor: "#011529", marginRight: 24 }}>
           <div style={{ padding: 12 }}>
@@ -228,19 +228,22 @@ export const RootMain: React.FC = props => {
                 </Menu.SubMenu>)
             }
           </Menu>
-          <UserDropDown />
         </Layout.Sider>
         <Layout>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
-          </Breadcrumb>
+          <section style={{ display: "flex", alignItems: 'center' }}>
+            <Breadcrumb style={{ margin: '16px 0' }}>
+              {
+                path.map((el, i) => <Breadcrumb.Item key={el + i}>{el}</Breadcrumb.Item>)
+              }
+            </Breadcrumb>
+            <span style={{ marginLeft: 'auto', marginRight: 22 }}>
+              <UserDropDown />
+            </span>
+          </section>
           <Layout.Content className="content"
           >
-            {
-              props.children
-            }
+            <Outlet />
+            <BackTop>UP</BackTop>
           </Layout.Content>
         </Layout>
       </Layout>

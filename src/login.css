@@ -1,3 +1,15 @@
+.loading {
+    height: 100%;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
 .layout,
 .content-row {
     height: 100%;
@@ -39,11 +51,12 @@
     justify-content: center;
 }
 
-@media screen and (max-width:476px)  {
-    .content-row-col2{
-        position:unset
+@media screen and (max-width:476px) {
+    .content-row-col2 {
+        position: unset
     }
-    .card-login{
+
+    .card-login {
         position: absolute;
         top: 120px;
     }
@@ -57,19 +70,19 @@
     align-items: center;
 }
 
-.card-login{
+.card-login {
     margin: 1rem 8px;
 }
 
-.login-form{
+.login-form {
     width: 300px;
     padding: 2rem 1rem .5rem 1rem;
 }
 
 .login-form-forgot {
     float: right;
-  }
+}
 
-  .login-form-button {
+.login-form-button {
     width: 100%;
-  }
+}

@@ -1,8 +1,8 @@
-import { CheckCircleFilled, WarningFilled, EyeFilled, DeleteFilled, LoadingOutlined, ReloadOutlined, MoreOutlined, SyncOutlined } from "@ant-design/icons";
+import { CheckCircleFilled, WarningFilled, EyeFilled, DeleteFilled, LoadingOutlined, ReloadOutlined, MoreOutlined, SyncOutlined, DownOutlined } from "@ant-design/icons";
 import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps, Modal, Spin, Dropdown, Menu, notification } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BindDev, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryMac, getTerminals, getTerminalUser, initTerminal, IotQueryCardFlowInfo, IotQueryCardInfo, IotQueryIotCardOfferDtl, iotRemoteUrl, modifyTerminalRemark } from "../common/FecthRoot";
 import { delTerminalMountDev, getTerminal, modifyTerminal, refreshDevTimeOut } from "../common/Fetch";
@@ -17,6 +17,7 @@ import { DevPosition } from "./devPosition";
 import { IconFont, devTypeIcon } from "./IconFont";
 import { MyCopy } from "./myCopy";
 import { MyInput } from "./myInput";
+import { TerminalAddMountDev } from "./TerminalDev";
 
 
 
@@ -35,7 +36,7 @@ const InterValToop: React.FC<{ mac: string, pid: number, show: boolean }> = ({ m
     useEffect(() => {
         const i = setInterval(() => {
             show && fecth()
-        }, 5000)
+        }, 3e4)
         return () => clearInterval(i)
     }, [show])
 
@@ -69,7 +70,12 @@ const InterValToop: React.FC<{ mac: string, pid: number, show: boolean }> = ({ m
     return (
         loading ? <LoadingOutlined /> :
             <Tooltip title="查询间隔">
-                <span onClick={() => refreshInterval()}>{Interval / 1000}秒</span>
+                <Dropdown overlay={<Menu>
+                    <Menu.Item onClick={() => fecth()} key="refresh">刷新</Menu.Item>
+                    <Menu.Item danger onClick={() => refreshInterval()} key="reset">重置</Menu.Item>
+                </Menu>}>
+                    <a>{Interval / 1000}秒<DownOutlined /></a>
+                </Dropdown>
             </Tooltip>
     )
 }
@@ -101,6 +107,9 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
 
     const { terminal, ex, showTitle } = { showTitle: true, ...props, }
 
+
+    const [visible, setVisible] = useState(false)
+
     /**
      * 删除挂载设备
      * @param mac 
@@ -121,45 +130,44 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
     }
 
     return (
-        <>
+        <Row>
             {
-                showTitle && <Divider plain orientation="center">挂载设备</Divider>
-            }
-            <Row>
-                {
-                    terminal?.mountDevs && terminal.mountDevs.map(el =>
-                        <Col span={24} md={8} key={terminal.DevMac + el.pid}>
-                            <DevCard
-                                img={`http://admin.ladishb.com/upload/${el.Type}.png`}
-                                title={<Space>
-                                    <Tooltip title={el.online ? '在线' : '离线'}>
-                                        {el.online ? <CheckCircleFilled style={{ color: "#67C23A" }} /> : <WarningFilled style={{ color: "#E6A23C" }} />}
-                                    </Tooltip>
-                                    {el.mountDev}
-                                </Space>}
-                                avatar={devTypeIcon[el.Type]}
-                                subtitle={terminal.DevMac + '-' + el.pid}
-                                actions={[
-                                    <Tooltip title="编辑查看">
-                                        <EyeFilled style={{ color: "#67C23B" }} onClick={() => nav("/dev/" + terminal.DevMac + el.pid)} />
-                                    </Tooltip>,
+                terminal?.mountDevs && terminal.mountDevs.map(el =>
+                    <Col span={24} md={8} key={terminal.DevMac + el.pid}>
+                        <DevCard
+                            img={`http://admin.ladishb.com/upload/${el.Type}.png`}
+                            title={<Space>
+                                <Tooltip title={el.online ? '在线' : '离线'}>
+                                    {el.online ? <CheckCircleFilled style={{ color: "#67C23A" }} /> : <WarningFilled style={{ color: "#E6A23C" }} />}
+                                </Tooltip>
+                                {el.mountDev}
+                            </Space>}
+                            avatar={devTypeIcon[el.Type]}
+                            subtitle={terminal.DevMac + '-' + el.pid}
+                            actions={[
+                                <Tooltip title="编辑查看">
+                                    <EyeFilled style={{ color: "#67C23B" }} onClick={() => nav("/dev/" + terminal.DevMac + el.pid)} />
+                                </Tooltip>,
 
-                                    <Tooltip title="删除" >
-                                        <Popconfirm
-                                            title={`确认删除设备[${el.mountDev}]?`}
-                                            onConfirm={() => delMountDev(terminal.DevMac, el.pid)}
-                                            onCancel={() => message.info('cancel')}
-                                        >
-                                            <DeleteFilled style={{ color: "#E6A23B" }} />
-                                        </Popconfirm>
-                                    </Tooltip>,
-                                    <InterValToop mac={terminal.DevMac} pid={el.pid} show={ex} />
-                                ]}></DevCard>
-                        </Col>
-                    )
-                }
-            </Row>
-        </>
+                                <Tooltip title="删除" >
+                                    <Popconfirm
+                                        title={`确认删除设备[${el.mountDev}]?`}
+                                        onConfirm={() => delMountDev(terminal.DevMac, el.pid)}
+                                        onCancel={() => message.info('cancel')}
+                                    >
+                                        <DeleteFilled style={{ color: "#E6A23B" }} />
+                                    </Popconfirm>
+                                </Tooltip>,
+                                <InterValToop mac={terminal.DevMac} pid={el.pid} show={ex} />
+                            ]}></DevCard>
+                    </Col>
+                )
+            }
+            <Col>
+                <Button onClick={() => setVisible(true)} shape="round" type="primary">添加设备</Button>
+                <TerminalAddMountDev mac={terminal.DevMac} visible={visible} onCancel={() => setVisible(false)} />
+            </Col>
+        </Row>
     )
 }
 
@@ -171,12 +179,16 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
  */
 const TerminalUser: React.FC<{ mac: string }> = ({ mac }) => {
 
+    const nav = useNav()
+
     const { data, loading } = usePromise(async () => {
         const { data } = await getTerminalUser(mac)
         return data
     })
     return (
-        loading ? <Spin /> : <>{data}</>
+        loading ? <Spin /> : <Button type="link" onClick={() => nav("/root/node/user/userInfo", { user: data })}>
+            <MyCopy value={data}></MyCopy>
+        </Button>
     )
 }
 
