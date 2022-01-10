@@ -1,15 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Dropdown, Layout, Menu, Avatar, Image } from "antd";
+import { useDispatch } from "react-redux";
+import { Layout, Menu, Image } from "antd";
 import "./UserMain.css"
 import { Link, Outlet } from "react-router-dom";
 import { universalProps } from "../typing";
-import { State } from "../store";
-import { setTerminals, storeUser } from "../store/user";
+import { setTerminals } from "../store/user";
 import { IconFont, devTypeIcon } from "../components/IconFont";
 import { BindDev } from "../common/Fetch";
 import { useNav } from "../hook/useNav";
-import { useTerminalUpdate } from "../hook/useTerminalData";
 import { subscribeEvent, unSubscribeEvent } from "../common/socket";
 import { UserDropDown } from "../components/userDropDown";
 
@@ -41,7 +39,7 @@ export const Main: React.FC<universalProps> = (props) => {
     }, [])
 
     useEffect(() => {
-        Dispatch(setTerminals(uts))
+        Dispatch(setTerminals(terminals))
     }, [terminals])
 
 
@@ -72,7 +70,7 @@ export const Main: React.FC<universalProps> = (props) => {
         <main className="user-main">
             <Layout className="user-main">
                 <Layout.Header className="user-header">
-                    <Link to="/">
+                    <Link to="/main">
                         <Image src="http://admin.ladishb.com/upload/LADS_witdh.png" preview={false} height={20}></Image>
                     </Link>
                     <div className="user-header-menu">
@@ -81,12 +79,12 @@ export const Main: React.FC<universalProps> = (props) => {
                                 {
                                     uts.map((el, key) => {
                                         return <Menu.Item key={'1-' + key} icon={devTypeIcon[el.Type]}>
-                                            <Link to={"/dev/" + el.mac + el.pid /*new URLSearchParams({ id: el.mac + el.pid }).toString() */}>{`${el.name}-${el.mountDev}-${el.pid}`}</Link>
+                                            <Link to={"/main/dev/" + el.mac + el.pid /*new URLSearchParams({ id: el.mac + el.pid }).toString() */}>{`${el.name}-${el.mountDev}-${el.pid}`}</Link>
                                         </Menu.Item>
                                     })
                                 }
                             </Menu.SubMenu>
-                            <Menu.Item key="2" icon={<IconFont type="icon-tixingshixin" />} onClick={() => nav("/alarm")}>告警管理</Menu.Item>
+                            <Menu.Item key="2" icon={<IconFont type="icon-tixingshixin" />} onClick={() => nav("/main/alarm")}>告警管理</Menu.Item>
                             <Menu.SubMenu key="4" title="languga" icon={<IconFont type="icon-zuzhiqunzu" />}>
                                 <Menu.Item key="4-1">中文</Menu.Item>
                                 <Menu.Item key="4-2">EN</Menu.Item>

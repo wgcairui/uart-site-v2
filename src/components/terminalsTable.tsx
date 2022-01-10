@@ -267,9 +267,10 @@ export const TerminalInfo: React.FC<infoProps> = (props) => {
                 <Descriptions.Item label="Gver">{terminal.Gver}</Descriptions.Item>
                 <Descriptions.Item label="ver">{terminal.ver}</Descriptions.Item>
                 <Descriptions.Item label="共享状态">{terminal.share ? '开启' : '关闭'}</Descriptions.Item>
-                <Descriptions.Item label="更新时间">{moment(terminal.uptime).format('YYYY-MM-DD H:m:s')}</Descriptions.Item>
-                <Descriptions.Item label="备注">
+                <Descriptions.Item label="更新时间" span={3}>{moment(terminal.uptime).format('YYYY-MM-DD H:m:s')}</Descriptions.Item>
+                <Descriptions.Item label="备注" span={3}>
                     <MyInput
+                        textArea
                         value={terminal.remark}
                         onSave={remark}
                     ></MyInput>

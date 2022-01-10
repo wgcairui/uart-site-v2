@@ -1,5 +1,9 @@
 import { universalResult } from "../typing"
 
+export const getToken = () => {
+    return localStorage.getItem('token') || ''
+}
+
 export const header = () => {
     const header = new Headers({
         'content-type': 'application/json',

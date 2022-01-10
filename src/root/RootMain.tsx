@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react"
+import React, { useMemo } from "react"
 import { Layout, Menu, Breadcrumb, Image, BackTop } from "antd"
 import "./RootMain.css"
 import { Link, Outlet, useLocation } from "react-router-dom"
@@ -111,6 +111,13 @@ export const RootMain: React.FC = props => {
             name: "root/data/redis",
           },
           text: "redis",
+          ico: "\uEB64",
+        },
+        {
+          to: {
+            name: "root/data/oss",
+          },
+          text: "OSS",
           ico: "\uEB64",
         },
       ],

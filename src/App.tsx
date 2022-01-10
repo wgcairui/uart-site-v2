@@ -27,6 +27,7 @@ import { UserInfo as RootUserInfo } from "./root/node/userInfo"
 import { ProtocolInfo } from "./root/node/protocolInfo"
 import { RootMain } from "./root/RootMain"
 import { Main } from "./user/UserMain"
+import { OssUpload } from "./root/data/oss"
 
 export const App: React.FC = () => {
 
@@ -55,6 +56,8 @@ export const App: React.FC = () => {
                 <Route path="data/ClientResultSingle" element={<ClientResultSingle />} />
                 <Route path="data/ClientResult" element={<ClientResult />} />
                 <Route path="data/redis" element={<Redis />} />
+
+                <Route path="data/oss" element={<OssUpload />} />
 
                 <Route path="log/node" element={<LogNode />} />
                 <Route path="log/terminal" element={<LogTerminal />} />

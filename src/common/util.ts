@@ -68,6 +68,7 @@ export const CopyClipboard = (val: string) => {
     aux.select();
     document.execCommand("copy");
     document.body.removeChild(aux);
+    message.success(`复制[${val}] success`)
 }
 
 

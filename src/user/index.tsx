@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from "react";
 import "./index.css"
-import { Main } from "../components/UserMain";
 import { Col, Row, Tabs, Space, Tooltip, Popconfirm, message, Button, Dropdown, Menu } from "antd"
 import { useSelector } from "react-redux";
 import { storeUser } from "../store/user";
@@ -25,7 +24,8 @@ export const UserIndex: React.FC = (props) => {
     const [defalutKey, setDefalutKey] = useState<key>(() => seachParms.get('tab') as key || 'dev')
 
     const mountDevs = useMemo(() => {
-        return terminals.map(({ DevMac, name, online, mountDevs }) => mountDevs.map(el2 => ({ ...el2, mac: DevMac, macName: name, macOn: online }))).flat()
+        return terminals ? terminals.map(({ DevMac, name, online, mountDevs }) => mountDevs.map(el2 => ({ ...el2, mac: DevMac, macName: name, macOn: online }))).flat() : []
+        // return [] 
     }, [terminals])
 
     /**
@@ -99,7 +99,7 @@ export const UserIndex: React.FC = (props) => {
                                                     </Space>}
                                                     avatar={devTypeIcon[el.Type]}
                                                     subtitle={el.macName + '-' + el.pid}
-                                                    onClick={() => nav("/dev/" + el.mac + el.pid)}
+                                                    onClick={() => nav("/main/dev/" + el.mac + el.pid)}
                                                 ></DevCard>
                                             </Col>
 
@@ -142,7 +142,7 @@ export const UserIndex: React.FC = (props) => {
                                                     subtitle={moment(el.uptime).format("YY/M/D H:m:s")}
                                                     actions={[
                                                         <Tooltip title="编辑查看">
-                                                            <EyeFilled style={{ color: "#67C23B" }} onClick={() => nav("/terminal/" + el.DevMac)} />
+                                                            <EyeFilled style={{ color: "#67C23B" }} onClick={() => nav("/main/terminal/" + el.DevMac)} />
                                                         </Tooltip>,
                                                         <Tooltip title="重命名">
                                                             <EditFilled style={{ color: "#409EFF" }} onClick={() => renameTerminal(el)} />

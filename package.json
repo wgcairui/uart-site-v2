@@ -26,6 +26,7 @@
   "devDependencies": {
     "@alicloud/dyiotapi20171111": "^1.0.0",
     "@socket.io/component-emitter": "^3.0.0",
+    "@types/ali-oss": "^6.16.2",
     "@types/crypto-js": "^4.0.2",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",

@@ -16,6 +16,8 @@ export const User = createSlice({
             state.user = data.payload
         },
         setTerminals(state, data) {
+            console.log({data});
+            
             state.terminals = data.payload
         }
     }

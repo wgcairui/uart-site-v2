@@ -52,7 +52,7 @@ export const MyInput: React.FC<myInput> = props => {
 
     return (
         props.textArea ?
-            <Space>
+            <section style={{ display: 'block', width: "100%" }}>
                 <Input.TextArea
                     autoSize
                     minLength={2}
@@ -64,13 +64,10 @@ export const MyInput: React.FC<myInput> = props => {
                     size="small"
                 >
                 </Input.TextArea>
-                {
-                    Edit ?
-                        <Button size="small" type="primary" onClick={() => save()}>{props.okText || '保存'}</Button>
-                        :
-                        <span />
-                }
-            </Space>
+
+                <Button disabled={!Edit} size="small" type="primary" onClick={() => save()}>{props.okText || '保存'}</Button>
+
+            </section>
             :
             <Input.Group compact style={{ width: 'auto', display: 'flex', alignItems: 'center' }}>
                 <Input

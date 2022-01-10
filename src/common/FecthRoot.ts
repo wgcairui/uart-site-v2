@@ -2,6 +2,8 @@ import { universalResult } from "../typing"
 import { Post } from "./Fetch"
 import { QueryCardInfoResponseBodyCardInfo, QueryCardFlowInfoResponseBodyCardFlowInfosCardFlowInfo, QueryIotCardOfferDtlResponseBodyCardOfferDetailDetail } from "@alicloud/dyiotapi20171111"
 
+import { DeleteMultiResult, ObjectMeta } from "ali-oss"
+
 interface result<T = any> {
     code: number
     data: T
@@ -735,4 +737,25 @@ export const getTerminalUser = (mac: string) => {
  */
 export const modifyProtocolRemark = (protocol: string, remark: string) => {
     return fecth("modifyProtocolRemark", { protocol, remark })
+}
+
+
+export type ossfiles = Pick<ObjectMeta, 'name' | 'lastModified' | 'size' | 'url'>
+
+/**
+ * 获取oss数据列表
+ * @param prefix 
+ * @returns 
+ */
+export const ossFilelist = (prefix?: string) => {
+    return fecth<ossfiles[]>("/ossFilelist", { prefix })
+}
+
+/**
+ * 删除oss文件
+ * @param names 
+ * @returns 
+ */
+export const ossDelete = (names: string[]) => {
+    return fecth<DeleteMultiResult>("/ossDelete", { names })
 }
