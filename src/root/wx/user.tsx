@@ -7,7 +7,6 @@ import React, { useEffect, useState } from "react";
 import { update_wx_users_all, wx_send_info, wx_users } from "../../common/FecthRoot";
 import { getColumnSearchProp } from "../../common/tableCommon";
 import { MyCopy } from "../../components/myCopy";
-import { RootMain } from "../../components/RootMain";
 
 export const WxUser: React.FC = () => {
 

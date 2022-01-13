@@ -759,3 +759,8 @@ export const ossFilelist = (prefix?: string) => {
 export const ossDelete = (names: string[]) => {
     return fecth<DeleteMultiResult>("/ossDelete", { names })
 }
+
+
+export const nodeRestart = (node: string) => {
+    return fecth<any>("nodeRestart", { node })
+}

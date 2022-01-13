@@ -7,17 +7,19 @@ import { State } from "../store";
 import { devTypeIcon, IconFont } from "../components/IconFont";
 import { CheckCircleFilled, WarningFilled, EyeFilled, EditFilled, DeleteFilled, DownOutlined } from "@ant-design/icons";
 import { DevCard } from "../components/devCard";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import moment from "moment";
 import { prompt } from "../common/prompt";
 import { delUserTerminal, modifyTerminal } from "../common/Fetch";
+import { useNav } from "../hook/useNav";
+import { devDTU, devType } from "../common/devImgSource";
 
 type key = "dev" | "module" | "agg"
 export const UserIndex: React.FC = (props) => {
 
     const [seachParms, setSearchParms] = useSearchParams()
 
-    const nav = useNavigate()
+    const nav = useNav()
 
     const { terminals } = useSelector<State, storeUser>(state => state.User)
 
@@ -25,7 +27,6 @@ export const UserIndex: React.FC = (props) => {
 
     const mountDevs = useMemo(() => {
         return terminals ? terminals.map(({ DevMac, name, online, mountDevs }) => mountDevs.map(el2 => ({ ...el2, mac: DevMac, macName: name, macOn: online }))).flat() : []
-        // return [] 
     }, [terminals])
 
     /**
@@ -88,9 +89,9 @@ export const UserIndex: React.FC = (props) => {
                                 {
                                     mountDevs.map(el => {
                                         return (
-                                            <Col span={24} md={12} lg={8} xl={6} xxl={4} key={el.mac + el.pid}>
+                                            <Col span={24} md={12} lg={8} xl={8} xxl={6} key={el.mac + el.pid}>
                                                 <DevCard
-                                                    img={`http://admin.ladishb.com/upload/${el.Type}.png`}
+                                                    img={devType[el.Type]}
                                                     title={<Space>
                                                         <Tooltip title={el.online ? '在线' : '离线'}>
                                                             {el.online ? <CheckCircleFilled style={{ color: "#67C23A" }} /> : <WarningFilled style={{ color: "#E6A23C" }} />}
@@ -132,7 +133,7 @@ export const UserIndex: React.FC = (props) => {
                                         return (
                                             <Col span={24} md={12} lg={8} xl={6} xxl={4} key={el.DevMac}>
                                                 <DevCard
-                                                    img={`http://admin.ladishb.com/upload/${el.PID}.png`}
+                                                    img={devDTU[el.PID || 'null']}
                                                     title={<Space>
                                                         <Tooltip title={el.online ? '在线' : '离线'}>
                                                             {el.online ? <CheckCircleFilled style={{ color: "#67C23A" }} /> : <WarningFilled style={{ color: "#E6A23C" }} />}
@@ -164,7 +165,7 @@ export const UserIndex: React.FC = (props) => {
                                     })
                                 }
                                 <Col span={24} md={12} lg={8} xl={6} xxl={4} key="addModule" className="center">
-                                    <Button shape="round" type="primary" size="large" href="/addterminal">添加网关</Button>
+                                    <Button shape="round" type="primary" size="large" href="/main/addterminal">添加网关</Button>
                                 </Col>
                             </Row>
                         </Tabs.TabPane>
@@ -173,7 +174,7 @@ export const UserIndex: React.FC = (props) => {
                         </Tabs.TabPane>
                     </Tabs>
                 </Col>
-                <Col span={24} lg={6}>
+                <Col span={24} lg={6} xs={0}>
 
                 </Col>
             </Row>

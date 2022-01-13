@@ -119,7 +119,7 @@ export const userInfo = () => {
  * @returns 
  */
 export const getAlarm = (start: string = new Date().toLocaleDateString().replace(/\//g, "-") + " 0:00:00", end: string = new Date().toLocaleDateString().replace(/\//g, "-") + " 23:59:59") => {
-    return axios<Uart.uartAlarmObject[]>("loguartterminaldatatransfinites", { start, end })
+    return axios<(Uart.uartAlarmObject & { _id?: string })[]>("loguartterminaldatatransfinites", { start, end })
 }
 
 /**

@@ -1,13 +1,14 @@
 
 import { Pie, Gauge, GaugeConfig, PieConfig } from "@ant-design/charts";
+import { FullscreenOutlined } from "@ant-design/icons";
 import { MassMarks } from "@uiw/react-amap";
+import { useFullscreen } from "ahooks";
 import { Button, Card, Col, Descriptions, Divider, Row, Spin, Table, Tabs } from "antd";
 import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { getTerminals, NodeInfo, runInfo, runingState } from "../common/FecthRoot";
 import { Amap_gps2AutonaviPosition, stringToLngLat, V2_API_Aamp_ip2local } from "../common/Fetch";
 import { AmapLoader } from "../components/amaploader";
-import { RootMain } from "../components/RootMain";
 
 const ob: Record<string, string> = {
     'all': '全部',
@@ -73,6 +74,8 @@ export const RootIndex: React.FC = () => {
     const [nodeInfo, setNodeInfo] = useState<Uart.nodeInfo[]>([])
 
     const [runInfo, setRunInfo] = useState<runInfo>()
+
+    const [isFull, { enterFullscreen }] = useFullscreen(() => document.getElementById("maps"))
 
     /**
      * 更新海量点数据
@@ -247,9 +250,12 @@ export const RootIndex: React.FC = () => {
                     }
                 </Tabs.TabPane>
                 <Tabs.TabPane key="map" tab="终端地图">
-                    <AmapLoader zoom={5} height={800} onComplete={() => getRunInfo()}>
-                        <MassMarks data={marks} onMouseOver={mouse} onClick={undefined} onDblClick={undefined} onMouseDown={undefined} onMouseUp={undefined} onMouseOut={undefined} onTouchStart={undefined} onTouchEnd={undefined}></MassMarks>
-                    </AmapLoader>
+                    <FullscreenOutlined onClick={() => enterFullscreen()} style={{fontSize:24}}/>
+                    <div id="maps">
+                        <AmapLoader zoom={5} height={isFull ? undefined : 800} onComplete={() => getRunInfo()}>
+                            <MassMarks data={marks} onMouseOver={mouse} onClick={undefined} onDblClick={undefined} onMouseDown={undefined} onMouseUp={undefined} onMouseOut={undefined} onTouchStart={undefined} onTouchEnd={undefined}></MassMarks>
+                        </AmapLoader>
+                    </div>
                 </Tabs.TabPane>
             </Tabs>
         </>

@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Main } from "../components/UserMain";
+import React, { useMemo, useState } from "react";
 import { getAlarm, confrimAlarm } from "../common/Fetch";
 import { Card, Row, Col, DatePicker, Table, Space, Button, Form, Popconfirm, message, Divider } from "antd"
 import { Line, Pie } from "@ant-design/charts";
 import moment from "moment"
-import { getColumnSearchProp } from "../common/tableCommon";
+import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../common/tableCommon";
+import { usePromise } from "../hook/usePromise";
 
 interface alarms extends Uart.uartAlarmObject {
     _id?: string
@@ -12,20 +12,14 @@ interface alarms extends Uart.uartAlarmObject {
 
 export const Alarm: React.FC = () => {
 
-    const [alarms, setAlarms] = useState<alarms[]>([])
+    const [dates, setDates] = useState<[moment.Moment, moment.Moment]>([moment().subtract(6, "month"), moment()])
 
-    const [dates, setDates] = useState(() => {
-        const d = new Date()
-        const end = d.toLocaleDateString()
-        d.setDate(d.getDate() - 180)
-        return [d.toLocaleDateString(), end]
-    })
+    const { data: alarms, fecth, loading, setData } = usePromise(async () => {
+        const { data } = await getAlarm(dates[0].format("YYYY/MM/DD H:m:s"), dates[1].format("YYYY/MM/DD H:m:s"))
+        return data
+    }, [], [dates])
 
-    useEffect(() => {
-        getAlarm(dates[0] + ' 0:0:0', dates[1] + ' 23:59:59').then(el => {
-            setAlarms(el.data.map((el, key) => ({ ...el, key })))
-        })
-    }, [dates])
+
 
     const lineData = useMemo(() => {
         const maps: Map<string, alarms[]> = new Map()
@@ -58,9 +52,10 @@ export const Alarm: React.FC = () => {
             const a = alarms.find(el_1 => el_1._id === _id);
             if (a)
                 a.isOk = true;
-        }
-        setAlarms(_id ? alarms : alarms.map(el_2 => ({ ...el_2, isOk: true })));
-        return
+
+            setData([...alarms])
+        } else fecth()
+        message.success("操作成功")
     }
 
 
@@ -69,7 +64,7 @@ export const Alarm: React.FC = () => {
         <>
             <Form layout="inline" style={{ margin: 8 }}>
                 <Form.Item label="选择时间区间">
-                    <DatePicker.RangePicker defaultValue={[moment(dates[0], 'YYYY-MM-DD'), moment(dates[1], 'YYYY-MM-DD')]} onChange={(value, dates) => setDates(dates)} />
+                    <DatePicker.RangePicker defaultValue={dates} onChange={(value) => setDates(value as any)} />
                 </Form.Item>
                 <Form.Item>
                     <Popconfirm title="是否确认全部告警,操作无法取消" onCancel={() => message.warn("取消操作")} onConfirm={() => {
@@ -81,30 +76,33 @@ export const Alarm: React.FC = () => {
             </Form>
             <Card>
                 <Row>
-                    <Col span={24} md={8} key="chart">
+                    <Col span={24} md={8} sm={0} key="chart">
                         <Card>
                             <Space direction="vertical" style={{ width: "100%" }}>
-                                <Divider orientation="left">告警类型占比</Divider>
-                                <Pie data={pieData} angleField="count" colorField="tag" radius={0.6} label={{ type: "outer", content: '{name} {percentage}' }}></Pie>
-                                <Divider orientation="left">告警数量</Divider>
-                                <Line data={lineData} xField="date" yField="count" point={{ size: 5 }} label={{}}></Line>
+                                <Divider orientation="left" plain>告警类型占比</Divider>
+                                <Pie height={200} data={pieData} angleField="count" colorField="tag" radius={0.6} label={{ type: "outer", content: '{name} {percentage}' }}></Pie>
+                                <Divider orientation="left" plain>告警数量</Divider>
+                                <Line yAxis={{ max: Math.max(...lineData.map(el => el.count)) * 2 }} height={200} data={lineData} xField="date" yField="count" point={{ size: 5 }} label={{}}></Line>
                             </Space>
                         </Card>
                     </Col>
                     <Col span={24} md={16} key="table">
-                        <Table dataSource={alarms} size="small" sticky key="sss">
-                            <Table.Column title='mac' dataIndex='mac' key="mac" ellipsis {...getColumnSearchProp('mac')} ></Table.Column>
-                            <Table.Column title='设备' dataIndex='devName' key="devName" {...getColumnSearchProp('devName')}></Table.Column>
+                        <Table dataSource={generateTableKey(alarms, '_id')} size="small" sticky>
+                            <Table.Column title='网关' dataIndex='mac' key="mac" ellipsis {...tableColumnsFilter(alarms, 'mac')} ></Table.Column>
+                            <Table.Column title='设备' dataIndex='devName' key="devName" {...tableColumnsFilter(alarms, 'devName')}></Table.Column>
                             <Table.Column title='消息' dataIndex='msg' key="msg" ellipsis  {...getColumnSearchProp('msg')}></Table.Column>
-                            <Table.Column title='类型' dataIndex='tag' key="tag"></Table.Column>
-                            <Table.Column title='时间' dataIndex='timeStamp' key="timeStamp" render={
-                                (value: number) => (
-                                    <p>{moment(value).format('MM-DD H:M:s')}</p>
-                                )
-                            }></Table.Column>
+                            <Table.Column title='类型' dataIndex='tag' key="tag" {...tableColumnsFilter(alarms, "tag")}></Table.Column>
+                            <Table.Column title='时间' dataIndex='timeStamp' key="timeStamp"
+                                defaultSortOrder='descend'
+                                sorter={(a: any, b: any) => a.timeStamp - b.timeStamp}
+                                render={
+                                    (value: number) => (
+                                        <p>{moment(value).format('MM-DD H:M:s')}</p>
+                                    )
+                                }></Table.Column>
                             <Table.Column title='操作' key="oprate" render={(_, record: alarms) => {
                                 return (
-                                    record.isOk ? <a >已确认</a> : <Button onClick={() => confirm(record._id)}>确认告警</Button>
+                                    record.isOk ? <a >已确认</a> : <Button type="primary" danger size="small" onClick={() => confirm(record._id)}>确认告警</Button>
                                 )
                             }}></Table.Column>
                         </Table>

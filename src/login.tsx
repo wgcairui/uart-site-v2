@@ -4,7 +4,7 @@ import { Layout, Image, Menu, Dropdown, Row, Col, Card, Tabs, Form, Input, Butto
 import { UserOutlined, LockOutlined, WechatFilled } from "@ant-design/icons"
 import "./login.css"
 import { IconFont } from "./components/IconFont";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Get, Post, wxlogin } from "./common/Fetch";
 import { universalResult } from "./typing";
 import { useNav } from "./hook/useNav";
@@ -152,7 +152,7 @@ export const Login: React.FC = () => {
                         <Col span={24} md={12} className="content-row-col2">
                             <Card className="card-login">
                                 <Tabs defaultActiveKey={tabdefaultActiveKey}>
-                                    <Tabs.TabPane tab={<span><WechatFilled />微信登录</span>} key="wx_qr">
+                                    <Tabs.TabPane tab={<span><WechatFilled />微信登录/注册</span>} key="wx_qr">
                                         <div id="wxlogin" className="hidden-sm-and-down" style={{ height: 286 }}></div>
                                     </Tabs.TabPane>
                                     <Tabs.TabPane tab={<span><UserOutlined />账号登录</span>} key="login" className="">
@@ -189,8 +189,8 @@ export const Login: React.FC = () => {
                                                 >
                                                     我要试用?
                                                 </Button>
-                                                Or <Link to="/">现在注册</Link>
-                                                <Link to="/" className="login-form-forgot">忘记密码</Link>
+                                                {/*  Or <Link to="/">现在注册</Link>
+                                                <Link to="/" className="login-form-forgot">忘记密码</Link> */}
                                             </Form.Item>
                                         </Form>
                                     </Tabs.TabPane>

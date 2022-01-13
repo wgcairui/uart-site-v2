@@ -79,7 +79,7 @@ export const Main: React.FC<universalProps> = (props) => {
                                 {
                                     uts.map((el, key) => {
                                         return <Menu.Item key={'1-' + key} icon={devTypeIcon[el.Type]}>
-                                            <Link to={"/main/dev/" + el.mac + el.pid /*new URLSearchParams({ id: el.mac + el.pid }).toString() */}>{`${el.name}-${el.mountDev}-${el.pid}`}</Link>
+                                            <Link to={"/main/dev/" + el.mac + el.pid}>{`${el.name}-${el.mountDev}-${el.pid}`}</Link>
                                         </Menu.Item>
                                     })
                                 }
@@ -90,7 +90,7 @@ export const Main: React.FC<universalProps> = (props) => {
                                 <Menu.Item key="4-2">EN</Menu.Item>
                             </Menu.SubMenu>
                         </Menu>
-                        <UserDropDown></UserDropDown>
+                        <UserDropDown userPage="/main/user"></UserDropDown>
                     </div>
                 </Layout.Header>
                 <Layout.Content style={{ padding: 9, height: "100%", backgroundColor: "#ffffff" }}>

@@ -16,7 +16,7 @@ export const useTerminalData = (mac: string, pid: string | number) => {
     const data = usePromise(async () => {
         const { data } = await getTerminalData(mac, pid)
         return data
-    }, undefined)
+    }, undefined, [mac, pid])
 
     /**
      * 订阅设备数据更新,
@@ -25,7 +25,7 @@ export const useTerminalData = (mac: string, pid: string | number) => {
     useEffect(() => {
         const n = subscribeEvent(event, () => data.fecth())
         return () => unSubscribeEvent(event, n)
-    }, [])
+    }, [mac, pid])
 
     return data
 }

@@ -11,6 +11,7 @@ import { generateTableKey, getColumnSearchProp, tableConfig } from "../common/ta
 import { RepeatFilter } from "../common/util";
 import { usePromise } from "../hook/usePromise";
 import { useTerminalData } from "../hook/useTerminalData";
+import { ProtocolInstructSelect } from "./Selects";
 
 
 interface props {
@@ -272,7 +273,7 @@ export const TerminalOprate: React.FC<props> = ({ mac }) => {
                 <Form>
                     <Form.Item label="设备ID">{mac}</Form.Item>
                     <Form.Item label="设备">
-                        <Select onSelect={v => setDev(v as any)} loading={loading}>
+                        <Select onSelect={(v: any) => setDev(v as any)} loading={loading}>
                             {
                                 data.map(dev => <Select.Option value={dev.mountDev} key={dev.mountDev}>{dev.mountDev}</Select.Option>)
                             }
@@ -406,7 +407,7 @@ export const TerminalRunData: React.FC<UserRunDataProps> = ({ mac, pid, user, cl
         const protocol = await getTerminalPidProtocol(mac, pid)
         const { data } = await getProtocolSetup<string>(protocol.data.protocol, 'ShowTag', user)
         return new Set([data.sys, data.user].flat())
-    }, new Set())
+    }, new Set(), [mac, pid])
 
     /**
      * 获取显示的参数
@@ -434,7 +435,7 @@ export const TerminalRunData: React.FC<UserRunDataProps> = ({ mac, pid, user, cl
                                 : moment(data.time).format("H:mm:ss")
                         }
                     </span>
-                    <SyncOutlined onClick={() => fecth()} />
+                    <SyncOutlined onClick={() => fecth()} spin={loading} />
                 </Space>
                 <Table dataSource={generateTableKey(result, "name")}
                     loading={loading && !data}
@@ -454,7 +455,10 @@ export const TerminalRunData: React.FC<UserRunDataProps> = ({ mac, pid, user, cl
                                         (record.issimulate || !record.unit)
                                             ? <a />
                                             : <Tooltip color="cyan" title={`查看[${record.name}]的历史记录`}>
-                                                <Link to={`/devline/?name=${record.name}`}>
+                                                <Link
+                                                    to={user ?
+                                                        `/main/devline/${mac + pid}?name=${record.name}`
+                                                        : `/root/node/terminal/devline?name=${record.name}&mac=${mac}&pid=${pid}`}>
                                                     <FundFilled style={{ marginLeft: 8 }} />
                                                 </Link>
                                             </Tooltip>
@@ -480,7 +484,11 @@ export const TerminalRunData: React.FC<UserRunDataProps> = ({ mac, pid, user, cl
 export const TerminalRunDataThresoldLine: React.FC<DevDataProps & { time?: string | number }> = ({ mac, pid, user, time }) => {
 
     const [date, setDate] = useState<[moment.Moment, moment.Moment]>([moment(time).subtract(10, "minute"), moment(time)])
-
+    /* 
+        useEffect(()=>{
+            setDate([moment(time).subtract(10, "minute"), moment(time)])
+        },[time])
+     */
     const { data, fecth, loading } = usePromise(async () => {
         const protocol = await getTerminalPidProtocol(mac, pid)
         const setup = await getProtocolSetup<Uart.Threshold>(protocol.data.protocol, 'Threshold', user)
@@ -536,5 +544,81 @@ export const TerminalRunDataThresoldLine: React.FC<DevDataProps & { time?: strin
                     : <Empty description="没有数据" style={{ marginTop: 36 }}></Empty>
             }
         </>
+    )
+}
+
+
+interface TerminalMountDevNameLineProps {
+    mac: string
+    pid: string | number
+    /**
+     * 需要查看的参数
+     */
+    name: string
+}
+/**
+ * 设备参数运行状态
+ * @param param0 
+ * @returns 
+ */
+export const TerminalMountDevNameLine: React.FC<TerminalMountDevNameLineProps> = ({ mac, pid, name }) => {
+
+    const [selects, setSelects] = useState<string[]>([name])
+
+    useEffect(() => {
+        setSelects([name])
+    }, [name])
+
+    /**
+         * 约束图表参数日期
+         */
+    const [dates, setDate] = useState<[moment.Moment, moment.Moment]>([moment().subtract(1, "day"), moment()])
+
+    const Protocol = usePromise(async () => {
+        const el = await getTerminalPidProtocol(mac, Number(pid));
+        return el.data;
+    }, undefined, [mac, pid])
+
+
+    const { data, loading, fecth } = usePromise(async () => {
+        if (selects.length === 0) return []
+        const { data } = await getTerminalDatasV2(mac, pid, selects, dates[0].valueOf(), dates[1].valueOf())
+        return data.map(el => ({ ...el, time: moment(el.time).format("M/D H:m:s") }))
+    }, [], [mac, pid, name, selects, dates])
+
+
+    const lineSlideStart = useMemo(() => {
+        const dataLen = data.length / selects.length
+
+        return dataLen <= 100 ? 0 : (dataLen - 100) / dataLen
+    }, [data, selects])
+
+    return (
+        !Protocol.data ? <Empty />
+            :
+            <>
+                <Form layout="inline">
+                    <Form.Item label="选择日期">
+                        <DatePicker.RangePicker defaultValue={dates} onChange={value => setDate(value as any)} disabledDate={d => d > moment().endOf("day")}></DatePicker.RangePicker>
+                    </Form.Item>
+                    <Form.Item label="选择参数">
+                        <ProtocolInstructSelect defaultValue={selects} protocolName={Protocol.data.protocol} multiple onChange={val => setSelects(val as string[])}></ProtocolInstructSelect>
+                    </Form.Item>
+                    <Form.Item wrapperCol={{ offset: 1 }}>
+                        <Button type="primary" onClick={() => fecth()}>刷新</Button>
+                    </Form.Item>
+                </Form>
+                <Line slider={{
+                    start: lineSlideStart
+                }}
+                    autoFit
+                    loading={loading}
+                    xField="time"
+                    yField="value"
+                    seriesField="name"
+                    data={data}
+                    renderer="svg"
+                ></Line>
+            </>
     )
 }

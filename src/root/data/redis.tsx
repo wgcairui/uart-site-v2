@@ -1,8 +1,7 @@
 import { Button, Form, Input, message, Modal, Space, Table } from "antd"
 import React, { useState } from "react";
-import { redisflushall, redisflushdb, rediskeys, rediskeysdel, rediskeysdValue } from "../../common/FecthRoot";
+import { redisflushdb, rediskeys, rediskeysdel, rediskeysdValue } from "../../common/FecthRoot";
 import { generateTableKey, getColumnSearchProp } from "../../common/tableCommon";
-import { RootMain } from "../../components/RootMain";
 import { usePromise } from "../../hook/usePromise";
 
 export const Redis: React.FC = () => {

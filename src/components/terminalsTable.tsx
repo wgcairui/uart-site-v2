@@ -1,5 +1,5 @@
 import { CheckCircleFilled, WarningFilled, EyeFilled, DeleteFilled, LoadingOutlined, ReloadOutlined, MoreOutlined, SyncOutlined, DownOutlined } from "@ant-design/icons";
-import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps, Modal, Spin, Dropdown, Menu, notification } from "antd";
+import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps, Modal, Spin, Dropdown, Menu, notification, ColProps } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -94,6 +94,18 @@ interface infoProps {
      * 是否显示标题
      */
     showTitle?: boolean
+
+    /**
+     * 是否显示查询间隔
+     */
+    InterValShow?: boolean
+
+    /**
+     * 
+     */
+    col?: ColProps
+
+    onChange?: (item?: Uart.Terminal) => void
 }
 
 /**
@@ -124,6 +136,7 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
                 delTerminalMountDev(mac, pid)
                     .then(() => {
                         message.success({ content: '删除成功', key })
+                        props.onChange && props.onChange(terminal)
                     })
             }
         })
@@ -133,7 +146,7 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
         <Row>
             {
                 terminal?.mountDevs && terminal.mountDevs.map(el =>
-                    <Col span={24} md={8} key={terminal.DevMac + el.pid}>
+                    <Col span={24} md={8} {...props.col} key={terminal.DevMac + el.pid}>
                         <DevCard
                             img={`http://admin.ladishb.com/upload/${el.Type}.png`}
                             title={<Space>
@@ -158,14 +171,14 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
                                         <DeleteFilled style={{ color: "#E6A23B" }} />
                                     </Popconfirm>
                                 </Tooltip>,
-                                <InterValToop mac={terminal.DevMac} pid={el.pid} show={ex} />
+                                props.InterValShow && <InterValToop mac={terminal.DevMac} pid={el.pid} show={ex} />
                             ]}></DevCard>
                     </Col>
                 )
             }
             <Col>
                 <Button onClick={() => setVisible(true)} shape="round" type="primary">添加设备</Button>
-                <TerminalAddMountDev mac={terminal.DevMac} visible={visible} onCancel={() => setVisible(false)} />
+                <TerminalAddMountDev mac={terminal.DevMac} visible={visible} onCancel={() => setVisible(false)} onChange={props.onChange} />
             </Col>
         </Row>
     )

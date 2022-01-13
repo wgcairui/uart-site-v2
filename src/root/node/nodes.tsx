@@ -1,6 +1,6 @@
 import { Button, Collapse, Divider, Form, Input, message, Modal, Table } from "antd";
 import React, { useMemo, useState } from "react";
-import { deleteNode, Nodes as getNodes, setNode } from "../../common/FecthRoot"
+import { deleteNode, nodeRestart, Nodes as getNodes, setNode } from "../../common/FecthRoot"
 import { generateTableKey, tableConfig } from "../../common/tableCommon";
 import { Pie } from "@ant-design/charts";
 import { pieConfig } from "../../common/charts";
@@ -73,6 +73,19 @@ export const Nodes: React.FC = () => {
                 }
             });
     }
+
+
+    const restart = (node: string) => {
+        Modal.confirm({
+            content: `确定重启节点:${node}??`,
+            onOk() {
+                nodeRestart(node).then(el => {
+                    console.log(el);
+
+                })
+            }
+        })
+    }
     return (
         <>
             <Divider orientation="left">节点信息</Divider>
@@ -93,6 +106,7 @@ export const Nodes: React.FC = () => {
                     {
                         re.count === 0 && <Button type="link" icon={<DeleteFilled></DeleteFilled>} onClick={() => deleteNodes(re.Name)}></Button>
                     }
+                    <Button type="link" onClick={() => restart(re.Name)}>重启</Button>
                 </>}></Table.Column>
             </Table>
         </>

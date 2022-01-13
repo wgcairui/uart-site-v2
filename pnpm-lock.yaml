@@ -13,6 +13,7 @@ specifiers:
   '@types/react-highlight-words': ^0.16.3
   '@uiw/react-amap': ^2.4.0
   '@vitejs/plugin-react': ^1.0.0
+  ahooks: ^3.1.5
   antd: ^4.17.1
   classnames: ^2.3.1
   crypto-js: ^4.1.1
@@ -24,7 +25,6 @@ specifiers:
   react-highlight-words: ^0.17.0
   react-redux: ^7.2.6
   react-router-dom: ^6.0.2
-  react-use: ^17.3.1
   reflect-metadata: ^0.1.13
   socket.io-client: ^4.4.0
   types-uart: ^2.0.4
@@ -36,6 +36,7 @@ dependencies:
   '@ant-design/icons': 4.7.0_react-dom@17.0.2+react@17.0.2
   '@reduxjs/toolkit': 1.6.2_react-redux@7.2.6+react@17.0.2
   '@uiw/react-amap': 2.4.0_react-dom@17.0.2+react@17.0.2
+  ahooks: 3.1.5_react@17.0.2
   antd: 4.17.2_react-dom@17.0.2+react@17.0.2
   crypto-js: 4.1.1
   lodash: 4.17.21
@@ -45,7 +46,6 @@ dependencies:
   react-highlight-words: 0.17.0_react@17.0.2
   react-redux: 7.2.6_react-dom@17.0.2+react@17.0.2
   react-router-dom: 6.0.2_react-dom@17.0.2+react@17.0.2
-  react-use: 17.3.1_react-dom@17.0.2+react@17.0.2
   socket.io-client: 4.4.0
 
 devDependencies:
@@ -1840,6 +1840,26 @@ packages:
       object-assign: 4.1.1
     dev: false
 
+  /ahooks-v3-count/1.0.0:
+    resolution: {integrity: sha512-V7uUvAwnimu6eh/PED4mCDjE7tokeZQLKlxg9lCTMPhN+NjsSbtdacByVlR1oluXQzD3MOw55wylDmQo4+S9ZQ==}
+    dev: false
+
+  /ahooks/3.1.5_react@17.0.2:
+    resolution: {integrity: sha512-BQbKJ8sNrr8gJlOA4YY9zNeMqcHXLI6AGpiyzLJW2mJfjeuHIiWZsyDnbyyNCm9M/RRETlYTzgqT7brj5DBnyg==}
+    engines: {node: '>=8.0.0'}
+    peerDependencies:
+      react: ^16.8.6 || ^17.0
+    dependencies:
+      ahooks-v3-count: 1.0.0
+      dayjs: 1.10.7
+      intersection-observer: 0.12.0
+      js-cookie: 3.0.1
+      lodash: 4.17.21
+      react: 17.0.2
+      resize-observer-polyfill: 1.5.1
+      screenfull: 5.2.0
+    dev: false
+
   /ajv/6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
     dependencies:
@@ -2841,6 +2861,10 @@ packages:
       side-channel: 1.0.4
     dev: false
 
+  /intersection-observer/0.12.0:
+    resolution: {integrity: sha512-2Vkz8z46Dv401zTWudDGwO7KiGHNDkMv417T5ItcNYfmvHR/1qCTVBO9vwH8zZmQ0WkA/1ARwpysR9bsnop4NQ==}
+    dev: false
+
   /inversify-inject-decorators/3.1.0:
     resolution: {integrity: sha512-/seBlVp5bXrLQS3DpKEmlgeZL6C7Tf/QITd+IMQrbBBGuCbxb7k3hRAWu9XSreNpFzLgSboz3sClLSEmGwHphw==}
     dev: false
@@ -2967,6 +2991,11 @@ packages:
 
   /js-cookie/2.2.1:
     resolution: {integrity: sha512-HvdH2LzI/EAZcUwA8+0nKNtWHqS+ZmijLA30RwZA0bo7ToCckjK5MkGhjED9KoRcXO6BaGI3I9UIzSA1FKFPOQ==}
+    dev: false
+
+  /js-cookie/3.0.1:
+    resolution: {integrity: sha512-+0rgsUXZu4ncpPxRL+lNEptWMOWl9etvPHc/koSRp6MPwpRYAhmk0dUG00J4bxVV3r9uUzfo24wW0knS07SKSw==}
+    engines: {node: '>=12'}
     dev: false
 
   /js-tokens/4.0.0:

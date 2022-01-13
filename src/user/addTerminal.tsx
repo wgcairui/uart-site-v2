@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Divider, Card, Form, Button, Input, message, Spin, Descriptions, Tag, Table, Modal } from "antd";
-import { Main } from "../components/UserMain";
 import { addUserTerminal, getTerminalOnline } from "../common/Fetch";
-import { useNavigate } from "react-router-dom";
+import { useNav } from "../hook/useNav";
 
 export const AddTerminal: React.FC = () => {
 
     const [ter, setTer] = useState<Uart.Terminal>()
 
-    const nav = useNavigate()
+    const nav = useNav()
 
     const [mac, setMac] = useState("")
 

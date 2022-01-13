@@ -4,7 +4,6 @@ import { Login, LoginWx } from "./login"
 import { UserIndex } from "./user"
 import { Routes, Route } from "react-router-dom"
 import { Alarm } from "./user/alarm"
-import { DevManage } from "./user/devManage"
 import { Dev } from "./user/dev"
 import { Terminal } from "./user/terminal"
 import { DevLine } from "./user/devline"
@@ -28,6 +27,7 @@ import { ProtocolInfo } from "./root/node/protocolInfo"
 import { RootMain } from "./root/RootMain"
 import { Main } from "./user/UserMain"
 import { OssUpload } from "./root/data/oss"
+import { RootDevLine } from "./root/node/devline"
 
 export const App: React.FC = () => {
 
@@ -46,6 +46,7 @@ export const App: React.FC = () => {
                 <Route path="node/addNode" element={<Nodes />} />
                 <Route path="node/Terminal" element={<Terminals />} />
                 <Route path="node/Terminal/info" element={<TerminalInfos />} />
+                <Route path="node/terminal/devline" element={<RootDevLine />} />
                 <Route path="node/Terminal/RegisterTerminal" element={<TerminalAddDTU />} />
                 <Route path="node/user" element={<User />} />
                 <Route path="node/user/userInfo" element={<RootUserInfo />} />
@@ -74,7 +75,6 @@ export const App: React.FC = () => {
             <Route path="/main" element={< Main />}>
                 <Route index element={<UserIndex />} />
                 <Route path="alarm" element={<Alarm />} />
-                <Route path="devmanage" element={<DevManage />} />
                 <Route path="dev/:id" element={<Dev />} />
                 <Route path="devline/:id" element={<DevLine />} />
                 <Route path="terminal/:id" element={<Terminal />} />

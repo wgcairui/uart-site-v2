@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { RootMain } from "../../components/RootMain";
 import { ClientResultSingle as single, queryResultSave, ClientResult as getData, } from "../../common/FecthRoot"
 import { Button, Card, DatePicker, Divider, Form, Table, Tag, TimePicker } from "antd";
 import moment from "moment";

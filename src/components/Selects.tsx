@@ -54,7 +54,7 @@ export const DevTypesCascader: React.FC<cascaderProps> = props => {
     }
 
     return (
-        <Cascader options={cascader} loadData={loadData} multiple={props.multiple} onChange={props.onChange} />
+        <Cascader options={cascader} loadData={loadData as any} multiple={props.multiple} onChange={props.onChange as any} />
     )
 }
 
@@ -90,7 +90,7 @@ export const ProtocolsCascader: React.FC<cascaderProps> = props => {
     }
 
     return (
-        <Cascader options={cascader} loadData={loadData} multiple={props.multiple} onChange={props.onChange} />
+        <Cascader options={cascader} loadData={loadData as any} multiple={props.multiple} onChange={props.onChange as any} />
     )
 }
 
@@ -121,6 +121,7 @@ export const NodesSelects: React.FC<SelectProps<selectProps>> = (props) => {
 
 
 interface ProtocolInstructSelectProps {
+    defaultValue?: string | string[]
     /**
      * 协议名称
      */
@@ -138,7 +139,7 @@ interface ProtocolInstructSelectProps {
  * @param param0 
  * @returns 
  */
-export const ProtocolInstructSelect: React.FC<ProtocolInstructSelectProps> = ({ protocolName, onChange, filterOptions, multiple }) => {
+export const ProtocolInstructSelect: React.FC<ProtocolInstructSelectProps> = ({ defaultValue, protocolName, onChange, filterOptions, multiple }) => {
 
     const { data, loading } = usePromise(async () => {
         const { data } = await getProtocol(protocolName)
@@ -151,9 +152,9 @@ export const ProtocolInstructSelect: React.FC<ProtocolInstructSelectProps> = ({ 
     }, [filterOptions, data])
 
     return (
-        <Select onChange={onChange} mode={multiple ? "multiple" : undefined} loading={loading}>
+        <Select defaultValue={defaultValue} onChange={onChange} mode={multiple ? "multiple" : undefined} loading={loading} style={{ minWidth: 150 }}>
             {
-                options.map(el => <Select.Option value={el} key={el} >{el}</Select.Option>)
+                options.map((el, i) => <Select.Option value={el} key={el + i} >{el}</Select.Option>)
             }
         </Select>
     )

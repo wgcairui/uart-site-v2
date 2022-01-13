@@ -9,6 +9,7 @@ import { DevTypesCascader } from "./Selects";
 import { IconFontSpin } from "./IconFont";
 import { DevDataProps, TerminalRunData, TerminalRunDataThresoldLine } from "./terminalData";
 import "./TerminalDev.css"
+import { devAir, devUpsStat } from "../common/devImgSource";
 
 interface result extends DevDataProps {
     result: Uart.queryResultArgument[]
@@ -28,18 +29,20 @@ export const TerminalOprate: React.FC<result> = ({ mac, pid }) => {
     }, [])
 
     return (
-        <Dropdown
-            overlay={<Menu>
-                {
-                    data.map(el => <Menu.Item key={el.name} onClick={() => sendOprateInstruct(mac, pid, el.tag)}>
-                        {el.name}
-                    </Menu.Item>)
-                }
-            </Menu>}>
-            <a className="ant-dropdown-link">
-                操作指令<DownOutlined />
-            </a>
-        </Dropdown>
+        data.length === 0 ? <></>
+            :
+            <Dropdown
+                overlay={<Menu>
+                    {
+                        data.map(el => <Menu.Item key={el.name} onClick={() => sendOprateInstruct(mac, pid, el.tag)}>
+                            {el.name}
+                        </Menu.Item>)
+                    }
+                </Menu>}>
+                <a className="ant-dropdown-link">
+                    操作指令<DownOutlined />
+                </a>
+            </Dropdown>
     )
 }
 
@@ -228,7 +231,7 @@ export const TerminalDevAir: React.FC<result> = ({ mac, pid, result }) => {
     return (
         <Row style={{ padding: 12 }}>
             <Col span={24} md={12} style={{ backgroundColor: "black", padding: 12 }}>
-                <Image src="https://www.ladishb.com/upload/1_4_2022_ac3.a7b63d5.png" preview={false} />
+                <Image src={devAir} preview={false} />
             </Col>
             <Col span={24} md={12}>
                 <Row>
@@ -346,21 +349,19 @@ export const TerminalDevUps: React.FC<result> = ({ mac, pid, result }) => {
             stat.InputStat = result.filter(el => Constant.InputStat.includes(el.name))
             stat.OutStat = result.filter(el => Constant.OutStat.includes(el.name))
         }
-        console.log(stat);
-
         return stat
     }, [result, Constant])
 
     const workPic = useMemo<string>(() => {
         switch (ups.WorkMode) {
             case "在线模式":
-                return 'https://www.ladishb.com/upload/342021__ups3.gif'
+                return devUpsStat[3]
             case "旁路模式":
-                return 'https://www.ladishb.com/upload/342021__ups2.gif'
+                return devUpsStat[2]
             case "电池模式":
-                return "https://www.ladishb.com/upload/342021__ups1.gif"
+                return devUpsStat[1]
             default:
-                return 'https://www.ladishb.com/upload/342021__ups.gif'
+                return devUpsStat[0]
         }
     }, [ups.WorkMode])
 
@@ -383,6 +384,7 @@ export const TerminalDevUps: React.FC<result> = ({ mac, pid, result }) => {
                 <div>
                     <span>{ups.WorkMode}</span>
                     <Switch
+                        style={{ marginLeft: 12 }}
                         checked={ups.Switch === '开机'}
                         checkedChildren={ups.Switch}
                         unCheckedChildren={ups.Switch}
@@ -483,7 +485,7 @@ export const TerminalDevPage: React.FC<DevDataProps> = ({ mac, pid, user }) => {
     const { data: mountDev, loading } = usePromise(async () => {
         const { data } = await getTerminalPidProtocol(mac, pid)
         return data
-    })
+    }, undefined, [mac, pid])
 
     const updateData = (results: Uart.queryResultArgument[], data?: Uart.queryResultSave) => {
         setResult([...results])
@@ -541,13 +543,15 @@ interface addMountDev {
     mac: string
 
     onCancel?: () => void;
+
+    onChange?: () => void;
 }
 
 /**
  * 添加挂载设备
  * @returns 
  */
-export const TerminalAddMountDev: React.FC<addMountDev> = ({ visible, mac, onCancel }) => {
+export const TerminalAddMountDev: React.FC<addMountDev> = ({ visible, mac, onCancel, onChange }) => {
 
     /**
          * 新的挂载
@@ -591,6 +595,7 @@ export const TerminalAddMountDev: React.FC<addMountDev> = ({ visible, mac, onCan
                         if (result.code === 200) {
                             message.success({ content: '添加成功', key })
                             onCancel && onCancel()
+                            onChange && onChange()
                         } else {
                             message.warn({ content: "添加失败:" + result.msg, key })
                         }
@@ -609,7 +614,7 @@ export const TerminalAddMountDev: React.FC<addMountDev> = ({ visible, mac, onCan
                     }}></DevTypesCascader>
                 </Form.Item>}
                 <Form.Item label="设备地址">
-                    <Select defaultValue={mountDev.pid} onSelect={pid => setMountDev({ ...mountDev, pid })}>
+                    <Select defaultValue={mountDev.pid} onSelect={(pid: any) => setMountDev({ ...mountDev, pid })}>
                         {
                             pids.map(n => <Select.Option value={n} key={n}>{n}</Select.Option>)
                         }

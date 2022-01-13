@@ -25,7 +25,7 @@ export const TerminalInfos: React.FC<props> = (props) => {
     const [query] = useSearchParams()
 
     const mac = query.get('mac') || props.mac || ''
-    const { data, loading, setData } = usePromise(async () => {
+    const { data, loading, setData, fecth } = usePromise(async () => {
         const { data } = await getTerminal(mac)
         return data
     })
@@ -48,7 +48,7 @@ export const TerminalInfos: React.FC<props> = (props) => {
                         <TerminalInfo terminal={data} ex={true} showTitle={false}></TerminalInfo>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="挂载设备" key="mountDevs">
-                        <TerminalMountDevs terminal={data} ex={true} showTitle={false}></TerminalMountDevs>
+                        <TerminalMountDevs terminal={data} ex={true} showTitle={false} InterValShow onChange={fecth}></TerminalMountDevs>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="设备定位" key="position">
                         <DevPosition terminal={data}></DevPosition>

@@ -3,7 +3,6 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { materials_list } from "../../common/FecthRoot";
 import { MyCopy } from "../../components/myCopy";
-import { RootMain } from "../../components/RootMain";
 
 export const WxMaterials_list: React.FC = () => {
 
