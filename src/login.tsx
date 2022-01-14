@@ -219,16 +219,18 @@ export const LoginWx: React.FC = () => {
 
     const [param] = useSearchParams()
 
-    const [code, state] = [param.get("code"), param.get("state")]
+    useEffect(() => {
+        const [code, state] = [param.get("code"), param.get("state")]
 
-    if (!code || !state) {
-        nav("/login")
-    }
-    wxlogin(code!, state!).then(el => {
-        const [_, setToken] = useLocalStorageState<string>('token')
-        setToken((el as any).token)
-        nav("/")
-    })
+        if (!code || !state) {
+            nav("/login")
+        }
+        wxlogin(code!, state!).then(el => {
+            const [_, setToken] = useLocalStorageState<string>('token')
+            setToken((el as any).token)
+            nav("/")
+        })
+    }, [])
 
     return (<></>)
 }
