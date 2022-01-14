@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Layout, Menu, Image } from "antd";
 import "./UserMain.css"
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useSearchParams } from "react-router-dom";
 import { universalProps } from "../typing";
 import { setTerminals } from "../store/user";
 import { IconFont, devTypeIcon } from "../components/IconFont";
@@ -10,6 +10,8 @@ import { BindDev } from "../common/Fetch";
 import { useNav } from "../hook/useNav";
 import { subscribeEvent, unSubscribeEvent } from "../common/socket";
 import { UserDropDown } from "../components/userDropDown";
+import { useLocalStorageState } from "ahooks";
+import { useToken } from "../hook/useToken";
 
 /**
  * 用户侧通用页面
@@ -17,6 +19,9 @@ import { UserDropDown } from "../components/userDropDown";
  * @returns 
  */
 export const Main: React.FC<universalProps> = (props) => {
+
+
+
 
     const nav = useNav()
 
@@ -33,6 +38,8 @@ export const Main: React.FC<universalProps> = (props) => {
         const uts = data.UTs as any as Uart.Terminal[]
         setTer([...uts])
     }
+
+    useToken()
 
     useEffect(() => {
         getBind()

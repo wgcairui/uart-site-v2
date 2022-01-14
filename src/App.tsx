@@ -29,6 +29,7 @@ import { Main } from "./user/UserMain"
 import { OssUpload } from "./root/data/oss"
 import { RootDevLine } from "./root/node/devline"
 import { disableReactDevTools } from "./common/util"
+import { WxLine } from "./user/wxLine"
 
 export const App: React.FC = () => {
 
@@ -86,6 +87,8 @@ export const App: React.FC = () => {
                 <Route path="addterminal" element={<AddTerminal />} />
                 <Route path="user" element={<UserInfo />} />
             </Route>
+
+            <Route path="/wxline" element={<WxLine />} ></Route>
 
         </Routes>
     )
