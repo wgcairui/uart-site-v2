@@ -14,10 +14,8 @@ export const useToken = (token?: string) => {
 
     useEffect(() => {
         const token2 = token || search.get('token')
-        console.log(token , search.get('token'));
-        
         if (token2) {
-            setToken('bearer '+token2)
+            setToken(token2)
         }
     }, [search])
 

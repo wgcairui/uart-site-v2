@@ -594,7 +594,7 @@ export const TerminalMountDevNameLine: React.FC<TerminalMountDevNameLineProps> =
     }, [data, selects])
 
     return (
-        !Protocol.data ? <Empty />
+        !Protocol.data ? <Empty description />
             :
             <>
                 <Form layout="inline">
@@ -608,17 +608,17 @@ export const TerminalMountDevNameLine: React.FC<TerminalMountDevNameLineProps> =
                         <Button type="primary" onClick={() => fecth()}>刷新</Button>
                     </Form.Item>
                 </Form>
-                <Line slider={{
-                    start: lineSlideStart
-                }}
-                    autoFit
-                    loading={loading}
-                    xField="time"
-                    yField="value"
-                    seriesField="name"
-                    data={data}
-                    renderer="svg"
-                ></Line>
+                {data.length === 0
+                    ? <Empty />
+                    : <Line slider={{ start: lineSlideStart }}
+                        autoFit
+                        loading={loading}
+                        xField="time"
+                        yField="value"
+                        seriesField="name"
+                        data={data}
+                        renderer="svg"
+                    ></Line>}
             </>
     )
 }

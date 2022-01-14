@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Layout, Menu, Image } from "antd";
+import { Layout, Menu } from "antd";
 import "./UserMain.css"
-import { Link, Outlet, useSearchParams } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { universalProps } from "../typing";
 import { setTerminals } from "../store/user";
 import { IconFont, devTypeIcon } from "../components/IconFont";
@@ -10,7 +10,6 @@ import { BindDev } from "../common/Fetch";
 import { useNav } from "../hook/useNav";
 import { subscribeEvent, unSubscribeEvent } from "../common/socket";
 import { UserDropDown } from "../components/userDropDown";
-import { useLocalStorageState } from "ahooks";
 import { useToken } from "../hook/useToken";
 
 /**

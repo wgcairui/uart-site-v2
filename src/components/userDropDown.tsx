@@ -1,4 +1,5 @@
 import { LoadingOutlined } from "@ant-design/icons";
+import { useLocalStorageState } from "ahooks";
 import { Avatar, Dropdown, Menu } from "antd";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -21,11 +22,11 @@ interface props {
  * @returns 
  */
 export const UserDropDown: React.FC<props> = ({ userPage }) => {
-
+    const [_, setToken] = useLocalStorageState<string>('token')
     const Dispatch = useDispatch()
     const nav = useNav()
     const exit = () => {
-        localStorage.removeItem("token")
+        setToken()
         nav("/")
     }
 

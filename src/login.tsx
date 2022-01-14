@@ -8,11 +8,15 @@ import { useSearchParams } from "react-router-dom";
 import { Get, Post, wxlogin } from "./common/Fetch";
 import { universalResult } from "./typing";
 import { useNav } from "./hook/useNav";
+import { useLocalStorageState } from "ahooks";
 
 
 export const Login: React.FC = () => {
 
     const navi = useNav()
+
+
+    const [_, setToken] = useLocalStorageState<string>('token')
 
 
     const [loading, setLoading] = useState(true)
@@ -32,7 +36,7 @@ export const Login: React.FC = () => {
                 navi(['user', 'test'].includes(userGroup) ? '/main' : '/root')
                 return true
             } else {
-                localStorage.removeItem("token")
+                setToken("")
                 return false
             }
         } catch (error) {
@@ -88,7 +92,7 @@ export const Login: React.FC = () => {
         if (hash) {
             const { code, msg, token } = await Post<universalResult<{ token: string }>>('/api/auth/login', { user: username, passwd: AES.encrypt(password, hash).toString() })
             if (code === 200) {
-                localStorage.setItem('token', 'bearer%20' + token)
+                setToken(token)
                 checkUser()
                 /* const { userGroup } = await Get<universalResult<{ userGroup: string }>>("/api/auth/userGroup")
                 navi(userGroup === 'user' ? '/' : '/root') */
@@ -221,7 +225,8 @@ export const LoginWx: React.FC = () => {
         nav("/login")
     }
     wxlogin(code!, state!).then(el => {
-        localStorage.setItem('token', 'bearer%20' + (el as any).token)
+        const [_, setToken] = useLocalStorageState<string>('token')
+        setToken((el as any).token)
         nav("/")
     })
 
