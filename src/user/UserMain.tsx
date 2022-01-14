@@ -71,7 +71,8 @@ export const Main: React.FC<universalProps> = (props) => {
             <Layout className="user-main">
                 <Layout.Header className="user-header">
                     <Link to="/main">
-                        <Image src="http://admin.ladishb.com/upload/LADS_witdh.png" preview={false} height={20}></Image>
+                        {/* <Image src="http://admin.ladishb.com/upload/LADS_witdh.png" preview={false} height={20}></Image> */}
+                        <span style={{ fontSize: 36, color: "#3a8ee6", fontFamily: "cursive" }}>百事服</span>
                     </Link>
                     <div className="user-header-menu">
                         <Menu theme="dark" mode="horizontal">

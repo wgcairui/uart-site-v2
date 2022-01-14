@@ -28,8 +28,13 @@ import { RootMain } from "./root/RootMain"
 import { Main } from "./user/UserMain"
 import { OssUpload } from "./root/data/oss"
 import { RootDevLine } from "./root/node/devline"
+import { disableReactDevTools } from "./common/util"
 
 export const App: React.FC = () => {
+
+    if (process.env.NODE_ENV == 'production') {
+        disableReactDevTools();
+    }
 
     return (
         <Routes>

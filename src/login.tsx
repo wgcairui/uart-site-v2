@@ -67,7 +67,7 @@ export const Login: React.FC = () => {
                                 scope: "snsapi_login",
                                 redirect_uri: encodeURI("https://uart.ladishb.com/loginwx"),
                                 state: "e0bwU6jnO2KfIuTgBQNDVxlsy7iGtoF3A8rWpSCM5RzZ1dmYJcLHqPhXav4Ek9lIC6P4cULfktXj5Wcwa3GcCBCYRMWidUzZyJyTqu",
-                                href: "https://uart.ladishb.com/css/openwx.css",
+                                href: "https://besiv-uart.oss-cn-hangzhou.aliyuncs.com/css/00137087c1c679c134236bbd38f41220.css",
                             });
                         }, 0);
                     }
@@ -127,7 +127,8 @@ export const Login: React.FC = () => {
             :
             <Layout className="layout">
                 <Layout.Header color="#000" className="header">
-                    <Image src="https://www.ladishb.com/logo.png" preview={false}></Image>
+                    {/* <Image src="https://www.ladishb.com/logo.png" preview={false}></Image> */}
+                    <span style={{ fontSize: 36, color: "#3a8ee6", fontFamily: "cursive" }}>百事服</span>
                     <Dropdown overlay={
                         <Menu>
                             <Menu.Item icon={<IconFont type="icon-zhongwen" />} key="cn">中文</Menu.Item>
@@ -144,7 +145,7 @@ export const Login: React.FC = () => {
                                 <h3>物联网ITO监控服务平台</h3>
                                 <h4>适用于数据中心,微模块机房,单体UPS,空调等设备监控</h4>
                                 <div>
-                                    <Image height={288} width={288} src="https://www.ladishb.com/upload/3312021__LADS_Uart.5df2cc6.png" />
+                                    <Image height={288} width={288} src="https://besiv-uart.oss-cn-hangzhou.aliyuncs.com/png/4713b946f778b3a2cdd94512eda43fa2.png" />
                                 </div>
                                 <h5>LADS透传平台小程序</h5>
                             </div>
