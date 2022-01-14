@@ -8,6 +8,7 @@ const server = "https://uart.ladishb.com"
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  //base: "/v2",
   server: {
     open: true,
     host: '0.0.0.0',
@@ -17,7 +18,7 @@ export default defineConfig({
     }
   },
   preview: {
-    port: 9005,
+    port: 9004,
     host: "0.0.0.0",
   },
   build: {

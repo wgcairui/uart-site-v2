@@ -5,16 +5,16 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY ["package.json", "/app/"]
+COPY ["express/package.json","express/index.js", "/app/"]
 
 # Install app dependencies
 # echo https://mirrors.aliyun.com/alpine/v3.6/main/ > /etc/apk/repositories  && apk add autoconf automake libtool 
 
 #RUN  npm install --production
-RUN  npm install -g vite
+RUN  npm install --production
 
 COPY dist /app/dist
 
 EXPOSE 9004
 
-CMD ["npm", "run", "start"]
+CMD ["node", "index.js"]
