@@ -112,3 +112,5 @@ export const Nodes: React.FC = () => {
         </>
     )
 }
+
+export default Nodes

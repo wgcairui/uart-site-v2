@@ -200,3 +200,5 @@ export const Protocols: React.FC = () => {
         </>
     )
 }
+
+export default Protocols

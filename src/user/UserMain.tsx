@@ -17,7 +17,7 @@ import { useToken } from "../hook/useToken";
  * @param props 
  * @returns 
  */
-export const Main: React.FC<universalProps> = (props) => {
+const Main: React.FC<universalProps> = (props) => {
 
 
 
@@ -108,3 +108,5 @@ export const Main: React.FC<universalProps> = (props) => {
         </main>
     )
 }
+
+export default Main

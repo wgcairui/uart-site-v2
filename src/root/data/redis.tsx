@@ -89,3 +89,5 @@ export const Redis: React.FC = () => {
         </>
     )
 }
+
+export default Redis

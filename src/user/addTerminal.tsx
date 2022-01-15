@@ -4,7 +4,7 @@ import { Breadcrumb, Divider, Card, Form, Button, Input, message, Spin, Descript
 import { addUserTerminal, getTerminalOnline } from "../common/Fetch";
 import { useNav } from "../hook/useNav";
 
-export const AddTerminal: React.FC = () => {
+const AddTerminal: React.FC = () => {
 
     const [ter, setTer] = useState<Uart.Terminal>()
 
@@ -121,3 +121,5 @@ export const AddTerminal: React.FC = () => {
         </>
     )
 }
+
+export default AddTerminal

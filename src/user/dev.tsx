@@ -8,7 +8,7 @@ import { ApartmentOutlined, DownOutlined, HomeOutlined } from '@ant-design/icons
 import { TerminalDevPage } from "../components/TerminalDev";
 import { useNav } from "../hook/useNav";
 
-export const Dev: React.FC = () => {
+const Dev: React.FC = () => {
 
     const nav = useNav()
 
@@ -80,3 +80,5 @@ export const Dev: React.FC = () => {
             </>
     )
 }
+
+export default Dev

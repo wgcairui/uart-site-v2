@@ -4,14 +4,13 @@ import { Layout, Image, Menu, Dropdown, Row, Col, Card, Tabs, Form, Input, Butto
 import { UserOutlined, LockOutlined, WechatFilled } from "@ant-design/icons"
 import "./login.css"
 import { IconFont } from "./components/IconFont";
-import { useSearchParams } from "react-router-dom";
-import { Get, Post, wxlogin } from "./common/Fetch";
+import { Get, Post } from "./common/Fetch";
 import { universalResult } from "./typing";
 import { useNav } from "./hook/useNav";
 import { useLocalStorageState } from "ahooks";
 
 
-export const Login: React.FC = () => {
+const Login: React.FC = () => {
 
     const navi = useNav()
 
@@ -151,7 +150,7 @@ export const Login: React.FC = () => {
                                 <div>
                                     <Image height={288} width={288} src="https://besiv-uart.oss-cn-hangzhou.aliyuncs.com/png/4713b946f778b3a2cdd94512eda43fa2.png" />
                                 </div>
-                                <h5>LADS透传平台小程序</h5>
+                                <h5>百事服云平台小程序</h5>
                             </div>
                         </Col>
                         <Col span={24} md={12} className="content-row-col2">
@@ -205,32 +204,12 @@ export const Login: React.FC = () => {
                     </Row>
                 </Layout.Content>
                 <Layout.Footer >
-                    © 2019 All Rights Reserved 百事服 鄂ICP备19029626号-1
+                    © 2019 All Rights Reserved 
+                    <a href="http://www.besiv.com/" target="_blank">百事服</a>
+                     鄂ICP备19029626号-1
                 </Layout.Footer>
             </Layout>
     )
 }
 
-
-
-export const LoginWx: React.FC = () => {
-
-    const nav = useNav()
-
-    const [param] = useSearchParams()
-
-    useEffect(() => {
-        const [code, state] = [param.get("code"), param.get("state")]
-
-        if (!code || !state) {
-            nav("/login")
-        }
-        wxlogin(code!, state!).then(el => {
-            const [_, setToken] = useLocalStorageState<string>('token')
-            setToken((el as any).token)
-            nav("/")
-        })
-    }, [])
-
-    return (<></>)
-}
+export default Login

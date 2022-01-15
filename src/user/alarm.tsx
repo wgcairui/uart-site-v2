@@ -10,7 +10,7 @@ interface alarms extends Uart.uartAlarmObject {
     _id?: string
 }
 
-export const Alarm: React.FC = () => {
+const Alarm: React.FC = () => {
 
     const [dates, setDates] = useState<[moment.Moment, moment.Moment]>([moment().subtract(6, "month"), moment()])
 
@@ -113,3 +113,5 @@ export const Alarm: React.FC = () => {
         </>
     )
 }
+
+export default Alarm

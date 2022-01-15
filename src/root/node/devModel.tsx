@@ -118,3 +118,5 @@ export const DevModel: React.FC = () => {
         </>
     )
 }
+
+export default DevModel

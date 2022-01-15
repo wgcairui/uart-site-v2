@@ -137,3 +137,6 @@ export const OssUpload: React.FC = () => {
         </>
     )
 } 
+
+
+export default OssUpload

@@ -15,7 +15,7 @@ import { useNav } from "../hook/useNav";
 import { devDTU, devType } from "../common/devImgSource";
 
 type key = "dev" | "module" | "agg"
-export const UserIndex: React.FC = (props) => {
+const UserIndex: React.FC = (props) => {
 
     const [seachParms, setSearchParms] = useSearchParams()
 
@@ -181,3 +181,5 @@ export const UserIndex: React.FC = (props) => {
         </>
     )
 }
+
+export default UserIndex

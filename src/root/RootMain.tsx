@@ -21,7 +21,7 @@ interface navi {
  * @param props 
  * @returns 
  */
-export const RootMain: React.FC = props => {
+const RootMain: React.FC = props => {
 
   const nav: navi[] =
     [{
@@ -257,3 +257,5 @@ export const RootMain: React.FC = props => {
     </Layout>
   )
 }
+
+export default RootMain

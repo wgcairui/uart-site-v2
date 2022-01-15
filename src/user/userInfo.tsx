@@ -15,7 +15,7 @@ import "./userInfo.css"
  * @param props 
  * @returns 
  */
-export const UserInfo: React.FC = props => {
+const UserInfo: React.FC = props => {
 
     const { user } = useSelector<State, storeUser>(state => state.User)
 
@@ -133,3 +133,5 @@ export const UserInfo: React.FC = props => {
         </>
     )
 }
+
+export default UserInfo

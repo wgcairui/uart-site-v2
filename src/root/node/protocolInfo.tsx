@@ -762,3 +762,5 @@ export const ProtocolInfo: React.FC = () => {
         </>
     )
 }
+
+export default ProtocolInfo

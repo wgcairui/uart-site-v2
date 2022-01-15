@@ -1,18 +1,9 @@
-import { ApartmentOutlined, CheckCircleFilled, DeleteFilled, EyeFilled, HomeOutlined, WarningFilled } from "@ant-design/icons";
-import { Breadcrumb, Card, Col, Descriptions, Divider, message, Modal, Popconfirm, Row, Space, Tag, Tooltip, Form, Select, Button, Empty } from "antd";
+import { ApartmentOutlined, HomeOutlined } from "@ant-design/icons";
+import { Breadcrumb, Card, Col, Descriptions, Divider, Row, Tag, Empty } from "antd";
 import moment from "moment";
-import React, { useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { State } from "../store";
-import { storeUser } from "../store/user";
-import { Marker } from "@uiw/react-amap"
-import { Aamp_ip2local, Amap_gps2AutonaviPosition, delTerminalMountDev, getTerminal } from "../common/Fetch";
-import { AmapLoader } from "../components/amaploader";
-import { DevCard } from "../components/devCard";
-import { devTypeIcon } from "../components/IconFont";
-import { DevTypesCascader } from "../components/Selects";
-import { TerminalAddMountDev } from "../components/TerminalDev";
+import React, { } from "react";
+import { useParams } from "react-router-dom";
+import { getTerminal } from "../common/Fetch";
 import { DevPosition } from "../components/devPosition";
 import { TerminalMountDevs } from "../components/terminalsTable";
 import { usePromise } from "../hook/usePromise";
@@ -21,7 +12,7 @@ import { usePromise } from "../hook/usePromise";
  * 透传网关设备详情页
  * @returns 
  */
-export const Terminal: React.FC = () => {
+const Terminal: React.FC = () => {
     /**
      * 设备id
      */
@@ -73,3 +64,5 @@ export const Terminal: React.FC = () => {
             </>
     )
 }
+
+export default Terminal

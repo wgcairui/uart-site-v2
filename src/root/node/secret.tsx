@@ -1,5 +1,5 @@
 import { Tabs, Form, Input, Button, Spin, message, Modal } from "antd";
-import React, {  } from "react";
+import React, { } from "react";
 import { get_Secret, set_Secret } from "../../common/FecthRoot";
 import { usePromise } from "../../hook/usePromise";
 
@@ -114,3 +114,4 @@ export const Secret: React.FC = () => {
 }
 
 
+export default Secret

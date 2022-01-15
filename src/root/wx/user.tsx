@@ -125,3 +125,5 @@ export const WxUser: React.FC = () => {
         </>
     )
 }
+
+export default WxUser

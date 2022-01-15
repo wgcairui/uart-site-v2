@@ -78,3 +78,5 @@ export const TerminalInfos: React.FC<props> = (props) => {
             </>
     )
 }
+
+export default TerminalInfos

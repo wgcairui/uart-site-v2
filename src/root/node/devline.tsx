@@ -20,3 +20,5 @@ export const RootDevLine: React.FC = () => {
             <TerminalMountDevNameLine {...props as any}></TerminalMountDevNameLine>
     )
 }
+
+export default RootDevLine

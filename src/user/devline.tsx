@@ -8,7 +8,7 @@ import { State } from "../store";
 import { storeUser } from "../store/user";
 import { TerminalMountDevNameLine } from "../components/terminalData";
 
-export const DevLine: React.FC = () => {
+const DevLine: React.FC = () => {
 
     const { terminals } = useSelector<State, storeUser>(state => state.User)
 
@@ -56,3 +56,6 @@ export const DevLine: React.FC = () => {
             </>
     )
 }
+
+
+export default DevLine

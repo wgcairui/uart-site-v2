@@ -1,35 +1,50 @@
-import React from "react"
+import React, { lazy, Suspense } from "react"
 import "./App.css"
-import { Login, LoginWx } from "./login"
-import { UserIndex } from "./user"
+
 import { Routes, Route } from "react-router-dom"
-import { Alarm } from "./user/alarm"
-import { Dev } from "./user/dev"
-import { Terminal } from "./user/terminal"
-import { DevLine } from "./user/devline"
-import { AddTerminal } from "./user/addTerminal"
-import { UserInfo } from "./user/userInfo"
-import { RootIndex } from "./root"
-import { Secret } from "./root/node/secret"
-import { Protocols } from "./root/node/protocols"
-import { DevModel } from "./root/node/devModel"
-import { Nodes } from "./root/node/nodes"
-import { TerminalAddDTU, Terminals } from "./root/node/terminal"
-import { User } from "./root/node/user"
-import { WxUser } from "./root/wx/user"
-import { WxMaterials_list } from "./root/wx/materials_list"
-import { ClientResult, ClientResultSingle } from "./root/data/clientResult"
-import { Redis } from "./root/data/redis"
-import { LogDataClean, LogMail, LogNode, LogSms, LogTerminal, LogUartTerminalDatatransfinites, LogUserlogins, LogUserrequsts, LogWxEvent, LogWxSubscribe } from "./root/log/log"
-import { TerminalInfos } from "./root/node/terminalInfo"
-import { UserInfo as RootUserInfo } from "./root/node/userInfo"
-import { ProtocolInfo } from "./root/node/protocolInfo"
-import { RootMain } from "./root/RootMain"
-import { Main } from "./user/UserMain"
-import { OssUpload } from "./root/data/oss"
-import { RootDevLine } from "./root/node/devline"
 import { disableReactDevTools } from "./common/util"
-import { WxLine } from "./user/wxLine"
+
+
+const LogUartTerminalDatatransfinites = lazy(() => import("./root/log/alarm"))
+const LogDataClean = lazy(() => import("./root/log/dataClean"))
+const LogUserlogins = lazy(() => import("./root/log/logins"))
+const LogMail = lazy(() => import("./root/log/mail"))
+const LogNode = lazy(() => import("./root/log/nodes"))
+const LogUserrequsts = lazy(() => import("./root/log/request"))
+const LogSms = lazy(() => import("./root/log/sms"))
+const LogTerminal = lazy(() => import("./root/log/terminal"))
+const LogWxEvent = lazy(() => import("./root/log/wxEvent"))
+const LogWxSubscribe = lazy(() => import("./root/log/wxSubscribe"))
+const TerminalAddDTU = lazy(() => import("./root/node/terminalRegister"))
+const Login = lazy(() => import("./login"))
+const LoginWx = lazy(() => import("./wxLogin"))
+const UserIndex = lazy(() => import("./user"))
+const Alarm = lazy(() => import("./user/alarm"))
+const Dev = lazy(() => import("./user/dev"))
+const Terminal = lazy(() => import("./user/terminal"))
+const DevLine = lazy(() => import("./user/devline"))
+const AddTerminal = lazy(() => import("./user/addTerminal"))
+const UserInfo = lazy(() => import("./user/userInfo"))
+const RootIndex = lazy(() => import("./root"))
+const Secret = lazy(() => import("./root/node/secret"))
+const Protocols = lazy(() => import("./root/node/protocols"))
+const DevModel = lazy(() => import("./root/node/devModel"))
+const Nodes = lazy(() => import("./root/node/nodes"))
+const Terminals = lazy(() => import("./root/node/terminal"))
+const User = lazy(() => import("./root/node/user"))
+const WxUser = lazy(() => import("./root/wx/user"))
+const WxMaterials_list = lazy(() => import("./root/wx/materials_list"))
+const ClientResultSingle = lazy(() => import("./root/data/clientResult"))
+const ClientResult = lazy(() => import("./root/data/clientResultColltion"))
+const Redis = lazy(() => import("./root/data/redis"))
+const TerminalInfos = lazy(() => import("./root/node/terminalInfo"))
+const RootUserInfo = lazy(() => import("./root/node/userInfo"))
+const ProtocolInfo = lazy(() => import("./root/node/protocolInfo"))
+const RootMain = lazy(() => import("./root/RootMain"))
+const Main = lazy(() => import("./user/UserMain"))
+const OssUpload = lazy(() => import("./root/data/oss"))
+const RootDevLine = lazy(() => import("./root/node/devline"))
+const WxLine = lazy(() => import("./user/wxLine"))
 
 export const App: React.FC = () => {
 
@@ -38,59 +53,62 @@ export const App: React.FC = () => {
     }
 
     return (
-        <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/loginwx" element={<LoginWx />} />
+        <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
 
-            <Route path="/root" element={<RootMain />}>
-                <Route index element={<RootIndex />}></Route>
-                <Route path="node/Secret" element={<Secret />} />
-                <Route path="node/Protocols" element={<Protocols />} />
-                <Route path="node/Protocols/info" element={<ProtocolInfo />} />
-                <Route path="node/addDev" element={<DevModel />} />
-                <Route path="node/addNode" element={<Nodes />} />
-                <Route path="node/Terminal" element={<Terminals />} />
-                <Route path="node/Terminal/info" element={<TerminalInfos />} />
-                <Route path="node/terminal/devline" element={<RootDevLine />} />
-                <Route path="node/Terminal/RegisterTerminal" element={<TerminalAddDTU />} />
-                <Route path="node/user" element={<User />} />
-                <Route path="node/user/userInfo" element={<RootUserInfo />} />
+                <Route path="/" element={<Login />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/loginwx" element={<LoginWx />} />
 
-                <Route path="wx/users" element={<WxUser />} />
-                <Route path="wx/materials_list" element={<WxMaterials_list />} />
+                <Route path="/root" element={<RootMain />}>
+                    <Route index element={<RootIndex />}></Route>
+                    <Route path="node/Secret" element={<Secret />} />
+                    <Route path="node/Protocols" element={<Protocols />} />
+                    <Route path="node/Protocols/info" element={<ProtocolInfo />} />
+                    <Route path="node/addDev" element={<DevModel />} />
+                    <Route path="node/addNode" element={<Nodes />} />
+                    <Route path="node/Terminal" element={<Terminals />} />
+                    <Route path="node/Terminal/info" element={<TerminalInfos />} />
+                    <Route path="node/terminal/devline" element={<RootDevLine />} />
+                    <Route path="node/Terminal/RegisterTerminal" element={<TerminalAddDTU />} />
+                    <Route path="node/user" element={<User />} />
+                    <Route path="node/user/userInfo" element={<RootUserInfo />} />
 
-                <Route path="data/ClientResultSingle" element={<ClientResultSingle />} />
-                <Route path="data/ClientResult" element={<ClientResult />} />
-                <Route path="data/redis" element={<Redis />} />
+                    <Route path="wx/users" element={<WxUser />} />
+                    <Route path="wx/materials_list" element={<WxMaterials_list />} />
 
-                <Route path="data/oss" element={<OssUpload />} />
+                    <Route path="data/ClientResultSingle" element={<ClientResultSingle />} />
+                    <Route path="data/ClientResult" element={<ClientResult />} />
+                    <Route path="data/redis" element={<Redis />} />
 
-                <Route path="log/node" element={<LogNode />} />
-                <Route path="log/terminal" element={<LogTerminal />} />
-                <Route path="log/sms" element={<LogSms />} />
-                <Route path="log/mail" element={<LogMail />} />
-                <Route path="log/uartterminaldatatransfinites" element={<LogUartTerminalDatatransfinites />} />
-                <Route path="log/userlogins" element={<LogUserlogins />} />
-                <Route path="log/userrequsts" element={<LogUserrequsts />} />
-                <Route path="log/dataClean" element={<LogDataClean />} />
-                <Route path="log/wxEvent" element={<LogWxEvent />} />
-                <Route path="log/wxSubscribe" element={<LogWxSubscribe />} />
-            </Route>
+                    <Route path="data/oss" element={<OssUpload />} />
 
-            <Route path="/main" element={< Main />}>
-                <Route index element={<UserIndex />} />
-                <Route path="alarm" element={<Alarm />} />
-                <Route path="dev/:id" element={<Dev />} />
-                <Route path="devline/:id" element={<DevLine />} />
-                <Route path="terminal/:id" element={<Terminal />} />
-                <Route path="addterminal" element={<AddTerminal />} />
-                <Route path="user" element={<UserInfo />} />
-            </Route>
+                    <Route path="log/node" element={<LogNode />} />
+                    <Route path="log/terminal" element={<LogTerminal />} />
+                    <Route path="log/sms" element={<LogSms />} />
+                    <Route path="log/mail" element={<LogMail />} />
+                    <Route path="log/uartterminaldatatransfinites" element={<LogUartTerminalDatatransfinites />} />
+                    <Route path="log/userlogins" element={<LogUserlogins />} />
+                    <Route path="log/userrequsts" element={<LogUserrequsts />} />
+                    <Route path="log/dataClean" element={<LogDataClean />} />
+                    <Route path="log/wxEvent" element={<LogWxEvent />} />
+                    <Route path="log/wxSubscribe" element={<LogWxSubscribe />} />
+                </Route>
 
-            <Route path="/wxline" element={<WxLine />} ></Route>
+                <Route path="/main" element={< Main />}>
+                    <Route index element={<UserIndex />} />
+                    <Route path="alarm" element={<Alarm />} />
+                    <Route path="dev/:id" element={<Dev />} />
+                    <Route path="devline/:id" element={<DevLine />} />
+                    <Route path="terminal/:id" element={<Terminal />} />
+                    <Route path="addterminal" element={<AddTerminal />} />
+                    <Route path="user" element={<UserInfo />} />
+                </Route>
 
-        </Routes>
+                <Route path="/wxline" element={<WxLine />} ></Route>
+
+            </Routes>
+        </Suspense>
     )
 }
 

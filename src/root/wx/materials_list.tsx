@@ -58,3 +58,5 @@ export const WxMaterials_list: React.FC = () => {
         </>
     )
 }
+
+export default WxMaterials_list

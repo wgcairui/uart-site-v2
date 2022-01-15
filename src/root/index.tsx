@@ -25,7 +25,7 @@ interface terJw {
 
 }
 
-export const RootIndex: React.FC = () => {
+const RootIndex: React.FC = () => {
     /**
      * 饼图通用配置
      */
@@ -250,7 +250,7 @@ export const RootIndex: React.FC = () => {
                     }
                 </Tabs.TabPane>
                 <Tabs.TabPane key="map" tab="终端地图">
-                    <FullscreenOutlined onClick={() => enterFullscreen()} style={{fontSize:24}}/>
+                    <FullscreenOutlined onClick={() => enterFullscreen()} style={{ fontSize: 24 }} />
                     <div id="maps">
                         <AmapLoader zoom={5} height={isFull ? undefined : 800} onComplete={() => getRunInfo()}>
                             <MassMarks data={marks} onMouseOver={mouse} onClick={undefined} onDblClick={undefined} onMouseDown={undefined} onMouseUp={undefined} onMouseOut={undefined} onTouchStart={undefined} onTouchEnd={undefined}></MassMarks>
@@ -261,3 +261,5 @@ export const RootIndex: React.FC = () => {
         </>
     )
 }
+
+export default RootIndex

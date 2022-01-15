@@ -1,9 +1,14 @@
 import { Empty } from "antd";
-import React, { useState } from "react";
+import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { TerminalMountDevNameLine } from "../components/terminalData";
 import { useToken } from "../hook/useToken";
-export const WxLine: React.FC = () => {
+
+/**
+ * 微信小程序专用line
+ * @returns 
+ */
+const WxLine: React.FC = () => {
 
     const token = useToken()
 
@@ -25,3 +30,6 @@ export const WxLine: React.FC = () => {
             </div>
     )
 }
+
+
+export default WxLine
