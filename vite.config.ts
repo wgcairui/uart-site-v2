@@ -22,7 +22,14 @@ export default defineConfig({
     host: "0.0.0.0",
   },
   build: {
-    emptyOutDir: true
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        entryFileNames: `assets/[hash].js`,
+        chunkFileNames: `assets/[hash].js`,
+        assetFileNames: `assets/[hash].[name].[ext]`
+      }
+    }
   }
 
 })
