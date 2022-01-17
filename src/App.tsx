@@ -33,8 +33,8 @@ const DevModel = lazy(() => import("./root/node/devModel"))
 const Nodes = lazy(() => import("./root/node/nodes"))
 const Terminals = lazy(() => import("./root/node/terminal"))
 const User = lazy(() => import("./root/node/user"))
-const WxUser = lazy(() => import("./root/wx/user"))
-const WxMaterials_list = lazy(() => import("./root/wx/materials_list"))
+const UserWx = lazy(() => import("./root/wx/user"))
+const Materials_listWx = lazy(() => import("./root/wx/materials_list"))
 const ClientResultSingle = lazy(() => import("./root/data/clientResult"))
 const ClientResult = lazy(() => import("./root/data/clientResultColltion"))
 const Redis = lazy(() => import("./root/data/redis"))
@@ -45,7 +45,7 @@ const RootMain = lazy(() => import("./root/RootMain"))
 const Main = lazy(() => import("./user/UserMain"))
 const OssUpload = lazy(() => import("./root/data/oss"))
 const RootDevLine = lazy(() => import("./root/node/devline"))
-const WxLine = lazy(() => import("./user/wxLine"))
+const LineWx = lazy(() => import("./user/wxLine"))
 
 export const App: React.FC = () => {
     /* 
@@ -75,8 +75,8 @@ export const App: React.FC = () => {
                     <Route path="node/user" element={<User />} />
                     <Route path="node/user/userInfo" element={<RootUserInfo />} />
 
-                    <Route path="wx/users" element={<WxUser />} />
-                    <Route path="wx/materials_list" element={<WxMaterials_list />} />
+                    <Route path="wx/users" element={<User />} />
+                    <Route path="wx/materials_list" element={<Materials_listWx />} />
 
                     <Route path="data/ClientResultSingle" element={<ClientResultSingle />} />
                     <Route path="data/ClientResult" element={<ClientResult />} />
@@ -106,7 +106,7 @@ export const App: React.FC = () => {
                     <Route path="user" element={<UserInfo />} />
                 </Route>
 
-                <Route path="/wxline" element={<WxLine />} ></Route>
+                <Route path="/wxline" element={<LineWx />} ></Route>
 
             </Routes>
         </Suspense>
