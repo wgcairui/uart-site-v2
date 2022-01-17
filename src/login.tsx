@@ -28,6 +28,8 @@ const Login: React.FC = () => {
     const [loginLoading, setLoginLoading] = useState(false)
 
     const checkUser = async () => {
+        
+        if (!localStorage.getItem("token")) return false
         try {
             const { user, code, userGroup } = await Get<universalResult<{ user: string, userGroup: string }>>('/api/auth/user')
             // console.log({ user, code, userGroup });
@@ -35,7 +37,7 @@ const Login: React.FC = () => {
                 navi(['user', 'test'].includes(userGroup) ? '/main' : '/root')
                 return true
             } else {
-                setToken("")
+                setToken()
                 return false
             }
         } catch (error) {
@@ -204,9 +206,9 @@ const Login: React.FC = () => {
                     </Row>
                 </Layout.Content>
                 <Layout.Footer >
-                    © 2019 All Rights Reserved 
+                    © 2019 All Rights Reserved
                     <a href="http://www.besiv.com/" target="_blank">百事服</a>
-                     鄂ICP备19029626号-1
+                    鄂ICP备19029626号-1
                 </Layout.Footer>
             </Layout>
     )

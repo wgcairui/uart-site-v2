@@ -70,7 +70,7 @@ export const OssUpload: React.FC = () => {
                 onChange={s}
                 multiple
                 action="/api/root/ossupload"
-                headers={{ token: getToken() }}
+                headers={{ token: getToken() || '' }}
             >
                 <Button icon={<UploadOutlined />}>Click to Upload</Button>
             </Upload>

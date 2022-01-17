@@ -2,7 +2,8 @@ import React, { lazy, Suspense } from "react"
 import "./App.css"
 
 import { Routes, Route } from "react-router-dom"
-import { disableReactDevTools } from "./common/util"
+import { Spin } from "antd"
+//import { disableReactDevTools } from "./common/util"
 
 
 const LogUartTerminalDatatransfinites = lazy(() => import("./root/log/alarm"))
@@ -47,13 +48,13 @@ const RootDevLine = lazy(() => import("./root/node/devline"))
 const WxLine = lazy(() => import("./user/wxLine"))
 
 export const App: React.FC = () => {
-
-    if (process.env.NODE_ENV == 'production') {
-        disableReactDevTools();
-    }
-
+    /* 
+        if (process.env.NODE_ENV == 'production') {
+            disableReactDevTools();
+        }
+     */
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div className="loading"><Spin /></div>}>
             <Routes>
 
                 <Route path="/" element={<Login />} />
