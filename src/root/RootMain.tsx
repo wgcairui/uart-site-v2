@@ -185,14 +185,14 @@ const RootMain: React.FC = props => {
         },
         {
           to: {
-            name: "root/log/wxEvent",
+            name: "root/log/wEvent",
           },
           text: "微信推送事件日志",
           ico: "\uEB8c",
         },
         {
           to: {
-            name: "root/log/wxSubscribe",
+            name: "root/log/wSubscribe",
           },
           text: "微信告警事件日志",
           ico: "\uEB8c",
