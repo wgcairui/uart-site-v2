@@ -13,6 +13,7 @@ app.use(function (req, res, next) {
 })
  */
 app.use('/api', createProxyMiddleware({ target: 'https://uart.ladishb.com', changeOrigin: true }));
+app.use('/client', createProxyMiddleware({ target: 'https://uart.ladishb.com', changeOrigin: true }));
 app.use(connect())
 app.use(express.static(path.join(__dirname, 'dist')))
 app.listen(9004, '0.0.0.0', () => {
