@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, Image } from "antd";
+import "./devCard.css"
 
 interface card extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
     /**

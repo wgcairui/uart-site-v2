@@ -1,5 +1,4 @@
-
-.user-main{
+.user-main {
     height: 100%;
 }
 
@@ -9,12 +8,20 @@
     padding: 0 1rem;
 }
 
-.logo{
+.logo {
     color: aliceblue;
 }
 
-.user-header-menu{
+.user-header-menu {
     display: flex;
     align-items: center;
     margin-left: auto;
+}
+
+
+@media screen and (max-width:476px) {
+    .menu-phone {
+        display: inline;
+
+    }
 }

@@ -604,12 +604,12 @@ export const TerminalMountDevNameLine: React.FC<TerminalMountDevNameLineProps> =
                     <Form.Item label="选择参数">
                         <ProtocolInstructSelect defaultValue={selects} protocolName={Protocol.data.protocol} multiple onChange={val => setSelects(val as string[])}></ProtocolInstructSelect>
                     </Form.Item>
-                    <Form.Item wrapperCol={{ offset: 1 }}>
+                    <Form.Item wrapperCol={{ offset: 1 }} style={{ alignItems: "end" }}>
                         <Button type="primary" onClick={() => fecth()}>刷新</Button>
                     </Form.Item>
                 </Form>
                 {data.length === 0
-                    ? <Empty />
+                    ? <Empty description={loading ? '正在加载' : '暂无数据'} />
                     : <Line slider={{ start: lineSlideStart }}
                         autoFit
                         loading={loading}

@@ -4,6 +4,7 @@ import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { devType } from "../common/devImgSource";
 import { BindDev, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryMac, getTerminals, getTerminalUser, initTerminal, IotQueryCardFlowInfo, IotQueryCardInfo, IotQueryIotCardOfferDtl, iotRemoteUrl, modifyTerminalRemark } from "../common/FecthRoot";
 import { delTerminalMountDev, getTerminal, modifyTerminal, refreshDevTimeOut } from "../common/Fetch";
 import { prompt } from "../common/prompt";
@@ -148,7 +149,7 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
                 terminal?.mountDevs && terminal.mountDevs.map(el =>
                     <Col span={24} md={8} {...props.col} key={terminal.DevMac + el.pid}>
                         <DevCard
-                            img={`http://admin.ladishb.com/upload/${el.Type}.png`}
+                            img={devType[el.Type]}
                             title={<Space>
                                 <Tooltip title={el.online ? '在线' : '离线'}>
                                     {el.online ? <CheckCircleFilled style={{ color: "#67C23A" }} /> : <WarningFilled style={{ color: "#E6A23C" }} />}
@@ -477,7 +478,6 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                         dataIndex: 'online',
                         title: '状态',
                         width: 70,
-                        fixed: 'left',
                         filters: [
                             {
                                 text: '在线',
@@ -565,7 +565,6 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                     {
                         key: 'oprate',
                         title: '操作',
-                        fixed: 'right',
                         width: 120,
                         render: (_, t) => <Space size={0} wrap>
                             <Button type="link" onClick={() => nav('/root/node/Terminal/info?mac=' + t.DevMac)}>查看</Button>
@@ -592,7 +591,8 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                         <TerminalInfo terminal={re} ex={ex} />
                         <TerminalMountDevs terminal={re} ex={ex}></TerminalMountDevs>
                         <DevPosition terminal={re} />
-                    </>
+                    </>,
+                    fixed:"left"
                 }}
             >
             </Table>

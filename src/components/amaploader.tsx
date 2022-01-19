@@ -17,6 +17,7 @@ export const AmapLoader: React.FC<MapProps & { akay?: string, width?: string | n
                     onComplete={(val) => props.onComplete && props.onComplete(val)}
                     center={props.center}
                     ref={props.ref}
+                    style={{minHeight:200}}
                 >
                     {
                         props.children

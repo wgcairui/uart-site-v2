@@ -153,6 +153,7 @@ export const Protocols: React.FC = () => {
                 dataSource={generateTableKey(data, '_id')}
                 {...tableConfig}
                 pagination={false}
+                scroll={{x:1000}}
                 columns={[
 
                     {

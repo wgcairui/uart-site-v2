@@ -79,106 +79,103 @@ const UserIndex: React.FC = (props) => {
     }
 
     return (
-        <>
+        <Row style={{ paddingBottom: 24 }}>
+            <Col span={24} lg={18}>
+                <Tabs activeKey={defalutKey} onTabClick={(key: any) => switchTab(key)}>
+                    <Tabs.TabPane tab={<span><IconFont type="icon-shebeizhuangtai" /> 我的设备</span>} key="dev">
+                        <Row>
+                            {
+                                mountDevs.map(el => {
+                                    return (
+                                        <Col span={24} md={12} lg={8} xl={8} xxl={6} key={el.mac + el.pid}>
+                                            <DevCard
+                                                img={devType[el.Type]}
+                                                title={<Space>
+                                                    <Tooltip title={el.online ? '在线' : '离线'}>
+                                                        {el.online ? <CheckCircleFilled style={{ color: "#67C23A" }} /> : <WarningFilled style={{ color: "#E6A23C" }} />}
+                                                    </Tooltip>
+                                                    {el.mountDev}
+                                                </Space>}
+                                                avatar={devTypeIcon[el.Type]}
+                                                subtitle={el.macName + '-' + el.pid}
+                                                onClick={() => nav("/main/dev/" + el.mac + el.pid)}
+                                            ></DevCard>
+                                        </Col>
 
-            <Row>
-                <Col span={24} lg={18}>
-                    <Tabs activeKey={defalutKey} onTabClick={(key: any) => switchTab(key)}>
-                        <Tabs.TabPane tab={<span><IconFont type="icon-shebeizhuangtai" /> 我的设备</span>} key="dev">
-                            <Row>
-                                {
-                                    mountDevs.map(el => {
-                                        return (
-                                            <Col span={24} md={12} lg={8} xl={8} xxl={6} key={el.mac + el.pid}>
-                                                <DevCard
-                                                    img={devType[el.Type]}
-                                                    title={<Space>
-                                                        <Tooltip title={el.online ? '在线' : '离线'}>
-                                                            {el.online ? <CheckCircleFilled style={{ color: "#67C23A" }} /> : <WarningFilled style={{ color: "#E6A23C" }} />}
-                                                        </Tooltip>
-                                                        {el.mountDev}
-                                                    </Space>}
-                                                    avatar={devTypeIcon[el.Type]}
-                                                    subtitle={el.macName + '-' + el.pid}
-                                                    onClick={() => nav("/main/dev/" + el.mac + el.pid)}
-                                                ></DevCard>
-                                            </Col>
+                                    )
+                                })
+                            }
+                            <Col span={24} md={12} lg={8} xl={6} xxl={4} key='addDev' className="center">
+                                {/* <Button shape="round" type="primary" onClick={() => setDefalutKey("module")}>添加设备</Button> */}
+                                <Dropdown overlay={
+                                    <Menu>
+                                        <Menu.Item>
+                                            <Link to="/addterminal">透传网关/百事服卡</Link>
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            <Link to="/?tab=module" onClick={() => setDefalutKey("module")}>设备</Link>
+                                        </Menu.Item>
+                                    </Menu>
+                                }>
+                                    <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                                        添加设备<DownOutlined />
+                                    </a>
+                                </Dropdown>
+                            </Col>
+                        </Row>
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab={<span><IconFont type="icon-jichuguanli" /> 我的网关</span>} key="module">
+                        <Row>
+                            {
+                                terminals.map(el => {
+                                    return (
+                                        <Col span={24} md={12} lg={8} xl={6} xxl={4} key={el.DevMac}>
+                                            <DevCard
+                                                img={devDTU[el.PID || 'null']}
+                                                title={<Space>
+                                                    <Tooltip title={el.online ? '在线' : '离线'}>
+                                                        {el.online ? <CheckCircleFilled style={{ color: "#67C23A" }} /> : <WarningFilled style={{ color: "#E6A23C" }} />}
+                                                    </Tooltip>
+                                                    {el.name}
+                                                </Space>}
+                                                subtitle={moment(el.uptime).format("YY/M/D H:m:s")}
+                                                actions={[
+                                                    <Tooltip title="编辑查看">
+                                                        <EyeFilled style={{ color: "#67C23B" }} onClick={() => nav("/main/terminal/" + el.DevMac)} />
+                                                    </Tooltip>,
+                                                    <Tooltip title="重命名">
+                                                        <EditFilled style={{ color: "#409EFF" }} onClick={() => renameTerminal(el)} />
+                                                    </Tooltip>,
+                                                    <Tooltip title="删除" >
+                                                        <Popconfirm
+                                                            title={`确认删除设备[${el.name}]?`}
+                                                            onConfirm={() => delTermianl(el)}
+                                                            onCancel={() => message.info('cancel')}
+                                                        >
+                                                            <DeleteFilled style={{ color: "#E6A23B" }} />
+                                                        </Popconfirm>
+                                                    </Tooltip>
+                                                ]}
+                                            ></DevCard>
+                                        </Col>
 
-                                        )
-                                    })
-                                }
-                                <Col span={24} md={12} lg={8} xl={6} xxl={4} key='addDev' className="center">
-                                    {/* <Button shape="round" type="primary" onClick={() => setDefalutKey("module")}>添加设备</Button> */}
-                                    <Dropdown overlay={
-                                        <Menu>
-                                            <Menu.Item>
-                                                <Link to="/addterminal">透传网关/百事服卡</Link>
-                                            </Menu.Item>
-                                            <Menu.Item>
-                                                <Link to="/?tab=module" onClick={() => setDefalutKey("module")}>设备</Link>
-                                            </Menu.Item>
-                                        </Menu>
-                                    }>
-                                        <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                                            添加设备<DownOutlined />
-                                        </a>
-                                    </Dropdown>
-                                </Col>
-                            </Row>
-                        </Tabs.TabPane>
-                        <Tabs.TabPane tab={<span><IconFont type="icon-jichuguanli" /> 我的网关</span>} key="module">
-                            <Row>
-                                {
-                                    terminals.map(el => {
-                                        return (
-                                            <Col span={24} md={12} lg={8} xl={6} xxl={4} key={el.DevMac}>
-                                                <DevCard
-                                                    img={devDTU[el.PID || 'null']}
-                                                    title={<Space>
-                                                        <Tooltip title={el.online ? '在线' : '离线'}>
-                                                            {el.online ? <CheckCircleFilled style={{ color: "#67C23A" }} /> : <WarningFilled style={{ color: "#E6A23C" }} />}
-                                                        </Tooltip>
-                                                        {el.name}
-                                                    </Space>}
-                                                    subtitle={moment(el.uptime).format("YY/M/D H:m:s")}
-                                                    actions={[
-                                                        <Tooltip title="编辑查看">
-                                                            <EyeFilled style={{ color: "#67C23B" }} onClick={() => nav("/main/terminal/" + el.DevMac)} />
-                                                        </Tooltip>,
-                                                        <Tooltip title="重命名">
-                                                            <EditFilled style={{ color: "#409EFF" }} onClick={() => renameTerminal(el)} />
-                                                        </Tooltip>,
-                                                        <Tooltip title="删除" >
-                                                            <Popconfirm
-                                                                title={`确认删除设备[${el.name}]?`}
-                                                                onConfirm={() => delTermianl(el)}
-                                                                onCancel={() => message.info('cancel')}
-                                                            >
-                                                                <DeleteFilled style={{ color: "#E6A23B" }} />
-                                                            </Popconfirm>
-                                                        </Tooltip>
-                                                    ]}
-                                                ></DevCard>
-                                            </Col>
+                                    )
+                                })
+                            }
+                            <Col span={24} md={12} lg={8} xl={6} xxl={4} key="addModule" className="center">
+                                <Button shape="round" type="primary" size="large" href="/main/addterminal">添加网关</Button>
+                            </Col>
+                        </Row>
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab={<span><IconFont type="icon-changjingguanli" />聚合设备</span>} key="agg">
+                        <Row></Row>
+                    </Tabs.TabPane>
+                </Tabs>
+            </Col>
+            <Col span={24} lg={6} xs={0}>
 
-                                        )
-                                    })
-                                }
-                                <Col span={24} md={12} lg={8} xl={6} xxl={4} key="addModule" className="center">
-                                    <Button shape="round" type="primary" size="large" href="/main/addterminal">添加网关</Button>
-                                </Col>
-                            </Row>
-                        </Tabs.TabPane>
-                        <Tabs.TabPane tab={<span><IconFont type="icon-changjingguanli" />聚合设备</span>} key="agg">
-                            <Row></Row>
-                        </Tabs.TabPane>
-                    </Tabs>
-                </Col>
-                <Col span={24} lg={6} xs={0}>
-
-                </Col>
-            </Row>
-        </>
+            </Col>
+        </Row>
     )
 }
 

@@ -132,6 +132,7 @@ export const User: React.FC = () => {
             <Table
                 loading={loading}
                 dataSource={generateTableKey(users, 'user')}
+                scroll={{x:1000}}
                 columns={[
                     {
                         key: 'online',

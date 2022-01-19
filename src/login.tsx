@@ -9,6 +9,10 @@ import { universalResult } from "./typing";
 import { useNav } from "./hook/useNav";
 import { useLocalStorageState } from "ahooks";
 
+import { ConfigProvider } from 'antd'
+import Zh from "antd/es/locale/zh_CN"
+import En from "antd/es/locale/en_US"
+
 
 const Login: React.FC = () => {
 
@@ -20,6 +24,8 @@ const Login: React.FC = () => {
 
     const [loading, setLoading] = useState(true)
 
+    const [isZh, setZh] = useState(true)
+
     /**
      * tab index
      */
@@ -28,7 +34,7 @@ const Login: React.FC = () => {
     const [loginLoading, setLoginLoading] = useState(false)
 
     const checkUser = async () => {
-        
+
         if (!localStorage.getItem("token")) return false
         try {
             const { user, code, userGroup } = await Get<universalResult<{ user: string, userGroup: string }>>('/api/auth/user')
@@ -130,87 +136,89 @@ const Login: React.FC = () => {
             <Spin tip="loading" size="large" />
         </div>
             :
-            <Layout className="layout">
-                <Layout.Header color="#000" className="header">
-                    {/* <Image src="https://www.ladishb.com/logo.png" preview={false}></Image> */}
-                    <span style={{ fontSize: 36, color: "#3a8ee6", fontFamily: "cursive" }}>百事服</span>
-                    <Dropdown overlay={
-                        <Menu>
-                            <Menu.Item icon={<IconFont type="icon-zhongwen" />} key="cn">中文</Menu.Item>
-                            <Menu.Item icon={<IconFont type="icon-yingwen" />} key='en'>En</Menu.Item>
-                        </Menu>
-                    } className="header-drop">
-                        <a href="" onClick={e => e.preventDefault()}>lauguage</a>
-                    </Dropdown>
-                </Layout.Header>
-                <Layout.Content className="content">
-                    <Row className="content-row">
-                        <Col span={24} md={12}>
-                            <div className="content-row-col1">
-                                <h3>物联网ITO监控服务平台</h3>
-                                <h4>适用于数据中心,微模块机房,单体UPS,空调等设备监控</h4>
-                                <div>
-                                    <Image height={288} width={288} src="https://besiv-uart.oss-cn-hangzhou.aliyuncs.com/png/4713b946f778b3a2cdd94512eda43fa2.png" />
+            <ConfigProvider locale={isZh ? Zh : En}>
+                <Layout className="layout">
+                    <Layout.Header color="#000" className="header">
+                        {/* <Image src="https://www.ladishb.com/logo.png" preview={false}></Image> */}
+                        <span style={{ fontSize: 36, color: "#3a8ee6", fontFamily: "cursive" }}>百事服</span>
+                        <Dropdown overlay={
+                            <Menu>
+                                <Menu.Item icon={<IconFont type="icon-zhongwen" />} key="cn" onClick={() => setZh(true)}>中文</Menu.Item>
+                                <Menu.Item icon={<IconFont type="icon-yingwen" />} key='en' onClick={() => setZh(false)}>En</Menu.Item>
+                            </Menu>
+                        } className="header-drop">
+                            <a href="" onClick={e => e.preventDefault()}>lauguage</a>
+                        </Dropdown>
+                    </Layout.Header>
+                    <Layout.Content className="content">
+                        <Row className="content-row">
+                            <Col span={24} md={12}>
+                                <div className="content-row-col1">
+                                    <h3>物联网ITO监控服务平台</h3>
+                                    <h4>适用于数据中心,微模块机房,单体UPS,空调等设备监控</h4>
+                                    <div>
+                                        <Image height={288} width={288} src="https://besiv-uart.oss-cn-hangzhou.aliyuncs.com/png/4713b946f778b3a2cdd94512eda43fa2.png" />
+                                    </div>
+                                    <h5>百事服云平台小程序</h5>
                                 </div>
-                                <h5>百事服云平台小程序</h5>
-                            </div>
-                        </Col>
-                        <Col span={24} md={12} className="content-row-col2">
-                            <Card className="card-login">
-                                <Tabs defaultActiveKey={tabdefaultActiveKey}>
-                                    <Tabs.TabPane tab={<span><WechatFilled />微信登录/注册</span>} key="wx_qr">
-                                        <div id="wxlogin" className="hidden-sm-and-down" style={{ height: 286 }}></div>
-                                    </Tabs.TabPane>
-                                    <Tabs.TabPane tab={<span><UserOutlined />账号登录</span>} key="login" className="">
-                                        <Form
-                                            name="normal_login"
-                                            className="login-form"
-                                            initialValues={{ remember: true }}
-                                            onFinish={onFinish}
-                                        >
-                                            <Form.Item
-                                                name="username"
-                                                rules={[{ required: true, message: '输入云平台账号或百事服账号!' }]}
+                            </Col>
+                            <Col span={24} md={12} className="content-row-col2">
+                                <Card className="card-login">
+                                    <Tabs defaultActiveKey={tabdefaultActiveKey}>
+                                        <Tabs.TabPane tab={<span><WechatFilled />微信登录/注册</span>} key="wx_qr">
+                                            <div id="wxlogin" className="hidden-sm-and-down" style={{ height: 286 }}></div>
+                                        </Tabs.TabPane>
+                                        <Tabs.TabPane tab={<span><UserOutlined />账号登录</span>} key="login" className="">
+                                            <Form
+                                                name="normal_login"
+                                                className="login-form"
+                                                initialValues={{ remember: true }}
+                                                onFinish={onFinish}
                                             >
-                                                <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="输入你的账号" />
-                                            </Form.Item>
-                                            <Form.Item
-                                                name="password"
-                                                rules={[{ required: true, message: '输入密码,密码不能为空!' }]}
-                                            >
-                                                <Input
-                                                    prefix={<LockOutlined className="site-form-item-icon" />}
-                                                    type="password"
-                                                    placeholder="输入密码"
-                                                />
-                                            </Form.Item>
-
-                                            <Form.Item>
-                                                <Button loading={loginLoading} type="primary" htmlType="submit" className="login-form-button">
-                                                    登录
-                                                </Button>
-                                                <Button loading={loginLoading} className="login-form-button"
-                                                    style={{ marginTop: 9, backgroundColor: '#E6A23B', color: "#fff" }}
-                                                    onClick={() => onFinish({ username: 'test', password: '123456' })}
+                                                <Form.Item
+                                                    name="username"
+                                                    rules={[{ required: true, message: '输入云平台账号或百事服账号!' }]}
                                                 >
-                                                    我要试用?
-                                                </Button>
-                                                {/*  Or <Link to="/">现在注册</Link>
+                                                    <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="输入你的账号" />
+                                                </Form.Item>
+                                                <Form.Item
+                                                    name="password"
+                                                    rules={[{ required: true, message: '输入密码,密码不能为空!' }]}
+                                                >
+                                                    <Input
+                                                        prefix={<LockOutlined className="site-form-item-icon" />}
+                                                        type="password"
+                                                        placeholder="输入密码"
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item>
+                                                    <Button loading={loginLoading} type="primary" htmlType="submit" className="login-form-button">
+                                                        登录
+                                                    </Button>
+                                                    <Button loading={loginLoading} className="login-form-button"
+                                                        style={{ marginTop: 9, backgroundColor: '#E6A23B', color: "#fff" }}
+                                                        onClick={() => onFinish({ username: 'test', password: '123456' })}
+                                                    >
+                                                        我要试用?
+                                                    </Button>
+                                                    {/*  Or <Link to="/">现在注册</Link>
                                                 <Link to="/" className="login-form-forgot">忘记密码</Link> */}
-                                            </Form.Item>
-                                        </Form>
-                                    </Tabs.TabPane>
-                                </Tabs>
-                            </Card>
-                        </Col>
-                    </Row>
-                </Layout.Content>
-                <Layout.Footer >
-                    © 2019 All Rights Reserved
-                    <a href="http://www.besiv.com/" target="_blank">百事服</a>
-                    鄂ICP备19029626号-1
-                </Layout.Footer>
-            </Layout>
+                                                </Form.Item>
+                                            </Form>
+                                        </Tabs.TabPane>
+                                    </Tabs>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </Layout.Content>
+                    <Layout.Footer >
+                        © 2019 All Rights Reserved
+                        <a href="http://www.besiv.com/" target="_blank">百事服</a>
+                        鄂ICP备19029626号-1
+                    </Layout.Footer>
+                </Layout>
+            </ConfigProvider>
     )
 }
 

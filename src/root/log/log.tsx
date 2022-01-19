@@ -89,12 +89,15 @@ export const Log: React.FC<log> = (props) => {
         /**
          * 检查是否包含刷选配置
          */
-        const s = new Set([...props.cfilter || [], ...props.cPie?.map(el => typeof el === 'string' ? el : el.key) || []])
+        /* const s = new Set([...props.cfilter || [], ...props.cPie?.map(el => typeof el === 'string' ? el : el.key) || []])
+
+        console.log({arr,s,props});
+        
         arr.forEach((el: any) => {
             if (s.has(el.dataIndex)) {
-                Object.assign(el, { filteredValue: filter[el.dataIndex] || [], ...tableColumnsFilter(list.data, el.dataIndex) })
+                Object.assign(el, { filteredValue: filter[el.dataIndex], ...tableColumnsFilter(list.data, el.dataIndex) })
             }
-        })
+        }) */
 
         return arr
     }, [filter])

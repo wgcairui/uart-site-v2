@@ -38,11 +38,11 @@ const DevLine: React.FC = () => {
                     <Breadcrumb.Item href="/">
                         <HomeOutlined />
                     </Breadcrumb.Item>
-                    <Breadcrumb.Item href={'/terminal/' + terminal?.DevMac}>
+                    <Breadcrumb.Item href={'/main/terminal/' + terminal?.DevMac}>
                         <ApartmentOutlined />
                         <span>{terminal?.name}</span>
                     </Breadcrumb.Item>
-                    <Breadcrumb.Item href={'/dev/' + id}>
+                    <Breadcrumb.Item href={'/main/dev/' + id}>
                         {mountDev ? devTypeIcon[mountDev!.Type] : <Spin />}
                         <span>{mountDev?.mountDev || ''}</span>
                     </Breadcrumb.Item>

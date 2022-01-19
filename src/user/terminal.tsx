@@ -40,7 +40,7 @@ const Terminal: React.FC = () => {
                     </Breadcrumb.Item>
                 </Breadcrumb>
                 <Divider />
-                <Card>
+                <Card style={{ overflow: "auto", height: "100%",marginBottom:36 }}>
                     <Row>
                         <Col span={24} md={12}>
                             <Descriptions title={terminal?.name || id}>
@@ -57,7 +57,7 @@ const Terminal: React.FC = () => {
                             </section>
                         </Col>
                         <Col span={24} md={12}>
-                            <DevPosition terminal={terminal.DevMac}></DevPosition>
+                            <DevPosition  terminal={terminal.DevMac}></DevPosition>
                         </Col>
                     </Row>
                 </Card>

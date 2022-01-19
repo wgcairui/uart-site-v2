@@ -75,7 +75,7 @@ const Alarm: React.FC = () => {
                 </Form.Item>
             </Form>
             <Card>
-                <Row>
+                <Row gutter={12}>
                     <Col span={24} md={8} sm={0} key="chart">
                         <Card>
                             <Space direction="vertical" style={{ width: "100%" }}>
@@ -88,10 +88,21 @@ const Alarm: React.FC = () => {
                     </Col>
                     <Col span={24} md={16} key="table">
                         <Table dataSource={generateTableKey(alarms, '_id')} size="small" sticky>
-                            <Table.Column title='网关' dataIndex='mac' key="mac" ellipsis {...tableColumnsFilter(alarms, 'mac')} ></Table.Column>
+                            <Table.Column responsive={["sm"]} title='网关' dataIndex='mac' key="mac" ellipsis {...tableColumnsFilter(alarms, 'mac')} ></Table.Column>
                             <Table.Column title='设备' dataIndex='devName' key="devName" {...tableColumnsFilter(alarms, 'devName')}></Table.Column>
-                            <Table.Column title='消息' dataIndex='msg' key="msg" ellipsis  {...getColumnSearchProp('msg')}></Table.Column>
-                            <Table.Column title='类型' dataIndex='tag' key="tag" {...tableColumnsFilter(alarms, "tag")}></Table.Column>
+                            <Table.Column title='消息' dataIndex='msg' key="msg" ellipsis  {...getColumnSearchProp('msg')}
+                                render={(val, record:any) =>
+                                    <Popconfirm
+                                        title={val}
+                                        onConfirm={() => confirm(record._id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                       {val}
+                                    </Popconfirm>
+                                }
+                            ></Table.Column>
+                            <Table.Column responsive={["sm"]} title='类型' dataIndex='tag' key="tag" {...tableColumnsFilter(alarms, "tag")}></Table.Column>
                             <Table.Column title='时间' dataIndex='timeStamp' key="timeStamp"
                                 defaultSortOrder='descend'
                                 sorter={(a: any, b: any) => a.timeStamp - b.timeStamp}

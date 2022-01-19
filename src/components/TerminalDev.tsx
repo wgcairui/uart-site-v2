@@ -1,7 +1,7 @@
 import { Liquid } from "@ant-design/charts";
 import { DownOutlined } from "@ant-design/icons";
-import { Col, Descriptions, Divider, Dropdown, Form, Image, Menu, message, Modal, Progress, Row, Select, Space, Spin, Switch, Tabs } from "antd";
-import React, { useCallback, useMemo, useState } from "react";
+import { Card, Col, Descriptions, Divider, Dropdown, Form, Image, Menu, message, Modal, Progress, Row, Select, Space, Spin, Switch, Tabs } from "antd";
+import React, { useMemo, useState } from "react";
 import { addTerminalMountDev, getProtocolSetup, getTerminal, getTerminalPidProtocol } from "../common/Fetch";
 import { sendOprateInstruct } from "../common/util";
 import { usePromise } from "../hook/usePromise";
@@ -74,11 +74,11 @@ export const TerminalDevTH: React.FC<result> = ({ mac, pid, result }) => {
 
     return (
         <Row>
-            <Col span={24} md={12}>
-                <Liquid radius={0.6} statistic={{ content: { content: `温度:${th.t}℃`, style: "fontSize:22px" } }} percent={th.t / 100} />
+            <Col span={12} md={12}>
+                <Liquid radius={0.6} height={250} statistic={{ content: { content: `温度:${th.t}℃`, style: "fontSize:22px" } }} percent={th.t / 100} />
             </Col>
-            <Col span={24} md={12}>
-                <Liquid radius={0.6} statistic={{ content: { content: `湿度:${th.h}%RH`, style: "fontSize:42px" } }} percent={th.h / 100} />
+            <Col span={12} md={12}>
+                <Liquid radius={0.6} height={250} statistic={{ content: { content: `湿度:${th.h}%RH`, style: "fontSize:42px" } }} percent={th.h / 100} />
             </Col>
         </Row>
     )
@@ -94,7 +94,7 @@ const IoSwicth: React.FC<ios> = ({ r, disable, onChange }) => {
 
     return (
         <>
-            {r.name}  <Switch
+            <Switch
                 checked={Boolean(Number(r.value))}
                 size="default"
                 disabled={disable}
@@ -156,21 +156,27 @@ export const TerminalDevIO: React.FC<result> = ({ mac, pid, result }) => {
     }
 
     return (
-        <Row style={{ padding: "22,0" }}>
-            <Col span={24} >
-                <Space align="center" size={22} wrap>
-                    <Divider plain></Divider>
+
+        <Row>
+            <Col span={12} md={24}>
+                <Divider plain>DI</Divider>
+                <Form layout="inline" style={{ justifyContent: "center" }}>
                     {
-                        io.in.map(i => <IoSwicth r={i} key={i.name} disable></IoSwicth>)
+                        io.in.map(i => <Form.Item label={i.name} key={i.name}>
+                            <IoSwicth r={i} disable></IoSwicth>
+                        </Form.Item>)
                     }
-                </Space>
+                </Form>
             </Col>
-            <Col span={24}>
-                <Space>
+            <Col span={12} md={24}>
+                <Divider plain>DO</Divider>
+                <Form layout="inline" style={{ justifyContent: "center" }}>
                     {
-                        io.out.map(i => <IoSwicth r={i} key={i.name} onChange={changeDo}></IoSwicth>)
+                        io.out.map(i => <Form.Item label={i.name} key={i.name}>
+                            <IoSwicth r={i} onChange={changeDo}></IoSwicth>
+                        </Form.Item>)
                     }
-                </Space>
+                </Form>
             </Col>
         </Row>
     )
@@ -520,10 +526,10 @@ export const TerminalDevPage: React.FC<DevDataProps> = ({ mac, pid, user }) => {
             </div>
 
             <Row gutter={22}>
-                <Col span={8}>
+                <Col span={24} md={8}>
                     <TerminalRunData mac={mac} pid={pid} user={user} OnUpdate={updateData} />
                 </Col>
-                <Col span={16}>
+                <Col span={24} md={16} xs={0}>
                     <TerminalRunDataThresoldLine mac={mac} pid={pid} time={data?.time}></TerminalRunDataThresoldLine>
                 </Col>
             </Row>

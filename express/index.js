@@ -16,5 +16,6 @@ app.use('/api', createProxyMiddleware({ target: 'https://uart.ladishb.com', chan
 app.use(connect())
 app.use(express.static(path.join(__dirname, 'dist')))
 app.listen(9004, '0.0.0.0', () => {
+  
   console.log('express listen 9004');
 });

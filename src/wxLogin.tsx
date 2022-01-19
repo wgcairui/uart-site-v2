@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import { useSearchParams } from "react-router-dom"
 import { wxlogin } from "./common/Fetch"
 import { useNav } from "./hook/useNav"
+import { Spin } from "antd"
 
 /**
  * 微信登录跳转页面
@@ -12,27 +13,23 @@ import { useNav } from "./hook/useNav"
 const LoginWx: React.FC = () => {
 
     const nav = useNav()
-
     const [param] = useSearchParams()
+    const [_, setToken] = useLocalStorageState<string>('token')
 
     useEffect(() => {
-        const [code, state] = [param.get("code"), param.get("state")]
-
-        console.log({code, state});
-        
-        if (!code || !state) {
+        (async () => {
+            const [code, state] = [param.get("code"), param.get("state")]
+            if (!code || !state) {
+                nav("/login")
+            }
+            const { token } = await wxlogin(code!, state!) as any
+            setToken(token)
             nav("/login")
-        }
-        wxlogin(code!, state!).then(el => {
-            const [_, setToken] = useLocalStorageState<string>('token')
-            setToken((el as any).token)
-            console.log({ el });
-
-            nav("/")
-        })
+        })()
     }, [])
 
-    return (<></>)
+
+    return (<Spin />)
 }
 
 export default LoginWx

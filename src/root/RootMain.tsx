@@ -3,6 +3,7 @@ import { Layout, Menu, Breadcrumb, Image, BackTop } from "antd"
 import "./RootMain.css"
 import { Link, Outlet, useLocation } from "react-router-dom"
 import { UserDropDown } from "../components/userDropDown"
+import { AbsButton } from "../components/absButton"
 
 interface navi {
   title: string
@@ -209,50 +210,71 @@ const RootMain: React.FC = props => {
   }, [loacl])
 
 
+  const routers = useMemo(() => {
+    return <>
+      {
+        nav.map(el =>
+          <Menu.SubMenu key={el.title} title={el.title}>
+            {
+              el.child.map(child =>
+                <Menu.Item key={child.text + el.title} >
+                  <Link to={'/' + child.to.name}>{child.text}</Link>
+                </Menu.Item>)
+            }
+          </Menu.SubMenu>)
+      }
+    </>
+  }, [nav])
+
+  const titles = useMemo(() => {
+    return nav.map(el => el.title)
+  }, [nav])
+
   return (
-    <Layout className="layout">
-      <Layout>
-        <Layout.Sider width={200} className="site-layout-background" style={{ backgroundColor: "#011529", marginRight: 24 }}>
-          <div style={{ padding: 12 }}>
-            <Link to="/">
-              <Image src="http://admin.ladishb.com/upload/LADS_witdh.png" preview={false} height={30}></Image>
-            </Link>
-          </div>
+    <Layout className="layout" style={{ height: "100%" }}>
+      <Layout.Sider width={200} className="site-layout-background" style={{ backgroundColor: "#011529", marginRight: 24 }}>
+        <div style={{ padding: 12 }}>
+          <Link to="/">
+            <h2 color="#fff" style={{ color: "#fff" }}>云平台管理后台</h2>
+            {/* <Image src="http://admin.ladishb.com/upload/LADS_witdh.png" preview={false} height={30}></Image> */}
+          </Link>
+        </div>
+        <Menu
+          theme="dark"
+          mode="inline"
+          style={{ borderRight: 0 }}
+        >
+          {
+            routers
+          }
+        </Menu>
+      </Layout.Sider>
+      <Layout style={{ height: "100%",overflow:"auto" }}>
+        <section style={{ display: "flex", alignItems: 'center' }}>
+          <Breadcrumb style={{ margin: '16px 0', marginLeft: 24 }}>
+            {
+              path.map((el, i) => <Breadcrumb.Item key={el + i}>{el}</Breadcrumb.Item>)
+            }
+          </Breadcrumb>
+          <span style={{ marginLeft: 'auto', marginRight: 22 }}>
+            <UserDropDown />
+          </span>
+        </section>
+        <div className="content"
+        >
+          <Outlet />
+        </div>
+        <AbsButton>
           <Menu
-            theme="dark"
             mode="inline"
             style={{ borderRight: 0 }}
+            openKeys={titles}
           >
             {
-              nav.map(el =>
-                <Menu.SubMenu key={el.title} title={el.title}>
-                  {
-                    el.child.map(child =>
-                      <Menu.Item key={child.text + el.title} >
-                        <Link to={'/' + child.to.name}>{child.text}</Link>
-                      </Menu.Item>)
-                  }
-                </Menu.SubMenu>)
+              routers
             }
           </Menu>
-        </Layout.Sider>
-        <Layout>
-          <section style={{ display: "flex", alignItems: 'center' }}>
-            <Breadcrumb style={{ margin: '16px 0' }}>
-              {
-                path.map((el, i) => <Breadcrumb.Item key={el + i}>{el}</Breadcrumb.Item>)
-              }
-            </Breadcrumb>
-            <span style={{ marginLeft: 'auto', marginRight: 22 }}>
-              <UserDropDown />
-            </span>
-          </section>
-          <Layout.Content className="content"
-          >
-            <Outlet />
-            <BackTop>UP</BackTop>
-          </Layout.Content>
-        </Layout>
+        </AbsButton>
       </Layout>
     </Layout>
   )

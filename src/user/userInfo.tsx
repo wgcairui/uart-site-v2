@@ -84,9 +84,10 @@ const UserInfo: React.FC = props => {
     return (
         <>
             <Row justify="center" align="middle">
-                <Col span={24} md={12}>
+                <Col span={24} md={12} style={{padding:12}}>
                     <Space direction="vertical">
                         <Divider orientation="center">用户信息</Divider>
+                        <p>修改用户信息请使用小程序操作</p>
                         <Descriptions title={user.user}>
                             <Descriptions.Item label="avanter" >
                                 <Avatar src={user.avanter} />
