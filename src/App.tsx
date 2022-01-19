@@ -92,8 +92,8 @@ export const App: React.FC = () => {
                     <Route path="log/userlogins" element={<LogUserlogins />} />
                     <Route path="log/userrequsts" element={<LogUserrequsts />} />
                     <Route path="log/dataClean" element={<LogDataClean />} />
-                    <Route path="log/wxEvent" element={<LogWxEvent />} />
-                    <Route path="log/wxSubscribe" element={<LogWxSubscribe />} />
+                    <Route path="log/wEvent" element={<LogWxEvent />} />
+                    <Route path="log/wSubscribe" element={<LogWxSubscribe />} />
                 </Route>
 
                 <Route path="/main" element={< Main />}>
@@ -106,7 +106,7 @@ export const App: React.FC = () => {
                     <Route path="user" element={<UserInfo />} />
                 </Route>
 
-                <Route path="/wxline" element={<LineWx />} ></Route>
+                <Route path="/wline" element={<LineWx />} ></Route>
 
             </Routes>
         </Suspense>
