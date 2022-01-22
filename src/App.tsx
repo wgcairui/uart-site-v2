@@ -107,7 +107,7 @@ export const App: React.FC = () => {
                 </Route>
 
                 <Route path="/wline" element={<LineWx />} ></Route>
-
+                <Route path="*" element={<Login />} />
             </Routes>
         </Suspense>
     )
