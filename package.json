@@ -16,6 +16,7 @@
     "ahooks": "^3.1.5",
     "antd": "^4.17.1",
     "crypto-js": "^4.1.1",
+    "dayjs": "^1.10.7",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "react": "^17.0.2",
@@ -39,6 +40,7 @@
     "reflect-metadata": "^0.1.13",
     "types-uart": "^2.0.4",
     "typescript": "^4.5.2",
-    "vite": "^2.6.4"
+    "vite": "^2.6.4",
+    "vite-plugin-moment-to-dayjs": "^1.0.7"
   }
 }

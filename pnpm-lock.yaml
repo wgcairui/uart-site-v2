@@ -17,6 +17,7 @@ specifiers:
   antd: ^4.17.1
   classnames: ^2.3.1
   crypto-js: ^4.1.1
+  dayjs: ^1.10.7
   lodash: ^4.17.21
   lodash-es: ^4.17.21
   moment: ^2.29.1
@@ -30,6 +31,7 @@ specifiers:
   types-uart: ^2.0.4
   typescript: ^4.5.2
   vite: ^2.6.4
+  vite-plugin-moment-to-dayjs: ^1.0.7
 
 dependencies:
   '@ant-design/charts': 1.3.2_ec40bd2c2b4bef572068024ad2990042
@@ -39,6 +41,7 @@ dependencies:
   ahooks: 3.1.5_react@17.0.2
   antd: 4.17.2_react-dom@17.0.2+react@17.0.2
   crypto-js: 4.1.1
+  dayjs: 1.10.7
   lodash: 4.17.21
   moment: 2.29.1
   react: 17.0.2
@@ -63,6 +66,7 @@ devDependencies:
   types-uart: 2.0.4
   typescript: 4.5.2
   vite: 2.7.1
+  vite-plugin-moment-to-dayjs: 1.0.7_dayjs@1.10.7
 
 packages:
 
@@ -4581,6 +4585,14 @@ packages:
       '@babel/runtime': 7.16.3
       gl-matrix: 3.4.3
     dev: false
+
+  /vite-plugin-moment-to-dayjs/1.0.7_dayjs@1.10.7:
+    resolution: {integrity: sha512-mCAeqNsp/99QiXRUWCYzzy/EOGGm30lncvsw32TvagHmn4QyPY0CsQ9opIGKwqAyFiqPXLanPl0ZilV9aOlf1g==}
+    peerDependencies:
+      dayjs: '*'
+    dependencies:
+      dayjs: 1.10.7
+    dev: true
 
   /vite/2.7.1:
     resolution: {integrity: sha512-TDXXhcu5lyQ6uosK4ZWaOyB4VzOiizk0biitRzDzaEtgSUi8rVYPc4k1xgOjLSf0OuceDJmojFKXHOX9DB1WuQ==}

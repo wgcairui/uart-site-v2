@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import vitePluginMomentToDayjs from 'vite-plugin-moment-to-dayjs'
 
 const server = "https://uart.ladishb.com"
 //const server = "http://localhost:9010"
@@ -7,7 +8,7 @@ const server = "https://uart.ladishb.com"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(),vitePluginMomentToDayjs()],
   //base: "/v2",
   server: {
     open: true,
