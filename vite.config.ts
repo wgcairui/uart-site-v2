@@ -8,7 +8,9 @@ const server = "https://uart.ladishb.com"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(),vitePluginMomentToDayjs()],
+  plugins: [react(),
+    //vitePluginMomentToDayjs()
+  ],
   //base: "/v2",
   server: {
     open: true,
