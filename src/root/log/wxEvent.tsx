@@ -6,7 +6,6 @@ export const LogWxEvent: React.FC = () => {
     return (
         <Log
             dataFun={log_wxEvent}
-            cfilter={['MsgType', 'Event']}
             cPie={[
                 'MsgType',
                 'Event',

@@ -8,7 +8,6 @@ export const LogUserrequsts: React.FC = () => {
         <Log
             lastDay={5}
             dataFun={loguserrequsts}
-            cfilter={['type']}
             cPie={['user', 'type']}
             columns={[
                 {

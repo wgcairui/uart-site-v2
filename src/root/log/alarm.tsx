@@ -13,7 +13,6 @@ import { Log } from "./log"
         <Log
             lastDay={10}
             dataFun={loguartterminaldatatransfinites}
-            cfilter={['tag']}
             cPie={['mac', 'tag']}
             columns={[
                 {

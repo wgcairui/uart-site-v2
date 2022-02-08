@@ -11,7 +11,6 @@ import { Log } from "./log"
         <Log
             lastDay={20}
             dataFun={loguserlogins}
-            cfilter={['type']}
             cPie={['user', 'type']}
             columns={[
                 {
