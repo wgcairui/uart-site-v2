@@ -235,7 +235,7 @@ const RootMain: React.FC = props => {
       <Layout.Sider width={200} className="site-layout-background" style={{ backgroundColor: "#011529", marginRight: 24 }}>
         <div style={{ padding: 12 }}>
           <Link to="/">
-            <h2 color="#fff" style={{ color: "#fff" }}>云平台管理后台</h2>
+            <h2 color="#fff" style={{ color: "#fff" }}>百事服管理后台</h2>
             {/* <Image src="http://admin.ladishb.com/upload/LADS_witdh.png" preview={false} height={30}></Image> */}
           </Link>
         </div>

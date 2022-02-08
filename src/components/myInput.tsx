@@ -30,6 +30,8 @@ export const MyInput: React.FC<myInput> = props => {
      * 保存内容
      */
     const save = () => {
+        console.log('ssss',val);
+        
         props.onSave && props.onSave(val)
         setEdit(false)
     }
@@ -38,7 +40,7 @@ export const MyInput: React.FC<myInput> = props => {
      * 失去焦点
      */
     const blur = () => {
-        setTimeout(() => setEdit(false), 100)
+        setTimeout(() => setEdit(false), 1000)
     }
 
     /**
@@ -65,7 +67,7 @@ export const MyInput: React.FC<myInput> = props => {
                 >
                 </Input.TextArea>
 
-                <Button disabled={!Edit} size="small" type="primary" onClick={() => save()}>{props.okText || '保存'}</Button>
+                <Button style={{ visibility: Edit ? 'visible' : "hidden", marginTop: 3 }} disabled={!Edit} size="small" type="primary" onClick={() => save()}>{props.okText || '保存'}</Button>
 
             </section>
             :

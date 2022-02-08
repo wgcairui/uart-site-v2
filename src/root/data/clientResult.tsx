@@ -79,7 +79,9 @@ export const ClientResultSingle: React.FC = () => {
                     {
                         dataIndex: 'time',
                         title: 'time',
-                        render: val => moment(val).format('YYYY-MM-DD H:m:s')
+                        render: val => moment(val).format('YYYY-MM-DD H:m:s'),
+                        defaultSortOrder: 'descend',
+                        sorter: (a: any, b: any) => moment(a.time).valueOf() - moment(b.time).valueOf()
                     }
                 ] as ColumnsType<IusePromiseData<queryResultSave>>}
 

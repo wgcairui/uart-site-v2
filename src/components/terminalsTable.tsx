@@ -490,6 +490,7 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                         ],
                         onFilter: (val, re) => re.online === val,
                         defaultSortOrder: "descend",
+                        sorter: (a: any, b: any) => a.online - b.online,
                         render: (val) => <Tooltip title={val ? '在线' : '离线'}>
                             <IconFont
                                 type={val ? 'icon-zaixianditu' : 'icon-lixian'}
@@ -592,7 +593,7 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                         <TerminalMountDevs terminal={re} ex={ex}></TerminalMountDevs>
                         <DevPosition terminal={re} />
                     </>,
-                    fixed:"left"
+                    fixed: "left"
                 }}
             >
             </Table>

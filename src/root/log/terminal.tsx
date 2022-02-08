@@ -1,6 +1,7 @@
 import { Card } from "antd"
 import { logterminals } from "../../common/FecthRoot"
 import { getColumnSearchProp } from "../../common/tableCommon"
+import { TerminalInfo } from "../../components/terminalsTable"
 import { DesList, Log } from "./log"
 
 /**

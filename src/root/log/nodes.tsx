@@ -7,8 +7,7 @@ import { Log } from "./log"
  */
  export const LogNode: React.FC = () => {
     return (
-        <Log lastDay={10} dataFun={lognodes}
-            cfilter={['Name']}
+        <Log lastDay={60} dataFun={lognodes}
             cPie={['Name', 'type']}
             columns={[
                 {

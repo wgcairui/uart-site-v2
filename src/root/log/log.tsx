@@ -1,8 +1,8 @@
 import { Button, Col, Descriptions, Divider, Empty, Row, Space, Table } from "antd";
-import { TableProps } from "antd/lib/table";
+import { ColumnsType, TableProps } from "antd/lib/table";
 import moment from "moment";
 import React, { useMemo, useState } from "react";
-import { generateTableKey, tableColumnsFilter } from "../../common/tableCommon";
+import { generateTableKey } from "../../common/tableCommon";
 import { MyCopy } from "../../components/myCopy";
 import { usePromise } from "../../hook/usePromise";
 import { Pie, Plot } from "@ant-design/charts";
@@ -26,7 +26,7 @@ export interface log<T = any> extends TableProps<T> {
     /**
      * 开启参数刷选的字段
      */
-    cfilter?: string[]
+    // cfilter?: string[]
     /**
      * pie饼图参数显示
      */
@@ -70,9 +70,10 @@ export const Log: React.FC<log> = (props) => {
                 dataIndex: 'timeStamp',
                 title: '时间',
                 render: (val: string) => moment(val).format('YYYY-MM-DD HH:mm:ss'),
-
+                defaultSortOrder: 'descend',
+                sorter: (a: any, b: any) => a.timeStamp - b.timeStamp
             },
-        ].flat()
+        ].flat() as any
 
         /**
          * 检查是否包含饼图配置,包含的话给相关字段添加filter配置
@@ -184,6 +185,7 @@ export const Log: React.FC<log> = (props) => {
                 loading={list.loading}
                 dataSource={generateTableKey(list.data, '_id')}
                 columns={columns}
+                pagination={{ defaultPageSize: 30 }}
             ></Table>
         </>
     )

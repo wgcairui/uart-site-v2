@@ -23,11 +23,12 @@ export const LogSms: React.FC = () => {
         <Log
             lastDay={15}
             dataFun={logsmssends}
+            cPie={["tels"]}
             columns={[
                 {
                     dataIndex: 'tels',
                     title: 'tels',
-                    render: (val: string[]) => val.join(","),
+                    //render: (val: string[]) => val.join(","),
                     ...getColumnSearchProp('tels')
                 },
                 {

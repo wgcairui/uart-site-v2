@@ -3,6 +3,19 @@ import { logdataclean } from "../../common/FecthRoot"
 import { Log } from "./log"
 
 export const LogDataClean: React.FC = () => {
+
+    const Ms = (ms: number) => {
+        if (ms) {
+            const s = parseInt((ms / 1000).toFixed(0))
+            if (s > 59) {
+                return ((s / 60).toFixed(0) + '分') + (s % 60 + '秒')
+            } else {
+                return s + '秒'
+            }
+        } else {
+            return "null"
+        }
+    }
     return (
         <Log
             lastDay={120}
@@ -27,7 +40,8 @@ export const LogDataClean: React.FC = () => {
                 },
                 {
                     dataIndex: 'useTime',
-                    title: '耗时'
+                    title: '耗时',
+                    render: (val) => Ms(val)
                 }
             ]}
         />

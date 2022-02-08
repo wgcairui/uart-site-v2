@@ -9,11 +9,11 @@ export const LogMail: React.FC = () => {
         <Log
             lastDay={30}
             dataFun={logmailsends}
+            cPie={["mails"]}
             columns={[
                 {
                     dataIndex: 'mails',
                     title: 'mails',
-                    render: (val: string[]) => val.join(","),
                     ...getColumnSearchProp('mails')
                 },
                 {
