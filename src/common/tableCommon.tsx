@@ -108,10 +108,9 @@ type tableData<T> = T extends Array<infer P> ? (P & { key: string })[] : T
  */
 export const generateTableKey = <T extends Array<any>>(tableData: T, key: T extends Array<infer P> ? keyof P : string): tableData<T> => {
     try {
-        return tableData.map(el => ({ ...el, key: el[key] })) as any
+        return tableData.map((el, i) => ({ ...el, key: el[key] + i })) as any
     } catch (error) {
-        console.log('[]');
-
+        console.error('[]',tableData);
         return [] as any
     }
 

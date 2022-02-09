@@ -3,7 +3,7 @@ import { Spin, Empty, Divider, Descriptions, Tag, Collapse, Table, Button, Space
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import { useState } from "react";
-import { getUserOnlineStat, getUserAlarmSetup, toggleUserGroup, modifyUserRemark, initUserAlarmSetup, logUserAggs, getAlarm } from "../common/FecthRoot";
+import { getUserOnlineStat, getUserAlarmSetup, toggleUserGroup, modifyUserRemark, initUserAlarmSetup, logUserAggs, getAlarm, getUser } from "../common/FecthRoot";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter, tableConfig } from "../common/tableCommon";
 import { RepeatFilter } from "../common/util";
 import { usePromise } from "../hook/usePromise";
@@ -50,7 +50,14 @@ export const UserStat: React.FC<props> = ({ user }) => {
  * @param param0 
  * @returns 
  */
-export const UserDes: React.FC<props<Uart.UserInfo>> = ({ user, updateUser }) => {
+export const UserDes: React.FC<props<Uart.UserInfo | string>> = ({ user: u, updateUser }) => {
+
+
+
+    const { data: user, loading, fecth } = usePromise(async () => {
+        const { data } = typeof u === 'string' ? await getUser(u) : { data: u }
+        return data
+    }, undefined)
 
     /**
      * 切换用户组
@@ -82,51 +89,52 @@ export const UserDes: React.FC<props<Uart.UserInfo>> = ({ user, updateUser }) =>
     }
 
     return (
-        <>
-            <Space style={{ marginBottom: 16 }}>
-                <Button size="small" type="primary" onClick={() => swicthGroup()}>
-                    切换为{user.userGroup === 'user' ? 'admin' : 'user'}
-                </Button>
-            </Space>
-            <Descriptions>
-                <Descriptions.Item label="注册类型">{user.rgtype
-                }</Descriptions.Item>
-                <Descriptions.Item label="账号">{user.user
-                }</Descriptions.Item>
-                <Descriptions.Item label="昵称">{user.name
-                }</Descriptions.Item>
-                <Descriptions.Item label="用户组">
-                    <Space>
-                        <Tag>{user.userGroup}</Tag>
+        user ?
+            <>
+                <Space style={{ marginBottom: 16 }}>
+                    <Button size="small" type="primary" onClick={() => swicthGroup()}>
+                        切换为{user.userGroup === 'user' ? 'admin' : 'user'}
+                    </Button>
+                </Space>
+                <Descriptions>
+                    <Descriptions.Item label="注册类型">{user.rgtype
+                    }</Descriptions.Item>
+                    <Descriptions.Item label="账号">{user.user
+                    }</Descriptions.Item>
+                    <Descriptions.Item label="昵称">{user.name
+                    }</Descriptions.Item>
+                    <Descriptions.Item label="用户组">
+                        <Space>
+                            <Tag>{user.userGroup}</Tag>
 
-                    </Space>
-                </Descriptions.Item>
-                <Descriptions.Item label="邮箱">{user.mail
-                }</Descriptions.Item>
-                <Descriptions.Item label="电话">{user.tel
-                }</Descriptions.Item>
-                <Descriptions.Item label="组织">{user.company
-                }</Descriptions.Item>
-                <Descriptions.Item label="开放Id">{user.userId
-                }</Descriptions.Item>
-                <Descriptions.Item label="公众号Id">{user.wxId
-                }</Descriptions.Item>
-                <Descriptions.Item label="小程序Id">{user.wpId
-                }</Descriptions.Item>
-                <Descriptions.Item label="创建时间">
-                    {moment(user.creatTime).format("YYYY-MM-DD H:m:s")}
-                </Descriptions.Item>
-                <Descriptions.Item label="修改时间">
-                    {moment(user.modifyTime).format("YYYY-MM-DD H:m:s")}
-                </Descriptions.Item>
-                <Descriptions.Item label="登陆IP">{user.address
-                }</Descriptions.Item>
-                <Descriptions.Item label="备注">
-                    <MyInput value={user.remark} onSave={remark}></MyInput>
-                </Descriptions.Item>
-            </Descriptions>
-        </>
-
+                        </Space>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="邮箱">{user.mail
+                    }</Descriptions.Item>
+                    <Descriptions.Item label="电话">{user.tel
+                    }</Descriptions.Item>
+                    <Descriptions.Item label="组织">{user.company
+                    }</Descriptions.Item>
+                    <Descriptions.Item label="开放Id">{user.userId
+                    }</Descriptions.Item>
+                    <Descriptions.Item label="公众号Id">{user.wxId
+                    }</Descriptions.Item>
+                    <Descriptions.Item label="小程序Id">{user.wpId
+                    }</Descriptions.Item>
+                    <Descriptions.Item label="创建时间">
+                        {moment(user.creatTime).format("YYYY-MM-DD H:m:s")}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="修改时间">
+                        {moment(user.modifyTime).format("YYYY-MM-DD H:m:s")}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="登陆IP">{user.address
+                    }</Descriptions.Item>
+                    <Descriptions.Item label="备注">
+                        <MyInput value={user.remark} onSave={remark}></MyInput>
+                    </Descriptions.Item>
+                </Descriptions>
+            </>
+            : <Empty />
     )
 }
 

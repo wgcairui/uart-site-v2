@@ -491,6 +491,14 @@ export function logsmssends(start: string, end: string) {
 }
 
 /**
+ * 返回每个短信发送次数
+ * @returns 
+ */
+export function logsmssendsCountInfo() {
+    return fecth<{ _id: string, sum: number }[]>("logsmssendsCountInfo")
+}
+
+/**
  * 获取邮件日志
  */
 export function logmailsends(start: string, end: string) {

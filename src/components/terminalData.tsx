@@ -179,7 +179,7 @@ export const TerminalAT: React.FC<props> = ({ mac }) => {
         <Row gutter={36}>
             <Col span={12}>
                 <Divider plain>
-                    <a href="http://admin.ladishb.com/upload/4G_2G_NB_DTU产品功能.pdf" target="_blank"><LinkOutlined />调试指令文档(仅支持4G版本)</a>
+                    <a href="https://besiv-uart.oss-cn-hangzhou.aliyuncs.com/pdf/48c5f8ca3d5eb514bbf9ca06220577af.pdf" target="_blank"><LinkOutlined />调试指令文档(仅支持4G版本)</a>
                 </Divider>
                 <Collapse defaultActiveKey="get" ghost accordion>
                     {
