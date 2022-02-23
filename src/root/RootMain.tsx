@@ -249,8 +249,8 @@ const RootMain: React.FC = props => {
           }
         </Menu>
       </Layout.Sider>
-      <Layout style={{ height: "100%",overflow:"auto" }}>
-        <section style={{ display: "flex", alignItems: 'center' }}>
+      <Layout style={{ height: "100%", overflow: "hidden", display: 'unset', }}>
+        <section style={{ alignItems: 'center', display: "flex" }}>
           <Breadcrumb style={{ margin: '16px 0', marginLeft: 24 }}>
             {
               path.map((el, i) => <Breadcrumb.Item key={el + i}>{el}</Breadcrumb.Item>)
@@ -260,7 +260,7 @@ const RootMain: React.FC = props => {
             <UserDropDown />
           </span>
         </section>
-        <div className="content"
+        <div className="content" style={{ overflow: "auto", height: "100%", marginBottom: 24 }}
         >
           <Outlet />
         </div>

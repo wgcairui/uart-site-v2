@@ -132,7 +132,7 @@ const ProtocolInstructFormResize: React.FC<ProtocolInstructFormResizeProps> = ({
      * 添加新的参数
      */
     const addforResize = () => {
-        const { regx, unit, bl } = data[data.length - 1]
+        const { regx, unit, bl } = data[data.length - 1] || { regx: '0-1', unit: 'V', bl: '0.1' }
         const [start, len] = regx!?.split("-").map(Number)
         data.push({
             name: '未命名' + (start + len),

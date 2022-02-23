@@ -46,6 +46,7 @@ const Main = lazy(() => import("./user/UserMain"))
 const OssUpload = lazy(() => import("./root/data/oss"))
 const RootDevLine = lazy(() => import("./root/node/devline"))
 const LineWx = lazy(() => import("./user/wxLine"))
+const Tool = lazy(() => import("./tool"))
 
 export const App: React.FC = () => {
     /* 
@@ -60,6 +61,8 @@ export const App: React.FC = () => {
                 <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/loginwx" element={<LoginWx />} />
+
+                <Route path="/tool" element={<Tool />} />
 
                 <Route path="/root" element={<RootMain />}>
                     <Route index element={<RootIndex />}></Route>
