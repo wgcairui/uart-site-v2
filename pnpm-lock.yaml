@@ -28,7 +28,7 @@ specifiers:
   react-router-dom: ^6.0.2
   reflect-metadata: ^0.1.13
   socket.io-client: ^4.4.0
-  types-uart: ^2.0.4
+  types-uart: ^2.0.5
   typescript: ^4.5.2
   vite: ^2.6.4
   vite-plugin-moment-to-dayjs: ^1.0.7
@@ -63,7 +63,7 @@ devDependencies:
   classnames: 2.3.1
   lodash-es: 4.17.21
   reflect-metadata: 0.1.13
-  types-uart: 2.0.4
+  types-uart: 2.0.5
   typescript: 4.5.2
   vite: 2.7.1
   vite-plugin-moment-to-dayjs: 1.0.7_dayjs@1.10.7
@@ -125,7 +125,7 @@ packages:
   /@alicloud/tea-typescript/1.7.2:
     resolution: {integrity: sha512-vDOU6qUp9ZAGlHSLC7lqVLgxUbmkcDXTEXyiIipvPWcq7dqwDDO6SeLlU7nBYI+yYWpbfOazEGkMTlHMhvA5Tw==}
     dependencies:
-      '@types/node': 12.20.41
+      '@types/node': 12.20.46
       httpx: 2.2.7
     transitivePeerDependencies:
       - supports-color
@@ -1405,8 +1405,8 @@ packages:
     resolution: {integrity: sha512-i1KGxqcvJaLQali+WuypQnXwcplhtNtjs66eNsZpp2P2FL/trJJxx/VWsM0YCL2iMoIJrbXje48lvIQAQ4p2ZA==}
     dev: true
 
-  /@types/node/12.20.41:
-    resolution: {integrity: sha512-f6xOqucbDirG7LOzedpvzjP3UTmHttRou3Mosx3vL9wr9AIQGhcPgVnqa8ihpZYnxyM1rxeNCvTyukPKZtq10Q==}
+  /@types/node/12.20.46:
+    resolution: {integrity: sha512-cPjLXj8d6anFPzFvOPxS3fvly3Shm5nTfl6g8X5smexixbuGUf7hfr21J5tX9JW+UPStp/5P5R8qrKL5IyVJ+A==}
     dev: true
 
   /@types/node/14.18.0:
@@ -4524,8 +4524,8 @@ packages:
     resolution: {integrity: sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=}
     dev: false
 
-  /types-uart/2.0.4:
-    resolution: {integrity: sha512-8tnwVBILoEJudZr+EXRXvystDnLlYq/1n0Jxhp/AMojyfZu7dCk03QU2ddmU1pVLPyO9eQS0OEZL8M8+nQxV/Q==}
+  /types-uart/2.0.5:
+    resolution: {integrity: sha512-ZiYiwUD51xShNnqzeBVL1fZszYjMWc9oI3h1j851luPUkbYg6l2/uGIptLieJxgW08EItgAOjeO05I57SQFGDg==}
     dev: true
 
   /typescript/4.5.2:

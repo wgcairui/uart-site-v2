@@ -295,9 +295,14 @@ export const TerminalInfo: React.FC<infoProps> = (props) => {
                 <>
                     <Divider orientation="left" plain>SIM卡</Divider>
                     <Descriptions>
-                        <Descriptions.Item label="起始时间">{terminal.iccidInfo.validDate}</Descriptions.Item>
-                        <Descriptions.Item label="终止时间">{terminal.iccidInfo.expireDate}</Descriptions.Item>
+                        <Descriptions.Item label="物联卡版本">{terminal.iccidInfo?.version || 'ali_1'}</Descriptions.Item>
+                        {/* <Descriptions.Item label="起始时间">{terminal.iccidInfo.validDate}</Descriptions.Item> */}
                         <Descriptions.Item label="套餐名称">{terminal.iccidInfo.resName}</Descriptions.Item>
+                        <Descriptions.Item label="终止时间">{terminal.iccidInfo.expireDate}/ 
+                            {
+                                moment(terminal.iccidInfo.expireDate).diff(new Date(), 'day')
+                            }天
+                        </Descriptions.Item>
                         <Descriptions.Item label="全部流量">{terminal.iccidInfo.flowResource / 1024}MB</Descriptions.Item>
                         <Descriptions.Item label="使用流量" >{(terminal.iccidInfo.flowUsed / 1024).toFixed(0)}MB</Descriptions.Item>
                         <Descriptions.Item label="使用比例" >{((terminal.iccidInfo.flowUsed / terminal.iccidInfo.flowResource) * 100).toFixed(0)}%</Descriptions.Item>
@@ -590,7 +595,9 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                 expandable={{
                     expandedRowRender: (re, _, __, ex) => <>
                         <TerminalInfo terminal={re} ex={ex} />
-                        <TerminalMountDevs terminal={re} ex={ex}></TerminalMountDevs>
+                        <TerminalMountDevs terminal={re} ex={ex} showTitle={false} InterValShow onChange={fecth}></TerminalMountDevs>
+
+                       {/*  <TerminalMountDevs terminal={re} ex={ex}></TerminalMountDevs> */}
                         <DevPosition terminal={re} />
                     </>,
                     fixed: "left"
