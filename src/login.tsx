@@ -69,9 +69,10 @@ const Login: React.FC = () => {
                     script.async = false
                     document.body.append(script)
                     script.onload = () => {
+
                         // 马上执行是找不到wx对象的,需要异步到下一次循环
                         setTimeout(() => {
-                            (window as any).WxLogin({
+                            window.WxLogin({
                                 // self_redirect: true,
                                 id: "wxlogin",
                                 appid: "wx2afee5b1777448cf",

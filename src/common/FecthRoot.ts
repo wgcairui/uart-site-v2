@@ -1,6 +1,6 @@
 import { universalResult } from "../typing"
 import { Post } from "./Fetch"
-import { QueryCardInfoResponseBodyCardInfo, QueryCardFlowInfoResponseBodyCardFlowInfosCardFlowInfo, QueryIotCardOfferDtlResponseBodyCardOfferDetailDetail } from "@alicloud/dyiotapi20171111"
+import { QueryCardInfoResponseBodyCardInfo, QueryCardFlowInfoResponseBodyCardFlowInfosCardFlowInfo, QueryIotCardOfferDtlResponseBodyCardOfferDetailDetail, DoIotRechargeResponseBody } from "@alicloud/dyiotapi20171111"
 
 import { DeleteMultiResult, ObjectMeta } from "ali-oss"
 
@@ -668,6 +668,17 @@ export function IotQueryCardFlowInfo(iccid: string) {
  */
 export function IotQueryIotCardOfferDtl(iccid: string) {
     return fecth<QueryIotCardOfferDtlResponseBodyCardOfferDetailDetail>("IotQueryIotCardOfferDtl", { iccid })
+}
+
+
+
+/**
+ * 老版物联卡续订套餐
+ * @param mac
+ * @returns 
+ */
+export function IotRecharge(mac: string) {
+    return fecth<DoIotRechargeResponseBody>("IotRecharge", { mac })
 }
 
 /**

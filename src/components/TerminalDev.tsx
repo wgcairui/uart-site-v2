@@ -350,10 +350,10 @@ export const TerminalDevUps: React.FC<result> = ({ mac, pid, result }) => {
             const rMap = new Map(result.map(el => [el.name, el]))
             stat.Switch = rMap.get(Constant.Switch)?.parseValue || ''
             stat.WorkMode = rMap.get(Constant.WorkMode)?.parseValue || ''
-            stat.UpsStat = result.filter(el => Constant.UpsStat.includes(el.name))
-            stat.BettyStat = result.filter(el => Constant.BettyStat.includes(el.name))
-            stat.InputStat = result.filter(el => Constant.InputStat.includes(el.name))
-            stat.OutStat = result.filter(el => Constant.OutStat.includes(el.name))
+            stat.UpsStat = result.filter(el => Constant.UpsStat?.includes(el.name))
+            stat.BettyStat = result.filter(el => Constant.BettyStat?.includes(el.name))
+            stat.InputStat = result.filter(el => Constant.InputStat?.includes(el.name))
+            stat.OutStat = result.filter(el => Constant.OutStat?.includes(el.name))
         }
         return stat
     }, [result, Constant])

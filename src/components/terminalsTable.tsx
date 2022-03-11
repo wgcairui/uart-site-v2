@@ -298,7 +298,7 @@ export const TerminalInfo: React.FC<infoProps> = (props) => {
                         <Descriptions.Item label="物联卡版本">{terminal.iccidInfo?.version || 'ali_1'}</Descriptions.Item>
                         {/* <Descriptions.Item label="起始时间">{terminal.iccidInfo.validDate}</Descriptions.Item> */}
                         <Descriptions.Item label="套餐名称">{terminal.iccidInfo.resName}</Descriptions.Item>
-                        <Descriptions.Item label="终止时间">{terminal.iccidInfo.expireDate}/ 
+                        <Descriptions.Item label="终止时间">{terminal.iccidInfo.expireDate}/
                             {
                                 moment(terminal.iccidInfo.expireDate).diff(new Date(), 'day')
                             }天
@@ -566,7 +566,16 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                         sorter: {
                             compare: (a: any, b: any) => new Date(a.uptime).getDate() - new Date(b.uptime).getDate()
                         }
-                    },
+                    },/* 
+                    {
+                        dataIndex: 'iccidInfo',
+                        title: '剩余流量/天数',
+                        width: 165,
+                        render: (iccidInfo: Uart.iccidInfo) => iccidInfo ? (iccidInfo.restOfFlow / 1024).toFixed(1) : 'lan',
+                        sorter: {
+                            compare: (a: Uart.iccidInfo, b: Uart.iccidInfo) => (a?.restOfFlow || 1e9) - (b?.restOfFlow || 1e9)
+                        }
+                    }, */
 
                     {
                         key: 'oprate',
@@ -597,7 +606,7 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                         <TerminalInfo terminal={re} ex={ex} />
                         <TerminalMountDevs terminal={re} ex={ex} showTitle={false} InterValShow onChange={fecth}></TerminalMountDevs>
 
-                       {/*  <TerminalMountDevs terminal={re} ex={ex}></TerminalMountDevs> */}
+                        {/*  <TerminalMountDevs terminal={re} ex={ex}></TerminalMountDevs> */}
                         <DevPosition terminal={re} />
                     </>,
                     fixed: "left"
