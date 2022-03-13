@@ -389,13 +389,15 @@ export const TerminalDevUps: React.FC<result> = ({ mac, pid, result }) => {
             <Col span={24} md={12}>
                 <div>
                     <span>{ups.WorkMode}</span>
-                    <Switch
-                        style={{ marginLeft: 12 }}
-                        checked={ups.Switch === '开机'}
-                        checkedChildren={ups.Switch}
-                        unCheckedChildren={ups.Switch}
-                        onChange={OnOff}
-                    ></Switch>
+                    {
+                        ups.Switch && <Switch
+                            style={{ marginLeft: 12 }}
+                            checked={ups.Switch === '开机'}
+                            checkedChildren={ups.Switch}
+                            unCheckedChildren={ups.Switch}
+                            onChange={OnOff}
+                        ></Switch>
+                    }
                 </div>
                 <Image src={workPic} preview={false} />
             </Col>
