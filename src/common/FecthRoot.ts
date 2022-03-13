@@ -767,7 +767,7 @@ export type ossfiles = Pick<ObjectMeta, 'name' | 'lastModified' | 'size' | 'url'
  * @returns 
  */
 export const ossFilelist = (prefix?: string) => {
-    return fecth<ossfiles[]>("/ossFilelist", { prefix })
+    return fecth<ossfiles[]>("ossFilelist", { prefix })
 }
 
 /**
@@ -776,7 +776,7 @@ export const ossFilelist = (prefix?: string) => {
  * @returns 
  */
 export const ossDelete = (names: string[]) => {
-    return fecth<DeleteMultiResult>("/ossDelete", { names })
+    return fecth<DeleteMultiResult>("ossDelete", { names })
 }
 
 
