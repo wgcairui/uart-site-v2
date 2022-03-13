@@ -260,7 +260,7 @@ const RootMain: React.FC = props => {
             <UserDropDown />
           </span>
         </section>
-        <div className="content" style={{ overflow: "auto", height: "100%", marginBottom: 24 }}
+        <div className="content" style={{ overflow: "auto", height: "90%", marginBottom: 24 }}
         >
           <Outlet />
         </div>
