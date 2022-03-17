@@ -159,21 +159,24 @@ export const Protocols: React.FC = () => {
                     {
                         dataIndex: 'Protocol',
                         title: "协议",
-                        ...getColumnSearchProp("Protocol")
+                        ...getColumnSearchProp("Protocol"),
+                        width:220
                     },
                     {
                         dataIndex: 'ProtocolType',
                         title: "协议类型",
-                        ...tableColumnsFilter(data, 'ProtocolType')
+                        ...tableColumnsFilter(data, 'ProtocolType'),
+                        width:120
                     },
                     {
                         dataIndex: "Type",
-                        title: "串口类型"
+                        title: "串口类型",
+                        width:120
+                        
                     },
                     {
                         dataIndex: "remark",
                         title: '备注',
-                        width: 180,
                         ellipsis: true,
                         ...getColumnSearchProp("remark"),
                         render: val => <MyCopy value={val}></MyCopy>

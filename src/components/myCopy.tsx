@@ -26,7 +26,7 @@ export const MyCopy: React.FC<copy> = props => {
     const show = () => {
         const content = props.value
         if (/^http/.test(content)) {
-            window.open(content)
+            window.open(content.split(' ')[0])
         } else {
             Modal.info({ content })
         }
