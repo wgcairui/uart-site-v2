@@ -206,8 +206,14 @@ export const Terminals: React.FC = () => {
                         },
                         {
                             dataIndex: 'iccidInfo',
+                            title: '剩余流量比例',
+                            width: 120,
+                            render: (iccidInfo: Uart.iccidInfo) => ((iccidInfo.restOfFlow *100) / iccidInfo.flowResource).toFixed(1) + '%'
+                        },
+                        {
+                            dataIndex: 'iccidInfo',
                             title: '剩余天数',
-                            width: 165,
+                            width: 120,
                             render: (iccidInfo: Uart.iccidInfo) => moment(iccidInfo.expireDate).diff(new Date(), 'day') + 'day',
                             sorter: {
                                 compare: (a: Uart.iccidInfo, b: Uart.iccidInfo) => new Date(a.expireDate).getDate() - new Date(b.expireDate).getDate()
