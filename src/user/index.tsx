@@ -110,10 +110,10 @@ const UserIndex: React.FC = (props) => {
                                 <Dropdown overlay={
                                     <Menu>
                                         <Menu.Item>
-                                            <Link to="/addterminal">透传网关/百事服卡</Link>
+                                            <Link to="/main/addterminal">透传网关/百事服卡</Link>
                                         </Menu.Item>
                                         <Menu.Item>
-                                            <Link to="/?tab=module" onClick={() => setDefalutKey("module")}>设备</Link>
+                                            <Link to="/main?tab=module" onClick={() => setDefalutKey("module")}>设备</Link>
                                         </Menu.Item>
                                     </Menu>
                                 }>
