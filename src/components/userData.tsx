@@ -129,6 +129,8 @@ export const UserDes: React.FC<props<Uart.UserInfo | string>> = ({ user: u, upda
                     </Descriptions.Item>
                     <Descriptions.Item label="登陆IP">{user.address
                     }</Descriptions.Item>
+                    <Descriptions.Item label="转发配置">{user?.proxy
+                    }</Descriptions.Item>
                     <Descriptions.Item label="备注">
                         <MyInput value={user.remark} onSave={remark}></MyInput>
                     </Descriptions.Item>

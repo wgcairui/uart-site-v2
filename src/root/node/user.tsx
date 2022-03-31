@@ -214,9 +214,7 @@ export const User: React.FC = () => {
                             {
                                 user.userGroup !== 'root' && <Button type="link" onClick={() => deletUser(user)}>删除</Button>
                             }
-                            {
-                                (user as any).online && <Button type="link" onClick={() => sendUserInfo(user.user)}>发送实时消息</Button>
-                            }
+                            <Button type="link" onClick={() => sendUserInfo(user.user)}>发送实时消息</Button>
 
                         </>
                     }

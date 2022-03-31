@@ -197,6 +197,20 @@ const RootMain: React.FC = props => {
           text: "微信告警事件日志",
           ico: "\uEB8c",
         },
+        {
+          to: {
+            name: "root/log/innerMessage",
+          },
+          text: "站内信",
+          ico: "\uEB8c",
+        },
+        {
+          to: {
+            name: "root/log/bull",
+          },
+          text: "bull队列",
+          ico: "\uEB8c",
+        },
       ]
     }]
 

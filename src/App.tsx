@@ -16,6 +16,9 @@ const LogSms = lazy(() => import("./root/log/sms"))
 const LogTerminal = lazy(() => import("./root/log/terminal"))
 const LogWxEvent = lazy(() => import("./root/log/wxEvent"))
 const LogWxSubscribe = lazy(() => import("./root/log/wxSubscribe"))
+const LoginnerMessage = lazy(() => import("./root/log/innerMessage"))
+const LogBull = lazy(() => import("./root/log/bull"))
+
 const TerminalAddDTU = lazy(() => import("./root/node/terminalRegister"))
 const Login = lazy(() => import("./login"))
 const LoginWx = lazy(() => import("./wxLogin"))
@@ -97,6 +100,8 @@ export const App: React.FC = () => {
                     <Route path="log/dataClean" element={<LogDataClean />} />
                     <Route path="log/wEvent" element={<LogWxEvent />} />
                     <Route path="log/wSubscribe" element={<LogWxSubscribe />} />
+                    <Route path="log/innerMessage" element={<LoginnerMessage />} />
+                    <Route path="log/bull" element={<LogBull />} />
                 </Route>
 
                 <Route path="/main" element={< Main />}>

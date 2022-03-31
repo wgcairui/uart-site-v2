@@ -28,7 +28,7 @@ specifiers:
   react-router-dom: ^6.0.2
   reflect-metadata: ^0.1.13
   socket.io-client: ^4.4.0
-  types-uart: ^2.0.5
+  types-uart: ^2.0.7
   typescript: ^4.5.2
   vite: ^2.6.4
   vite-plugin-moment-to-dayjs: ^1.0.7
@@ -63,7 +63,7 @@ devDependencies:
   classnames: 2.3.1
   lodash-es: 4.17.21
   reflect-metadata: 0.1.13
-  types-uart: 2.0.5
+  types-uart: 2.0.7
   typescript: 4.5.2
   vite: 2.7.1
   vite-plugin-moment-to-dayjs: 1.0.7_dayjs@1.10.7
@@ -4524,8 +4524,8 @@ packages:
     resolution: {integrity: sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=}
     dev: false
 
-  /types-uart/2.0.5:
-    resolution: {integrity: sha512-ZiYiwUD51xShNnqzeBVL1fZszYjMWc9oI3h1j851luPUkbYg6l2/uGIptLieJxgW08EItgAOjeO05I57SQFGDg==}
+  /types-uart/2.0.7:
+    resolution: {integrity: sha512-QmmgCMMuQlyf/rQfQX/TpEq1vlBLE9Tr/J/x6xt1gWnm8MhnuRZU4GPvOjlSadrCZfe1VadXoDJKFJfTB2W/6g==}
     dev: true
 
   /typescript/4.5.2:

@@ -546,6 +546,27 @@ export function logwxsubscribes(start: string, end: string) {
 }
 
 /**
+ * 获取站内信
+ * @param start 
+ * @param end 
+ * @returns 
+ * */
+ export function loginnerMessages(start: string, end: string) {
+    return fecth<any[]>("loginnerMessages", { start, end })
+}
+
+
+/**
+ * 获取wx告警推送
+ * @param start 
+ * @param end 
+ * @returns 
+ * */
+ export function logbulls(start: string, end: string) {
+    return fecth<any[]>("logbulls", { start, end })
+}
+
+/**
  * 获取定时清理记录
  * @param start 
  * @param end 
