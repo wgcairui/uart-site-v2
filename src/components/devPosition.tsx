@@ -1,8 +1,7 @@
 import { Marker } from "@uiw/react-amap";
-import { Divider, Empty, Spin } from "antd";
-import React, { useEffect, useRef, useState } from "react";
-import { Aamp_ip2local, Amap_gps2AutonaviPosition, getTerminal, V2_API_Aamp_ip2local } from "../common/Fetch";
-import { usePromise } from "../hook/usePromise";
+import { Divider } from "antd";
+import React, { useState } from "react";
+import { Amap_gps2AutonaviPosition, getTerminal, V2_API_Aamp_ip2local } from "../common/Fetch";
 import { AmapLoader } from "./amaploader";
 
 

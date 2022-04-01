@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { getTerminalUser } from "../../common/FecthRoot";
 import { getTerminal } from "../../common/Fetch";
 import { DevPosition } from "../../components/devPosition";
+import { DevUseTime } from "../../components/devUseTime";
 import { TerminalAT, TerminalBusyStat, TerminalOprate, TerminalRunLog, TerminalUseBytes } from "../../components/terminalData";
 import { TerminalDevPage } from "../../components/TerminalDev";
 import { TerminalInfo, TerminalMountDevs } from "../../components/terminalsTable";
@@ -51,7 +52,10 @@ export const TerminalInfos: React.FC<props> = (props) => {
                         <TerminalMountDevs terminal={data} ex={true} showTitle={false} InterValShow onChange={fecth}></TerminalMountDevs>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="设备定位" key="position">
-                        <DevPosition terminal={data}></DevPosition>
+                        <DevPosition terminal={data}/>
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab="耗时" key="useTime">
+                        <DevUseTime terminal={data}/>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="使用流量" key="use">
                         <TerminalUseBytes mac={data.DevMac} />

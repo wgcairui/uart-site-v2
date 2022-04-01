@@ -4,6 +4,13 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const path = require('path')
 const app = express()
 
+const xprofiler_1 = require("xprofiler");
+// @ts-ignore：无法被执行的代码的错误
+const xtransit_1 = require("xtransit");
+const xt_config_1 = require("./xt.config");
+xprofiler_1.start({ log_dir: xt_config_1.xconfig.logDir });
+xtransit_1.start(xt_config_1.xconfig);
+
 /* 
 app.use(function (req, res, next) {
   console.log(req.url);

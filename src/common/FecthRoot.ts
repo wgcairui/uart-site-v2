@@ -4,6 +4,15 @@ import { QueryCardInfoResponseBodyCardInfo, QueryCardFlowInfoResponseBodyCardFlo
 
 import { DeleteMultiResult, ObjectMeta } from "ali-oss"
 
+
+export interface DevUseTime {
+    Interval: number
+    mac: string
+    pid: number
+    timeStamp: number
+    useTime: number
+}
+
 interface result<T = any> {
     code: number
     data: T
@@ -551,7 +560,7 @@ export function logwxsubscribes(start: string, end: string) {
  * @param end 
  * @returns 
  * */
- export function loginnerMessages(start: string, end: string) {
+export function loginnerMessages(start: string, end: string) {
     return fecth<any[]>("loginnerMessages", { start, end })
 }
 
@@ -562,8 +571,18 @@ export function logwxsubscribes(start: string, end: string) {
  * @param end 
  * @returns 
  * */
- export function logbulls(start: string, end: string) {
+export function logbulls(start: string, end: string) {
     return fecth<any[]>("logbulls", { start, end })
+}
+
+/**
+ * 获取设备运行时间配置
+ * @param start 
+ * @param end 
+ * @returns 
+ * */
+export function logDevUseTime(mac: string, start: string, end: string) {
+    return fecth<DevUseTime[]>("logDevUseTime", { mac, start, end })
 }
 
 /**
