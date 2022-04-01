@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.xconfig = void 0;
 exports.xconfig = {
     // I. 必须的配置（一定要写）
-    server: `ws://116.62.48.175:9090`,
+    server: `wss://uart.ladishb.com/monitor`,
     appId: 2,
     appSecret: 'a63ea9f7cf5f343af85a269153dbeccb',
     // II. 比较重要的可选配置（不知道怎么配置的别传任何值，key 也别传，整个配置留空！！）
