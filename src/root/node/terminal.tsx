@@ -191,6 +191,13 @@ export const Terminals: React.FC = () => {
                         },
                         {
                             dataIndex: 'iccidInfo',
+                            title: '接口版本',
+                            width: 165,
+                            
+                            render: (iccidInfo: Uart.iccidInfo) => iccidInfo.version
+                        },
+                        {
+                            dataIndex: 'iccidInfo',
                             title: '套餐流量',
                             width: 165,
                             render: (iccidInfo: Uart.iccidInfo) => (iccidInfo.flowResource / 1024).toFixed(0) + 'MB'

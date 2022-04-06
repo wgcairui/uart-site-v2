@@ -23,6 +23,11 @@ export const LogBull: React.FC = () => {
                 {
                     dataIndex: 'id',
                     title: 'workId'
+                },
+                {
+                    dataIndex: 'data',
+                    title: 'message',
+                    render:(val:any)=>val?.message || ''
                 }
             ]}
 
