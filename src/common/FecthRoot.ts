@@ -707,7 +707,7 @@ export function IotQueryCardFlowInfo(iccid: string) {
  * @returns 
  */
 export function IotQueryIotCardOfferDtl(iccid: string) {
-    return fecth<QueryIotCardOfferDtlResponseBodyCardOfferDetailDetail>("IotQueryIotCardOfferDtl", { iccid })
+    return fecth<QueryIotCardOfferDtlResponseBodyCardOfferDetailDetail[]>("IotQueryIotCardOfferDtl", { iccid })
 }
 
 

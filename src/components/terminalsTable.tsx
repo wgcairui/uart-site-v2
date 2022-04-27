@@ -186,6 +186,58 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
 }
 
 
+
+/**
+ * 列出设备下挂载的子设备
+ * @param param0 
+ * @returns 
+ */
+export const TerminalIccidInfo: React.FC<{ iccid: string }> = (props) => {
+
+    const { data, loading } = usePromise(async () => {
+        const result = await IotQueryIotCardOfferDtl(props.iccid) as any
+        return result.data
+    }, [], [props.iccid])
+    return (
+        <Table
+            loading={loading}
+            dataSource={generateTableKey(data, 'offerId')}
+            columns={[
+                {
+                    dataIndex: 'offerId',
+                    key: 'offerId',
+                    title: '订单Id'
+                },
+                {
+                    dataIndex: 'orderTime',
+                    key: 'orderTime',
+                    title: '订单时间'
+                },
+                {
+                    dataIndex: 'offerName',
+                    key: 'offerName',
+                    title: '订单名称'
+                },
+                {
+                    dataIndex: 'effectiveTime',
+                    key: 'effectiveTime',
+                    title: '起始时间',
+                    defaultSortOrder: 'ascend',
+                    sorter: (a: any, b: any) => new Date(a.effectiveTime).getTime() - new Date(b.effectiveTime).getTime()
+                },
+                {
+                    dataIndex: 'expireTime',
+                    key: 'expireTime',
+                    title: '结束时间'
+                }
+            ]}
+        >
+
+        </Table>
+    )
+}
+
+
 /**
  * 显示mac绑定用户
  * @param param0 
@@ -307,10 +359,11 @@ export const TerminalInfo: React.FC<infoProps> = (props) => {
                         <Descriptions.Item label="使用流量" >{(terminal.iccidInfo.flowUsed / 1024).toFixed(0)}MB</Descriptions.Item>
                         <Descriptions.Item label="使用比例" >{((terminal.iccidInfo.flowUsed / terminal.iccidInfo.flowResource) * 100).toFixed(0)}%</Descriptions.Item>
                     </Descriptions>
+                    <TerminalIccidInfo iccid={terminal.ICCID!}></TerminalIccidInfo>
                 </>
             }
 
-
+            { }
         </Card>
     )
 }
