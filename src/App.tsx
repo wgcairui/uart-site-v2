@@ -50,6 +50,7 @@ const OssUpload = lazy(() => import("./root/data/oss"))
 const RootDevLine = lazy(() => import("./root/node/devline"))
 const LineWx = lazy(() => import("./user/wxLine"))
 const Tool = lazy(() => import("./tool"))
+const UserConstant = lazy(() => import("./user/constant"))
 
 export const App: React.FC = () => {
     /* 
@@ -112,6 +113,7 @@ export const App: React.FC = () => {
                     <Route path="terminal/:id" element={<Terminal />} />
                     <Route path="addterminal" element={<AddTerminal />} />
                     <Route path="user" element={<UserInfo />} />
+                    <Route path="constant" element={<UserConstant />} />
                 </Route>
 
                 <Route path="/wline" element={<LineWx />} ></Route>

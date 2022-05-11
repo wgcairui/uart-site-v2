@@ -534,7 +534,7 @@ export const V2_API_Aamp_ip2local = async (
  * @returns
  */
 export const getTerminalPidProtocol = (mac: string, pid: number | string) => {
-  return axios<Uart.TerminalMountDevs>("getTerminalPidProtocol", { mac, pid });
+  return axios<Uart.TerminalMountDevs>("getTerminalPidProtocol", { mac, pid:Number(pid) });
 };
 
 /**

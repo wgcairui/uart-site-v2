@@ -1,6 +1,6 @@
 import { Liquid } from "@ant-design/charts";
 import { DownOutlined } from "@ant-design/icons";
-import { Card, Col, Descriptions, Divider, Dropdown, Form, Image, Menu, message, Modal, Progress, Row, Select, Space, Spin, Switch, Tabs } from "antd";
+import { Button, Card, Col, Descriptions, Divider, Dropdown, Form, Image, Menu, message, Modal, Progress, Row, Select, Space, Spin, Switch, Tabs } from "antd";
 import React, { useMemo, useState } from "react";
 import { addTerminalMountDev, getProtocolSetup, getTerminal, getTerminalPidProtocol } from "../common/Fetch";
 import { sendOprateInstruct } from "../common/util";
@@ -10,6 +10,7 @@ import { IconFontSpin } from "./IconFont";
 import { DevDataProps, TerminalRunData, TerminalRunDataThresoldLine } from "./terminalData";
 import "./TerminalDev.css"
 import { devAir, devUpsStat } from "../common/devImgSource";
+import { useNav } from "../hook/useNav";
 
 interface result extends DevDataProps {
     result: Uart.queryResultArgument[]
@@ -480,6 +481,7 @@ export const TerminalDevUps: React.FC<result> = ({ mac, pid, result }) => {
  */
 export const TerminalDevPage: React.FC<DevDataProps> = ({ mac, pid, user }) => {
 
+    const nav = useNav()
     /**
      * 数据运行参数
      */
@@ -524,6 +526,7 @@ export const TerminalDevPage: React.FC<DevDataProps> = ({ mac, pid, user }) => {
             <div>
                 <span style={{ float: "right" }}>
                     <TerminalOprate mac={mac} pid={pid} result={[]} />
+                    <Button type='link' onClick={()=>nav("/main/constant",{mac, pid: String(pid)})}>告警配置</Button>
                 </span>
             </div>
 
