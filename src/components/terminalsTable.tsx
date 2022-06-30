@@ -1,11 +1,11 @@
 import { CheckCircleFilled, WarningFilled, EyeFilled, DeleteFilled, LoadingOutlined, ReloadOutlined, MoreOutlined, SyncOutlined, DownOutlined } from "@ant-design/icons";
-import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps, Modal, Spin, Dropdown, Menu, notification, ColProps } from "antd";
+import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps, Modal, Spin, Dropdown, Menu, notification, ColProps, Switch, Empty } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { devType } from "../common/devImgSource";
-import { BindDev, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryMac, getTerminals, getTerminalUser, initTerminal, IotQueryCardFlowInfo, IotQueryCardInfo, IotQueryIotCardOfferDtl, iotRemoteUrl, modifyTerminalRemark } from "../common/FecthRoot";
+import { BindDev, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryMac, getTerminals, getTerminalUser, initTerminal, IotQueryCardFlowInfo, IotQueryCardInfo, IotQueryIotCardOfferDtl, iotRemoteUrl, IotUpdateIccidInfo, modifyTerminalRemark } from "../common/FecthRoot";
 import { delTerminalMountDev, getTerminal, modifyTerminal, refreshDevTimeOut } from "../common/Fetch";
 import { prompt } from "../common/prompt";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../common/tableCommon";
@@ -266,7 +266,10 @@ const TerminalUser: React.FC<{ mac: string }> = ({ mac }) => {
  */
 export const TerminalInfo: React.FC<infoProps> = (props) => {
 
-    const { terminal } = props
+    const { data: terminal, loading, fecth } = usePromise(async () => {
+        const { data } = await getTerminal(props.terminal.DevMac)
+        return data
+    })
 
     /**
      * 更新别名
@@ -306,65 +309,70 @@ export const TerminalInfo: React.FC<infoProps> = (props) => {
         })
     }
 
+    const updateIccidInfo = async (mac: string) => {
+        await IotUpdateIccidInfo(mac)
+        fecth()
+    }
 
 
 
     return (
-        <Card>
-            <Descriptions title={terminal.name}>
-                <Descriptions.Item label="别名">
-                    <MyInput value={terminal.name} onSave={rename}></MyInput>
-                </Descriptions.Item>
-                <Descriptions.Item label="用户">
-                    <TerminalUser mac={terminal.DevMac} />
-                </Descriptions.Item>
-                <Descriptions.Item label="mac">{terminal.DevMac}</Descriptions.Item>
-                <Descriptions.Item label="AT支持">
-                    <Tag color="cyan">{terminal.AT ? '支持' : '不支持'}</Tag>
-                </Descriptions.Item>
-                <Descriptions.Item label="ICCID">{terminal.ICCID}</Descriptions.Item>
-                <Descriptions.Item label="PID">{terminal.PID}</Descriptions.Item>
-                <Descriptions.Item label="设备IP">{terminal.ip}</Descriptions.Item>
-                <Descriptions.Item label="设备定位">{terminal.jw}</Descriptions.Item>
-                <Descriptions.Item label="挂载节点">{terminal.mountNode}</Descriptions.Item>
-                <Descriptions.Item label="TCP端口">{terminal.port}</Descriptions.Item>
-                <Descriptions.Item label="串口参数">{terminal.uart}</Descriptions.Item>
-                <Descriptions.Item label="iot">{terminal.iotStat}</Descriptions.Item>
-                <Descriptions.Item label="Gver">{terminal.Gver}</Descriptions.Item>
-                <Descriptions.Item label="ver">{terminal.ver}</Descriptions.Item>
-                <Descriptions.Item label="共享状态">{terminal.share ? '开启' : '关闭'}</Descriptions.Item>
-                <Descriptions.Item label="更新时间" span={3}>{moment(terminal.uptime).format('YYYY-MM-DD H:m:s')}</Descriptions.Item>
-                <Descriptions.Item label="备注" span={3}>
-                    <MyInput
-                        textArea
-                        value={terminal.remark}
-                        onSave={remark}
-                    ></MyInput>
-                </Descriptions.Item>
-            </Descriptions>
-            {
-                terminal.iccidInfo &&
-                <>
-                    <Divider orientation="left" plain>SIM卡</Divider>
-                    <Descriptions>
-                        <Descriptions.Item label="物联卡版本">{terminal.iccidInfo?.version || 'ali_1'}</Descriptions.Item>
-                        {/* <Descriptions.Item label="起始时间">{terminal.iccidInfo.validDate}</Descriptions.Item> */}
-                        <Descriptions.Item label="套餐名称">{terminal.iccidInfo.resName}</Descriptions.Item>
-                        <Descriptions.Item label="终止时间">{terminal.iccidInfo.expireDate}/
-                            {
-                                moment(terminal.iccidInfo.expireDate).diff(new Date(), 'day')
-                            }天
-                        </Descriptions.Item>
-                        <Descriptions.Item label="全部流量">{terminal.iccidInfo.flowResource / 1024}MB</Descriptions.Item>
-                        <Descriptions.Item label="使用流量" >{(terminal.iccidInfo.flowUsed / 1024).toFixed(0)}MB</Descriptions.Item>
-                        <Descriptions.Item label="使用比例" >{((terminal.iccidInfo.flowUsed / terminal.iccidInfo.flowResource) * 100).toFixed(0)}%</Descriptions.Item>
-                    </Descriptions>
-                    <TerminalIccidInfo iccid={terminal.ICCID!}></TerminalIccidInfo>
-                </>
-            }
-
-            { }
-        </Card>
+        loading ? <Empty>loading</Empty> :
+            <Card>
+                <Descriptions title={terminal.name}>
+                    <Descriptions.Item label="别名">
+                        <MyInput value={terminal.name} onSave={rename}></MyInput>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="用户">
+                        <TerminalUser mac={terminal.DevMac} />
+                    </Descriptions.Item>
+                    <Descriptions.Item label="mac">{terminal.DevMac}</Descriptions.Item>
+                    <Descriptions.Item label="AT支持">
+                        <Tag color="cyan">{terminal.AT ? '支持' : '不支持'}</Tag>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="ICCID">{terminal.ICCID}</Descriptions.Item>
+                    <Descriptions.Item label="PID">{terminal.PID}</Descriptions.Item>
+                    <Descriptions.Item label="设备IP">{terminal.ip}</Descriptions.Item>
+                    <Descriptions.Item label="设备定位">{terminal.jw}</Descriptions.Item>
+                    <Descriptions.Item label="挂载节点">{terminal.mountNode}</Descriptions.Item>
+                    <Descriptions.Item label="TCP端口">{terminal.port}</Descriptions.Item>
+                    <Descriptions.Item label="串口参数">{terminal.uart}</Descriptions.Item>
+                    <Descriptions.Item label="iot">{terminal.iotStat}</Descriptions.Item>
+                    <Descriptions.Item label="Gver">{terminal.Gver}</Descriptions.Item>
+                    <Descriptions.Item label="ver">{terminal.ver}</Descriptions.Item>
+                    <Descriptions.Item label="共享状态">{terminal.share ? '开启' : '关闭'}</Descriptions.Item>
+                    <Descriptions.Item label="更新时间" span={3}>{moment(terminal.uptime).format('YYYY-MM-DD H:m:s')}</Descriptions.Item>
+                    <Descriptions.Item label="备注" span={3}>
+                        <MyInput
+                            textArea
+                            value={terminal.remark}
+                            onSave={remark}
+                        ></MyInput>
+                    </Descriptions.Item>
+                </Descriptions>
+                {
+                    terminal.iccidInfo &&
+                    <>
+                        <Divider orientation="left" plain>SIM卡</Divider>
+                        <Descriptions title={<Button icon={<ReloadOutlined />} onClick={() => updateIccidInfo(terminal.DevMac)}></Button>}>
+                            <Descriptions.Item label="物联卡版本">{terminal.iccidInfo?.version || 'ali_1'}</Descriptions.Item>
+                            {/* <Descriptions.Item label="起始时间">{terminal.iccidInfo.validDate}</Descriptions.Item> */}
+                            <Descriptions.Item label="套餐名称">{terminal.iccidInfo.resName}</Descriptions.Item>
+                            <Descriptions.Item label="终止时间">{terminal.iccidInfo.expireDate}/
+                                {
+                                    moment(terminal.iccidInfo.expireDate).diff(new Date(), 'day')
+                                }天
+                            </Descriptions.Item>
+                            <Descriptions.Item label="全部流量">{(terminal.iccidInfo.flowResource / 1024).toFixed(2)}MB</Descriptions.Item>
+                            <Descriptions.Item label="使用流量" >{(terminal.iccidInfo.flowUsed / 1024).toFixed(0)}MB</Descriptions.Item>
+                            <Descriptions.Item label="使用比例" >{((terminal.iccidInfo.flowUsed / terminal.iccidInfo.flowResource) * 100).toFixed(0)}%</Descriptions.Item>
+                            <Descriptions.Item label="自动订阅" ><Switch disabled defaultChecked={terminal.iccidInfo.IsAutoRecharge}></Switch></Descriptions.Item>
+                            <Descriptions.Item label="更新时间">{moment(terminal.iccidInfo.uptime).format('YYYY-M-D H:m:s')}</Descriptions.Item>
+                        </Descriptions>
+                        <TerminalIccidInfo iccid={terminal.ICCID!}></TerminalIccidInfo>
+                    </>
+                }
+            </Card>
     )
 }
 

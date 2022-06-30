@@ -710,7 +710,23 @@ export function IotQueryIotCardOfferDtl(iccid: string) {
     return fecth<QueryIotCardOfferDtlResponseBodyCardOfferDetailDetail[]>("IotQueryIotCardOfferDtl", { iccid })
 }
 
+/**
+ * 自动续订开关
+ * @param mac
+ * @returns 
+ */
+ export function IotUpdateAutoRechargeSwitch(iccid: string, open:boolean) {
+    return fecth<boolean>("IotUpdateAutoRechargeSwitch", { iccid, open })
+}
 
+/**
+ * 更新iccid信息
+ * @param mac 
+ * @returns 
+ */
+export function IotUpdateIccidInfo(mac:string){
+    return fecth<any>("IotUpdateIccidInfo",{mac})
+}
 
 /**
  * 老版物联卡续订套餐

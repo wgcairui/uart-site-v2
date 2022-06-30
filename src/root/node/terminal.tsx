@@ -1,11 +1,11 @@
 import { Pie } from "@ant-design/charts";
 import { MoreOutlined } from "@ant-design/icons";
-import { Button, Col, Divider, Dropdown, Menu, message, Modal, Row, Space, Table, Tabs, Tag, Tooltip } from "antd";
+import { Button, Col, Divider, Dropdown, Menu, message, Modal, Row, Space, Switch, Table, Tabs, Tag, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
 import { pieConfig, pieData } from "../../common/charts";
-import { IotRecharge, UpdateIccids } from "../../common/FecthRoot";
+import { IotRecharge, IotUpdateAutoRechargeSwitch, UpdateIccids } from "../../common/FecthRoot";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../../common/tableCommon";
 import { DevPosition } from "../../components/devPosition";
 import { IconFont } from "../../components/IconFont";
@@ -67,7 +67,11 @@ export const Terminals: React.FC = () => {
 
     const terminal_4G = useCallback(() => {
         const now = new Date()
-        const result = terminals.filter(el => el.iccidInfo && el.iccidInfo.expireDate && (el.iccidInfo.restOfFlow < 30 * 1024 || moment(el.iccidInfo.expireDate).diff(now, 'day') < 5))
+        const result = terminals.filter(el => {
+            const has = el.iccidInfo && el.iccidInfo.expireDate
+            const time = moment(el?.iccidInfo?.expireDate)
+            return has && (el!.iccidInfo!.restOfFlow < 30 * 1024 || (time.diff(now, 'day') < 5 && time.diff(now, 'day') > -15 ))
+        })
         return result
     }, [terminals])
 
@@ -88,12 +92,12 @@ export const Terminals: React.FC = () => {
     }
 
     /**
-     * 续订套餐
+     * 
      * @param mac 
      */
-    const oldIotRecharge = async (mac: string) => {
-        IotRecharge(mac).then(el => {
-            message.info(el.code ? el.data.message : el.msg)
+    const UpdateAutoRechargeSwitch = async (iccid: string, open:boolean) => {
+        IotUpdateAutoRechargeSwitch(iccid, open).then(el => {
+            message.info(el.code ? 'success' : el.msg)
         })
     }
 
@@ -166,6 +170,14 @@ export const Terminals: React.FC = () => {
                             </Tooltip>
                         },
                         {
+                            dataIndex: 'iccidInfo',
+                            title: '自动续订',
+                            width: 70,
+                            onFilter: (val, re) => re.online === val,
+                            sorter: (a: any, b: any) => a.online - b.online,
+                            render: (iccidInfo: Uart.iccidInfo, ter: Uart.Terminal) =><Switch defaultChecked={iccidInfo.IsAutoRecharge} onChange={b=>UpdateAutoRechargeSwitch(ter.ICCID!,b)}></Switch>
+                        },
+                        {
                             dataIndex: 'name',
                             title: '名称',
                             ellipsis: true,
@@ -233,19 +245,6 @@ export const Terminals: React.FC = () => {
                             width: 120,
                             render: (_, t) => <Space size={0} wrap>
                                 <Button type="link" onClick={() => nav('/root/node/Terminal/info?mac=' + t.DevMac)}>查看</Button>
-                                <Dropdown overlay={
-                                    <Menu>
-                                        {t.iccidInfo?.version === 'ali_1' && <Menu.Item onClick={() => oldIotRecharge(t.DevMac)} key={1}>续订套餐</Menu.Item>}
-                                        {/*  <Menu.Item onClick={() => deleteRegisterTerminalm(t.DevMac)} key={2}>delete</Menu.Item>
-                                        <Menu.Item onClick={() => initTerminalm(t.DevMac)} key={3}>初始化</Menu.Item>
-                                        {t.ICCID && <Menu.Item onClick={() => iccdInfo(t.ICCID!, t.DevMac)} key={4}>ICCID更新</Menu.Item>}
-                                        {
-                                            props.user && <Menu.Item onClick={() => unbindDev(t.DevMac, props.user)} key={5}>解绑设备</Menu.Item>
-                                        } */}
-                                    </Menu>
-                                }>
-                                    <MoreOutlined />
-                                </Dropdown>
                             </Space>
                         }
                     ] as ColumnsType<Uart.Terminal>}
