@@ -192,14 +192,20 @@ export const Terminals: React.FC = () => {
                             ...getColumnSearchProp<Uart.Terminal>("ICCID"),
                             render: val => val && <MyCopy value={val}></MyCopy>
                         },
+                        // {
+                        //     dataIndex: 'uptime',
+                        //     title: '更新时间',
+                        //     width: 165,
+                        //     render: val => moment(val || "1970-01-01").format("YYYY-MM-DD H:m:s"),
+                        //     sorter: {
+                        //         compare: (a: any, b: any) => new Date(a.uptime).getDate() - new Date(b.uptime).getDate()
+                        //     }
+                        // },
                         {
-                            dataIndex: 'uptime',
-                            title: '更新时间',
+                            dataIndex: 'iccidInfo',
+                            title: 'iccid更新时间',
                             width: 165,
-                            render: val => moment(val || "1970-01-01").format("YYYY-MM-DD H:m:s"),
-                            sorter: {
-                                compare: (a: any, b: any) => new Date(a.uptime).getDate() - new Date(b.uptime).getDate()
-                            }
+                            render: (iccidInfo: Uart.iccidInfo) => moment(iccidInfo.uptime || "1970-01-01").format("YYYY-MM-DD H:m:s"),
                         },
                         {
                             dataIndex: 'iccidInfo',
