@@ -765,6 +765,16 @@ export const modifyTerminalRemark = (mac: string, remark: string) => {
 }
 
 /**
+* 修改用户设备在线状态
+* @param mac 
+* @param online
+* @returns 
+*/
+export const setTerminalOnline = (mac: string, online: boolean) => {
+    return fecth('setTerminalOnline', { mac, online })
+}
+
+/**
 * 修改用户备注
 * @param user 
 * @param remark 

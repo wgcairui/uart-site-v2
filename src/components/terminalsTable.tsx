@@ -5,7 +5,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { devType } from "../common/devImgSource";
-import { BindDev, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryMac, getTerminals, getTerminalUser, initTerminal, IotQueryCardFlowInfo, IotQueryCardInfo, IotQueryIotCardOfferDtl, iotRemoteUrl, IotUpdateIccidInfo, modifyTerminalRemark } from "../common/FecthRoot";
+import { BindDev, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryMac, getTerminals, getTerminalUser, initTerminal, IotQueryCardFlowInfo, IotQueryCardInfo, IotQueryIotCardOfferDtl, iotRemoteUrl, IotUpdateIccidInfo, modifyTerminalRemark, setTerminalOnline } from "../common/FecthRoot";
 import { delTerminalMountDev, getTerminal, modifyTerminal, refreshDevTimeOut } from "../common/Fetch";
 import { prompt } from "../common/prompt";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../common/tableCommon";
@@ -444,6 +444,12 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
         setData([...terminals])
         loading()
     } */
+    
+    const setOnlineSataus = async (mac: string, online: boolean) => {
+        setTerminalOnline(mac, online).then(() => {
+            fecth()
+        })
+    }
 
     const itoRemoteUrl = (mac: string) => {
         iotRemoteUrl(mac).then(el => {
@@ -647,6 +653,7 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                             {/* <Button type="link" onClick={() => updateDev(t.DevMac)}>更新</Button> */}
                             <Dropdown overlay={
                                 <Menu>
+                                    <Menu.Item onClick={() => setOnlineSataus(t.DevMac, !t.online)} key={1}>设置{t.online? '离':'在'}线</Menu.Item>
                                     <Menu.Item onClick={() => itoRemoteUrl(t.DevMac)} key={1}>远程配置</Menu.Item>
                                     <Menu.Item onClick={() => deleteRegisterTerminalm(t.DevMac)} key={2}>delete</Menu.Item>
                                     <Menu.Item onClick={() => initTerminalm(t.DevMac)} key={3}>初始化</Menu.Item>
