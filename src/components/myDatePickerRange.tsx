@@ -36,18 +36,18 @@ export const MyDatePickerRange: React.FC<props> = ({ children, start, end, lastD
         <Form layout="inline" style={{ marginBottom: 12 }}>
             <Form.Item label="查询时间段">
                 <DatePicker.RangePicker
-                    value={date}
+                    value={date as any}
                     onChange={(_: any, __: any) => {
                         setDate(_)
                         onChange && onChange(_, __)
                     }}
-                    ranges={{
-                        "一周": [moment().subtract(7, 'day'), moment()],
-                        '一个月': [moment().subtract(1, "month"), moment()],
-                        '三个月': [moment().subtract(3, "month"), moment()],
-                        '六个月': [moment().subtract(6, "month"), moment()],
-                        '一年': [moment().subtract(1, "year"), moment()],
-                    }}
+                    // ranges={{
+                    //     "一周": [moment().subtract(7, 'day'), moment().toDate()],
+                    //     // '一个月': [moment().subtract(1, "month"), moment()],
+                    //     // '三个月': [moment().subtract(3, "month"), moment()],
+                    //     // '六个月': [moment().subtract(6, "month"), moment()],
+                    //     // '一年': [moment().subtract(1, "year"), moment()],
+                    // }}
                 ></DatePicker.RangePicker>
             </Form.Item>
             <Form.Item>

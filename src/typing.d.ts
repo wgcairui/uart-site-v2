@@ -1,5 +1,4 @@
 import { FunctionComponent } from "react";
-
 /**
  * 通用的props配置
  */

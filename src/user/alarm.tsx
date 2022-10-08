@@ -64,7 +64,7 @@ const Alarm: React.FC = () => {
         <>
             <Form layout="inline" style={{ margin: 8 }}>
                 <Form.Item label="选择时间区间">
-                    <DatePicker.RangePicker defaultValue={dates} onChange={(value) => setDates(value as any)} />
+                    <DatePicker.RangePicker defaultValue={dates as any} onChange={(value) => setDates(value as any)} />
                 </Form.Item>
                 <Form.Item>
                     <Popconfirm title="是否确认全部告警,操作无法取消" onCancel={() => message.warn("取消操作")} onConfirm={() => {

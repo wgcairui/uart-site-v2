@@ -24,10 +24,10 @@ export const ClientResultColtion: React.FC = () => {
             <Divider >设备解析数据</Divider>
             <Form layout="inline">
                 <Form.Item label="查看日期">
-                    <DatePicker value={date} onChange={val => setDate(val!)} />
+                    <DatePicker value={date as any} onChange={val => setDate(val!)} />
                 </Form.Item>
                 <Form.Item label="查看时间(10分钟)">
-                    <TimePicker value={time} onChange={val => setTime(val!)} />
+                    <TimePicker value={time as any} onChange={val => setTime(val!)} />
                 </Form.Item>
                 <Form.Item >
                     <Button onClick={() => list.fecth()}>获取</Button>

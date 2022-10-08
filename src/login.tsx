@@ -43,7 +43,7 @@ const Login: React.FC = () => {
                 navi(['user', 'test'].includes(userGroup) ? '/main' : '/root')
                 return true
             } else {
-                setToken()
+                setToken('')
                 return false
             }
         } catch (error) {

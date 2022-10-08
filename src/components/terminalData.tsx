@@ -74,7 +74,7 @@ export const TerminalBusyStat: React.FC<props> = ({ mac }) => {
             <Form layout="inline" style={{ marginBottom: 12 }}>
                 <Form.Item label="查询时间段">
                     <DatePicker.RangePicker
-                        value={[date[0], date[1]]}
+                        value={[date[0], date[1]] as any}
                         onChange={(_, d) => setDate(d.map(el => moment(el)))}
                     ></DatePicker.RangePicker>
                 </Form.Item>
@@ -325,7 +325,7 @@ export const TerminalRunLog: React.FC<props> = ({ mac }) => {
             <Form layout="inline" style={{ marginBottom: 12 }} >
                 <Form.Item label="查询时间段">
                     <DatePicker.RangePicker
-                        value={[date[0], date[1]]}
+                        value={[date[0], date[1]] as any}
                         onChange={(_, d) => setDate(d.map(el => moment(el)))}
                     ></DatePicker.RangePicker>
                 </Form.Item>
@@ -531,7 +531,7 @@ export const TerminalRunDataThresoldLine: React.FC<DevDataProps & { time?: strin
                     <DatePicker.RangePicker
                         showTime={{ format: 'HH:mm:ss' }}
                         format="YYYY-MM-DD HH:mm:ss"
-                        value={date} onOk={(val: any) => setDate(val)}
+                        value={date  as any} onOk={(val: any) => setDate(val)}
                     />
                 </Form.Item>
                 <Form.Item>
@@ -599,7 +599,7 @@ export const TerminalMountDevNameLine: React.FC<TerminalMountDevNameLineProps> =
             <>
                 <Form layout="inline">
                     <Form.Item label="选择日期">
-                        <DatePicker.RangePicker defaultValue={dates} onChange={value => setDate(value as any)} disabledDate={d => d > moment().endOf("day")}></DatePicker.RangePicker>
+                        <DatePicker.RangePicker defaultValue={dates as any} onChange={value => setDate(value as any)} disabledDate={d => d > moment().endOf("day")}></DatePicker.RangePicker>
                     </Form.Item>
                     <Form.Item label="选择参数">
                         <ProtocolInstructSelect defaultValue={selects} protocolName={Protocol.data.protocol} multiple onChange={val => setSelects(val as string[])}></ProtocolInstructSelect>

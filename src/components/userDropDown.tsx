@@ -26,7 +26,7 @@ export const UserDropDown: React.FC<props> = ({ userPage }) => {
     const Dispatch = useDispatch()
     const nav = useNav()
     const exit = () => {
-        setToken()
+        setToken('')
         nav("/")
     }
 
