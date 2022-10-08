@@ -1,6 +1,6 @@
 import { Pie } from "@ant-design/charts";
 import { MoreOutlined } from "@ant-design/icons";
-import { Button, Col, Divider, Dropdown, Menu, message, Modal, Row, Space, Switch, Table, Tabs, Tag, Tooltip } from "antd";
+import { Button, Col, Divider, Dropdown, Form, Menu, message, Modal, Row, Slider, Space, Switch, Table, Tabs, Tag, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
@@ -22,6 +22,8 @@ export const Terminals: React.FC = () => {
     const nav = useNav()
 
     const [terminals, setterminals] = useState<Uart.Terminal[]>([])
+
+    const [dateRange, setDateRange] = useState<[number,number]>([-7, 30])
 
     const status = useMemo(() => {
         // 在线
@@ -70,10 +72,10 @@ export const Terminals: React.FC = () => {
         const result = terminals.filter(el => {
             const has = el.iccidInfo && el.iccidInfo.expireDate
             const time = moment(el?.iccidInfo?.expireDate)
-            return has && (el!.iccidInfo!.restOfFlow < 30 * 1024 || (time.diff(now, 'day') < 5 && time.diff(now, 'day') > -15 ))
+            return has && (el!.iccidInfo!.restOfFlow < 30 * 1024 || (time.diff(now, 'day') < dateRange[1] && time.diff(now, 'day') > dateRange[0]))
         })
         return result
-    }, [terminals])
+    }, [terminals, dateRange])
 
     /**
      * 更新所有iccid
@@ -95,7 +97,7 @@ export const Terminals: React.FC = () => {
      * 
      * @param mac 
      */
-    const UpdateAutoRechargeSwitch = async (iccid: string, open:boolean) => {
+    const UpdateAutoRechargeSwitch = async (iccid: string, open: boolean) => {
         IotUpdateAutoRechargeSwitch(iccid, open).then(el => {
             message.info(el.code ? 'success' : el.msg)
         })
@@ -139,6 +141,19 @@ export const Terminals: React.FC = () => {
                 ></TerminalsTable>
             </Tabs.TabPane>
             <Tabs.TabPane tab="4G-即将失效" tabKey="iccid" key="2">
+                <Form>
+                    <Form.Item label='date'>
+                        <Slider 
+                        range={{ draggableTrack: true }}
+                         defaultValue={dateRange} 
+                         onChange={setDateRange}
+                         max={60} min={-15} 
+                         tooltip={{ open: true }} />
+                    </Form.Item>
+                    {/* <Form.Item label='use'>
+                        <Slider range={{ draggableTrack: true }} defaultValue={[7, 30]} max={60} min={0} tooltip={{ open: true }} />
+                    </Form.Item> */}
+                </Form>
                 <Table
                     dataSource={generateTableKey(terminal_4G(), "DevMac")}
                     size="small"
@@ -175,7 +190,7 @@ export const Terminals: React.FC = () => {
                             width: 70,
                             onFilter: (val, re) => re.online === val,
                             sorter: (a: any, b: any) => a.online - b.online,
-                            render: (iccidInfo: Uart.iccidInfo, ter: Uart.Terminal) =><Switch defaultChecked={iccidInfo.IsAutoRecharge} onChange={b=>UpdateAutoRechargeSwitch(ter.ICCID!,b)}></Switch>
+                            render: (iccidInfo: Uart.iccidInfo, ter: Uart.Terminal) => <Switch defaultChecked={iccidInfo.IsAutoRecharge} onChange={b => UpdateAutoRechargeSwitch(ter.ICCID!, b)}></Switch>
                         },
                         {
                             dataIndex: 'name',
@@ -192,15 +207,6 @@ export const Terminals: React.FC = () => {
                             ...getColumnSearchProp<Uart.Terminal>("ICCID"),
                             render: val => val && <MyCopy value={val}></MyCopy>
                         },
-                        // {
-                        //     dataIndex: 'uptime',
-                        //     title: '更新时间',
-                        //     width: 165,
-                        //     render: val => moment(val || "1970-01-01").format("YYYY-MM-DD H:m:s"),
-                        //     sorter: {
-                        //         compare: (a: any, b: any) => new Date(a.uptime).getDate() - new Date(b.uptime).getDate()
-                        //     }
-                        // },
                         {
                             dataIndex: 'iccidInfo',
                             title: 'iccid更新时间',
@@ -208,10 +214,17 @@ export const Terminals: React.FC = () => {
                             render: (iccidInfo: Uart.iccidInfo) => moment(iccidInfo.uptime || "1970-01-01").format("YYYY-MM-DD H:m:s"),
                         },
                         {
+                            dataIndex: 'user',
+                            title: '用户',
+                            width: 140,
+                            ellipsis: true,
+                            ...getColumnSearchProp<any>('user')
+                        },
+                        {
                             dataIndex: 'iccidInfo',
                             title: '接口版本',
                             width: 165,
-                            
+
                             render: (iccidInfo: Uart.iccidInfo) => iccidInfo.version
                         },
                         {
@@ -233,7 +246,7 @@ export const Terminals: React.FC = () => {
                             dataIndex: 'iccidInfo',
                             title: '剩余流量比例',
                             width: 120,
-                            render: (iccidInfo: Uart.iccidInfo) => ((iccidInfo.restOfFlow *100) / iccidInfo.flowResource).toFixed(1) + '%'
+                            render: (iccidInfo: Uart.iccidInfo) => ((iccidInfo.restOfFlow * 100) / iccidInfo.flowResource).toFixed(1) + '%'
                         },
                         {
                             dataIndex: 'iccidInfo',

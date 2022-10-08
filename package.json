@@ -14,7 +14,7 @@
     "@reduxjs/toolkit": "^1.6.2",
     "@uiw/react-amap": "^2.4.0",
     "ahooks": "^3.1.5",
-    "antd": "^4.17.2",
+    "antd": "^4.23.4",
     "crypto-js": "^4.1.1",
     "dayjs": "^1.10.7",
     "lodash": "^4.17.21",

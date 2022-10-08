@@ -545,6 +545,7 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                 dataSource={generateTableKey(terminals, "DevMac")}
                 size="small"
                 scroll={{ x: 1000 }}
+                pagination = {{defaultPageSize:20}}
                 columns={[
                     {
                         dataIndex: 'online',
