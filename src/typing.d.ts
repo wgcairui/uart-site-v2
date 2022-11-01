@@ -10,12 +10,14 @@ interface universalProps {
 /**
  * 通用返回数据
  */
-interface Result {
+interface Result<T> {
     code: number
-    msg: string
+    data:T
+    message: string
+    status:number
 }
 
 /**
  * 包装通用api返回数据
  */
-type universalResult<T = {}> = Result & T
+type universalResult<T = {}> = Result<T>

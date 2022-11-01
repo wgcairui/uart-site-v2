@@ -25,7 +25,7 @@ export const OssUpload: React.FC = () => {
      */
     const search = () => {
         ossFilelist(prefix).then(el => {
-            setFiles([...el.data])
+            setFiles(el.data as any)
         })
     }
 
@@ -49,7 +49,7 @@ export const OssUpload: React.FC = () => {
         })
     }
 
-    const s = ({ file }: UploadChangeParam<UploadFile<universalResult<{ data: PutObjectResult }>>>) => {
+    const s = ({ file }: UploadChangeParam<UploadFile<universalResult<PutObjectResult >>>) => {
         if (file.status === 'done') {
             console.log({ file });
             const { name, response, size, lastModifiedDate } = file
@@ -69,7 +69,7 @@ export const OssUpload: React.FC = () => {
             <Upload
                 onChange={s}
                 multiple
-                action="/api/root/ossupload"
+                action="/api/root/oss/upload"
                 headers={{ token: getToken() || '' }}
             >
                 <Button icon={<UploadOutlined />}>Click to Upload</Button>

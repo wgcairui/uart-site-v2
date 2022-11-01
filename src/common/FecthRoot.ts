@@ -3,6 +3,7 @@ import { Post } from "./Fetch"
 import { QueryCardInfoResponseBodyCardInfo, QueryCardFlowInfoResponseBodyCardFlowInfosCardFlowInfo, QueryIotCardOfferDtlResponseBodyCardOfferDetailDetail, DoIotRechargeResponseBody } from "@alicloud/dyiotapi20171111"
 
 import { DeleteMultiResult, ObjectMeta } from "ali-oss"
+import { message } from "antd"
 
 
 export interface DevUseTime {
@@ -43,8 +44,15 @@ export interface runInfo {
 export type logAggs<T = number> = Pick<Uart.logTerminals, "type" | "msg"> & { timeStamp: T }
 
 
-async function fecth<T = Uart.ApolloMongoResult>(type: string, datas?: any): Promise<universalResult<{ data: T }>> {
+async function fetch<T = Uart.ApolloMongoResult>(type: string, datas?: any): Promise<universalResult<{ data: T }>> {
     const result = await Post<universalResult<{ data: T }>>("/api/root/" + type, datas)
+    if(result.code === 0){
+        switch (result.status){
+            case 404:
+            message.error(result?.message)
+            break
+        }
+    }
     return result
 }
 
@@ -57,7 +65,7 @@ async function fecth<T = Uart.ApolloMongoResult>(type: string, datas?: any): Pro
  * @returns 
  */
 export function materials_list(type: string, offset: number, count: number) {
-    return fecth<Uart.WX.materials_list>("materials_list", { type, offset, count })
+    return fetch<Uart.WX.materials_list>("materials_list", { type, offset, count })
 }
 
 /**
@@ -65,7 +73,7 @@ export function materials_list(type: string, offset: number, count: number) {
  * @returns 
  */
 export function wx_users() {
-    return fecth<Uart.WX.userInfoPublic[]>("wx_users")
+    return fetch<Uart.WX.userInfoPublic[]>("wx_users")
 }
 
 /**
@@ -73,7 +81,7 @@ export function wx_users() {
  * @returns 
  */
 export function update_wx_users_all() {
-    return fecth("update_wx_users_all")
+    return fetch("update_wx_users_all")
 }
 /**
  * 向指定用户推送信息测试
@@ -81,7 +89,7 @@ export function update_wx_users_all() {
  * @returns 
  */
 export function wx_send_info(type: number, openid: string, content?: string) {
-    return fecth<Uart.WX.wxRequest>("wx_send_info", { type, openid, content })
+    return fetch<Uart.WX.wxRequest>("wx_send_info", { type, openid, content })
 }
 
 /**
@@ -89,7 +97,7 @@ export function wx_send_info(type: number, openid: string, content?: string) {
  * @returns 
  */
 export function log_wxEvent() {
-    return fecth<Uart.WX.WxEvent[]>('log_wxEvent')
+    return fetch<Uart.WX.WxEvent[]>('log/wxEvent')
 }
 
 /**
@@ -98,7 +106,7 @@ export function log_wxEvent() {
  * @returns 
  */
 export function set_Secret(opt: Uart.Secret_app) {
-    return fecth('setSecret', opt)
+    return fetch('setSecret', opt)
 }
 /**
  * 获取第三方平台的密匙
@@ -106,7 +114,7 @@ export function set_Secret(opt: Uart.Secret_app) {
  * @returns 
  */
 export function get_Secret(type: Uart.secretType) {
-    return fecth<Uart.Secret_app | null>('getSecret', { type })
+    return fetch<Uart.Secret_app | null>('getSecret', { type })
 }
 
 /**
@@ -114,7 +122,7 @@ export function get_Secret(type: Uart.secretType) {
  * @returns 
  */
 export function runingState() {
-    return fecth<runInfo>("runingState")
+    return fetch<runInfo>("runingState")
 }
 
 /**
@@ -122,7 +130,7 @@ export function runingState() {
  * @returns 
  */
 export function NodeInfo() {
-    return fecth<Uart.nodeInfo[]>("NodeInfo")
+    return fetch<Uart.nodeInfo[]>("NodeInfo")
 }
 
 /**
@@ -130,7 +138,7 @@ export function NodeInfo() {
  * @param name 
  */
 export function Nodes() {
-    return fecth<Uart.NodeClient[]>("Nodes",)
+    return fetch<Uart.NodeClient[]>("Nodes",)
 }
 
 /**
@@ -138,7 +146,7 @@ export function Nodes() {
  * @param name 
  */
 export function Node(name: string) {
-    return fecth<Uart.NodeClient>("Node", { name })
+    return fetch<Uart.NodeClient>("Node", { name })
 }
 
 /**
@@ -146,14 +154,14 @@ export function Node(name: string) {
  * @returns 
  */
 export function getTerminals(filter?: Partial<Record<keyof Uart.Terminal, 1 | 0>>) {
-    return fecth<Uart.Terminal[]>("getTerminals", { filter })
+    return fetch<Uart.Terminal[]>("getTerminals", { filter })
 }
 
 /**
  * 获取所有协议
  */
 export function getProtocols() {
-    return fecth<Uart.protocol[]>("getProtocols")
+    return fetch<Uart.protocol[]>("getProtocols")
 }
 
 /**
@@ -165,7 +173,7 @@ export function getProtocols() {
  * @returns 
  */
 export function addDevConstent(ProtocolType: string, Protocol: string, type: Uart.ConstantThresholdType, arg: any) {
-    return fecth("addDevConstent", { ProtocolType, Protocol, type, arg })
+    return fetch("addDevConstent", { ProtocolType, Protocol, type, arg })
 }
 
 /**
@@ -173,7 +181,7 @@ export function addDevConstent(ProtocolType: string, Protocol: string, type: Uar
  * @param protocol 
  */
 export function deleteProtocol(protocol: string) {
-    return fecth<string[]>("deleteProtocol", { protocol })
+    return fetch<string[]>("deleteProtocol", { protocol })
 }
 
 /**
@@ -181,7 +189,7 @@ export function deleteProtocol(protocol: string) {
  * @param protocol 
  */
 export function updateProtocol(protocol: Uart.protocol) {
-    return fecth('updateProtocol', { protocol })
+    return fetch('updateProtocol', { protocol })
 }
 
 /**
@@ -193,7 +201,7 @@ export function updateProtocol(protocol: Uart.protocol) {
  * @returns 
  */
 export function setProtocol(Type: number, ProtocolType: string, Protocol: string, instruct: Uart.protocolInstruct[]) {
-    return fecth("setProtocol", { Type, Protocol, ProtocolType, instruct })
+    return fetch("setProtocol", { Type, Protocol, ProtocolType, instruct })
 }
 
 /**
@@ -201,7 +209,7 @@ export function setProtocol(Type: number, ProtocolType: string, Protocol: string
  * @returns 
  */
 export function TestScriptStart(scriptStart: string, name: string) {
-    return fecth("TestScriptStart", { scriptStart, name })
+    return fetch("TestScriptStart", { scriptStart, name })
 }
 
 /**
@@ -209,7 +217,7 @@ export function TestScriptStart(scriptStart: string, name: string) {
  * @returns 
  */
 export function DevTypes() {
-    return fecth<(Uart.DevsType & { _id?: string })[]>('DevTypes')
+    return fetch<(Uart.DevsType & { _id?: string })[]>('DevTypes')
 }
 
 /**
@@ -217,7 +225,7 @@ export function DevTypes() {
  * @returns 
  */
 export function DevType(DevModel: string) {
-    return fecth<Uart.DevsType>('DevType', { DevModel })
+    return fetch<Uart.DevsType>('DevType', { DevModel })
 }
 
 /**
@@ -228,14 +236,14 @@ export function DevType(DevModel: string) {
  * @returns 
  */
 export function addDevType(Type: string, DevModel: string, Protocols: Pick<Uart.protocol, "ProtocolType" | "Protocol">[]) {
-    return fecth("addDevType", { Type, DevModel, Protocols })
+    return fetch("addDevType", { Type, DevModel, Protocols })
 }
 
 /**
  * 删除设备类型
  */
 export function deleteDevModel(DevModel: string) {
-    return fecth<string[]>("deleteDevModel", { DevModel })
+    return fetch<string[]>("deleteDevModel", { DevModel })
 }
 
 /**
@@ -245,21 +253,21 @@ export function deleteDevModel(DevModel: string) {
  * @returns 
  */
 export function addRegisterTerminal(DevMac: string, mountNode: string) {
-    return fecth("addRegisterTerminal", { DevMac, mountNode })
+    return fetch("addRegisterTerminal", { DevMac, mountNode })
 }
 
 /**
  * 删除登记设备
  */
 export function deleteRegisterTerminal(DevMac: string) {
-    return fecth<string>("deleteRegisterTerminal", { DevMac })
+    return fetch<string>("deleteRegisterTerminal", { DevMac })
 }
 
 /**
  * 初始化设备
  */
 export function initTerminal(mac: string) {
-    return fecth<string>("initTerminal", { mac })
+    return fetch<string>("initTerminal", { mac })
 }
 
 /**
@@ -271,14 +279,14 @@ export function initTerminal(mac: string) {
      * @returns 
      */
 export function setNode(Name: string, IP: string, Port: number, MaxConnections: number) {
-    return fecth("setNode", { Name, IP, Port, MaxConnections })
+    return fetch("setNode", { Name, IP, Port, MaxConnections })
 }
 
 /**
  * 删除节点
  */
 export function deleteNode(Name: string) {
-    return fecth<string[]>("deleteNode", { Name })
+    return fetch<string[]>("deleteNode", { Name })
 }
 
 /**
@@ -286,14 +294,14 @@ export function deleteNode(Name: string) {
  * @param mac 
  */
 export function iotRemoteUrl(mac: string) {
-    return fecth<string>("iotRemoteUrl", { mac })
+    return fetch<string>("iot/RemoteUrl", { mac })
 }
 
 /**
      * 获取设备使用流量
      */
 export function getUseBtyes(mac: string) {
-    return fecth<Uart.logTerminaluseBytes[]>("getUseBtyes", { mac })
+    return fetch<Uart.logTerminaluseBytes[]>("log/getUseBtyes", { mac })
 }
 
 /**
@@ -303,7 +311,7 @@ export function getUseBtyes(mac: string) {
  * @param end 
  */
 export function getDtuBusy(mac: string, start: string, end: string) {
-    return fecth<Uart.logDtuBusy[]>("getDtuBusy", { mac, start, end })
+    return fetch<Uart.logDtuBusy[]>("log/getDtuBusy", { mac, start, end })
 }
 
 /**
@@ -312,7 +320,7 @@ export function getDtuBusy(mac: string, start: string, end: string) {
  * @returns 
  */
 export function logInstructQuery(mac: string) {
-    return fecth<Uart.instructQuery[]>("logInstructQuery", { mac })
+    return fetch<Uart.instructQuery[]>("log/InstructQuery", { mac })
 }
 
 /**
@@ -320,7 +328,7 @@ export function logInstructQuery(mac: string) {
      * @returns 
      */
 export function sendATInstruct(mac: string, content: string) {
-    return fecth("sendATInstruct", { mac, content })
+    return fetch("sendATInstruct", { mac, content })
 }
 
 /**
@@ -329,14 +337,14 @@ export function sendATInstruct(mac: string, content: string) {
  * @returns 
  */
 export function RegisterTerminal(DevMac: string) {
-    return fecth<Uart.RegisterTerminal>("RegisterTerminal", { DevMac })
+    return fetch<Uart.RegisterTerminal>("RegisterTerminal", { DevMac })
 }
 
 /**
  * 查询所有终端
  */
 export function RegisterTerminals() {
-    return fecth<Uart.RegisterTerminal[]>("RegisterTerminals")
+    return fetch<Uart.RegisterTerminal[]>("RegisterTerminals")
 }
 
 
@@ -345,7 +353,7 @@ export function RegisterTerminals() {
  * @returns 
  */
 export function users() {
-    return fecth<Uart.UserInfo[]>("users")
+    return fetch<Uart.UserInfo[]>("users")
 }
 
 /**
@@ -354,7 +362,7 @@ export function users() {
    * @returns 
    */
 export function deleteUser(user: string, hash: string) {
-    return fecth("deleteUser", { user, hash })
+    return fetch("deleteUser", { user, hash })
 }
 
 /**
@@ -364,7 +372,7 @@ export function deleteUser(user: string, hash: string) {
 * @returns 
 */
 export function getUserAlarmSetup(user: string) {
-    return fecth<Uart.userSetup>("getUserAlarmSetup", { user })
+    return fetch<Uart.userSetup>("getUserAlarmSetup", { user })
 }
 
 /**
@@ -374,7 +382,7 @@ export function getUserAlarmSetup(user: string) {
 * @returns 
 */
 export function getUserAlarmSetups() {
-    return fecth<Uart.userSetup[]>("getUserAlarmSetups")
+    return fetch<Uart.userSetup[]>("getUserAlarmSetups")
 }
 
 
@@ -383,7 +391,7 @@ export function getUserAlarmSetups() {
 * @param user 
 */
 export function initUserAlarmSetup(user: string) {
-    return fecth("initUserAlarmSetup", { user })
+    return fetch("initUserAlarmSetup", { user })
 
 }
 
@@ -392,7 +400,7 @@ export function initUserAlarmSetup(user: string) {
  * @returns 
  */
 export function BindDev(user: string) {
-    return fecth<Uart.BindDevice>("BindDev", { user })
+    return fetch<Uart.BindDevice>("BindDev", { user })
 }
 
 /**
@@ -400,7 +408,7 @@ export function BindDev(user: string) {
  * @returns 
  */
 export function getNodeInstructQuery() {
-    return fecth<Uart.TerminalMountDevsEX[]>("getNodeInstructQuery")
+    return fetch<Uart.TerminalMountDevsEX[]>("getNodeInstructQuery")
 }
 
 /**
@@ -408,7 +416,7 @@ export function getNodeInstructQuery() {
  * @returns 
  */
 export function getNodeInstructQueryMac(mac: string, pid: number | string) {
-    return fecth<number>("getNodeInstructQueryMac", { mac, pid })
+    return fetch<number>("getNodeInstructQueryMac", { mac, pid })
 }
 
 /**
@@ -416,7 +424,7 @@ export function getNodeInstructQueryMac(mac: string, pid: number | string) {
  * @returns 
  */
 export function getUsersOnline() {
-    return fecth<Uart.UserInfo[]>("getUsersOnline")
+    return fetch<Uart.UserInfo[]>("getUsersOnline")
 }
 
 /**
@@ -425,7 +433,7 @@ export function getUsersOnline() {
  * @returns 
  */
 export function getUserOnlineStat(user: string) {
-    return fecth<boolean>("getUserOnlineStat", { user })
+    return fetch<boolean>("getUserOnlineStat", { user })
 }
 
 /**
@@ -435,7 +443,7 @@ export function getUserOnlineStat(user: string) {
  * @returns 
  */
 export function sendUserSocketInfo(user: string, msg: string) {
-    return fecth<any>("sendUserSocketInfo", { user, msg })
+    return fetch<any>("sendUserSocketInfo", { user, msg })
 }
 
 
@@ -448,7 +456,7 @@ export function sendUserSocketInfo(user: string, msg: string) {
  * @returns 
  */
 export function ClientResults(start?: string, end?: string, id?: string) {
-    return fecth<Uart.queryResult[]>("ClientResults", { start, end, id })
+    return fetch<Uart.queryResult[]>("data/row", { start, end, id })
 }
 
 export interface queryResultSave extends Uart.queryResultSave { _id: string, parentId: string, content?: any }
@@ -461,7 +469,7 @@ export interface queryResultSave extends Uart.queryResultSave { _id: string, par
  * @returns 
  */
 export function ClientResult(start?: string, end?: string, id?: string) {
-    return fecth<queryResultSave[]>("ClientResult", { start, end, id })
+    return fetch<queryResultSave[]>("data/parse", { start, end, id })
 }
 
 /**
@@ -469,7 +477,7 @@ export function ClientResult(start?: string, end?: string, id?: string) {
  * @returns 
  */
 export function ClientResultSingle() {
-    return fecth<queryResultSave[]>("ClientResultSingle")
+    return fetch<queryResultSave[]>("data/single")
 }
 
 /**
@@ -479,7 +487,7 @@ export function ClientResultSingle() {
  * @returns 
  */
 export function lognodes(start: string, end: string) {
-    return fecth<Uart.logNodes[]>("lognodes", { start, end })
+    return fetch<Uart.logNodes[]>("log/nodes", { start, end })
 }
 
 /**
@@ -489,14 +497,14 @@ export function lognodes(start: string, end: string) {
  * @returns 
  */
 export function logterminals(start: string, end: string) {
-    return fecth<Uart.logTerminals[]>("logterminals", { start, end })
+    return fetch<Uart.logTerminals[]>("log/terminals", { start, end })
 }
 
 /**
  * 获取短信日志
  */
 export function logsmssends(start: string, end: string) {
-    return fecth<Uart.logSmsSend[]>("logsmssends", { start, end })
+    return fetch<Uart.logSmsSend[]>("log/smssends", { start, end })
 }
 
 /**
@@ -504,14 +512,14 @@ export function logsmssends(start: string, end: string) {
  * @returns 
  */
 export function logsmssendsCountInfo() {
-    return fecth<{ _id: string, sum: number }[]>("logsmssendsCountInfo")
+    return fetch<{ _id: string, sum: number }[]>("log/smssendsCountInfo")
 }
 
 /**
  * 获取邮件日志
  */
 export function logmailsends(start: string, end: string) {
-    return fecth<Uart.logMailSend[]>("logmailsends", { start, end })
+    return fetch<Uart.logMailSend[]>("log/mailsends", { start, end })
 }
 
 /**
@@ -521,7 +529,7 @@ export function logmailsends(start: string, end: string) {
  * @returns 
  */
 export function loguartterminaldatatransfinites(start: string, end: string) {
-    return fecth<Uart.uartAlarmObject[]>("loguartterminaldatatransfinites", { start, end })
+    return fetch<Uart.uartAlarmObject[]>("log/uartterminaldatatransfinites", { start, end })
 }
 
 /**
@@ -531,7 +539,7 @@ export function loguartterminaldatatransfinites(start: string, end: string) {
  * @returns 
  */
 export function loguserlogins(start: string, end: string) {
-    return fecth<Uart.logUserLogins[]>("loguserlogins", { start, end })
+    return fetch<Uart.logUserLogins[]>("log/userlogins", { start, end })
 }
 
 /**
@@ -541,7 +549,7 @@ export function loguserlogins(start: string, end: string) {
  * @returns 
  */
 export function loguserrequsts(start: string, end: string) {
-    return fecth<Uart.logUserRequst[]>("loguserrequsts", { start, end })
+    return fetch<Uart.logUserRequst[]>("log/userrequsts", { start, end })
 }
 
 /**
@@ -551,7 +559,7 @@ export function loguserrequsts(start: string, end: string) {
  * @returns 
  * */
 export function logwxsubscribes(start: string, end: string) {
-    return fecth<Uart.WX.wxsubscribeMessage[]>("logwxsubscribes", { start, end })
+    return fetch<Uart.WX.wxsubscribeMessage[]>("log/wxsubscribes", { start, end })
 }
 
 /**
@@ -561,7 +569,7 @@ export function logwxsubscribes(start: string, end: string) {
  * @returns 
  * */
 export function loginnerMessages(start: string, end: string) {
-    return fecth<any[]>("loginnerMessages", { start, end })
+    return fetch<any[]>("log/innerMessages", { start, end })
 }
 
 
@@ -572,7 +580,7 @@ export function loginnerMessages(start: string, end: string) {
  * @returns 
  * */
 export function logbulls(start: string, end: string) {
-    return fecth<any[]>("logbulls", { start, end })
+    return fetch<any[]>("log/bulls", { start, end })
 }
 
 /**
@@ -582,7 +590,7 @@ export function logbulls(start: string, end: string) {
  * @returns 
  * */
 export function logDevUseTime(mac: string, start: string, end: string) {
-    return fecth<DevUseTime[]>("logDevUseTime", { mac, start, end })
+    return fetch<DevUseTime[]>("log/DevUseTime", { mac, start, end })
 }
 
 /**
@@ -592,7 +600,7 @@ export function logDevUseTime(mac: string, start: string, end: string) {
  * @returns 
  */
 export function logdataclean(start: string, end: string) {
-    return fecth<any[]>("logdataclean", { start, end })
+    return fetch<any[]>("log/dataclean", { start, end })
 }
 
 /**
@@ -602,7 +610,7 @@ export function logdataclean(start: string, end: string) {
  * @returns 
  */
 export function logterminalAggs(mac: string, start: string, end: string) {
-    return fecth<logAggs[]>("logterminalAggs", { mac, start, end })
+    return fetch<logAggs[]>("log/terminalAggs", { mac, start, end })
 }
 
 /**
@@ -612,7 +620,7 @@ export function logterminalAggs(mac: string, start: string, end: string) {
  * @returns 
  */
 export function logUserAggs(user: string, start: string, end: string) {
-    return fecth<logAggs[]>("logUserAggs", { user, start, end })
+    return fetch<logAggs[]>("log/UserAggs", { user, start, end })
 }
 
 /**
@@ -620,7 +628,7 @@ export function logUserAggs(user: string, start: string, end: string) {
  * @param user 
  */
 export function toggleUserGroup(user: string) {
-    return fecth<string>("toggleUserGroup", { user })
+    return fetch<string>("toggleUserGroup", { user })
 }
 
 /**
@@ -628,39 +636,39 @@ export function toggleUserGroup(user: string) {
  * @returns 
  */
 export function redisflushall() {
-    return fecth("redisflushall")
+    return fetch("redis/flushall")
 }
 
 /**
  * 清空当前库中的所有 key
  */
 export function redisflushdb() {
-    return fecth("redisflushdb")
+    return fetch("redis/flushdb")
 }
 
 /**
  * 获取redis中key
  */
 export function rediskeys(pattern: string = "*") {
-    return fecth<string[]>("rediskeys", { pattern })
+    return fetch<string[]>("redis/keys", { pattern })
 }
 
 export function rediskeysdValue(keys: string[]) {
-    return fecth<string[]>("rediskeysdValue", { keys })
+    return fetch<string[]>("redis/keysValue", { keys })
 }
 
 /**
  * 删除redis中指定key
  */
 export function rediskeysdel(keys: string[]) {
-    return fecth("rediskeysdel", { keys })
+    return fetch("redis/keysdel", { keys })
 }
 
 /** 
  * 数据清理
 */
 export function DataClean() {
-    return fecth("DataClean")
+    return fetch("DataClean")
 }
 
 /**
@@ -670,7 +678,7 @@ export function DataClean() {
 * @returns 
 */
 export function SendProcotolInstructSet(query: Omit<Uart.instructQuery, "type" | 'events'>) {
-    return fecth<Uart.ApolloMongoResult>("SendProcotolInstructSet", { query })
+    return fetch<Uart.ApolloMongoResult>("SendProcotolInstructSet", { query })
 }
 
 
@@ -680,7 +688,7 @@ export function SendProcotolInstructSet(query: Omit<Uart.instructQuery, "type" |
  * @returns 
  */
 export function IotDoIotUnbindResume(iccid: string) {
-    return fecth<boolean>("IotDoIotUnbindResume", { iccid })
+    return fetch<boolean>("iot/DoIotUnbindResume", { iccid })
 }
 
 /**
@@ -689,7 +697,7 @@ export function IotDoIotUnbindResume(iccid: string) {
  * @returns 
  */
 export function IotQueryCardInfo(iccid: string) {
-    return fecth<QueryCardInfoResponseBodyCardInfo>("IotQueryCardInfo", { iccid })
+    return fetch<QueryCardInfoResponseBodyCardInfo>("iot/QueryCardInfo", { iccid })
 }
 
 /**
@@ -698,7 +706,7 @@ export function IotQueryCardInfo(iccid: string) {
 * @returns 
 */
 export function IotQueryCardFlowInfo(iccid: string) {
-    return fecth<QueryCardFlowInfoResponseBodyCardFlowInfosCardFlowInfo>("IotQueryCardFlowInfo", { iccid })
+    return fetch<QueryCardFlowInfoResponseBodyCardFlowInfosCardFlowInfo>("iot/QueryCardFlowInfo", { iccid })
 }
 
 /**
@@ -707,7 +715,7 @@ export function IotQueryCardFlowInfo(iccid: string) {
  * @returns 
  */
 export function IotQueryIotCardOfferDtl(iccid: string) {
-    return fecth<QueryIotCardOfferDtlResponseBodyCardOfferDetailDetail[]>("IotQueryIotCardOfferDtl", { iccid })
+    return fetch<QueryIotCardOfferDtlResponseBodyCardOfferDetailDetail[]>("iot/QueryIotCardOfferDtl", { iccid })
 }
 
 /**
@@ -716,7 +724,7 @@ export function IotQueryIotCardOfferDtl(iccid: string) {
  * @returns 
  */
  export function IotUpdateAutoRechargeSwitch(iccid: string, open:boolean) {
-    return fecth<boolean>("IotUpdateAutoRechargeSwitch", { iccid, open })
+    return fetch<boolean>("iot/UpdateAutoRechargeSwitch", { iccid, open })
 }
 
 /**
@@ -725,7 +733,7 @@ export function IotQueryIotCardOfferDtl(iccid: string) {
  * @returns 
  */
 export function IotUpdateIccidInfo(mac:string){
-    return fecth<any>("IotUpdateIccidInfo",{mac})
+    return fetch<any>("iot/UpdateIccidInfo",{mac})
 }
 
 /**
@@ -734,7 +742,7 @@ export function IotUpdateIccidInfo(mac:string){
  * @returns 
  */
 export function IotRecharge(mac: string) {
-    return fecth<DoIotRechargeResponseBody>("IotRecharge", { mac })
+    return fetch<DoIotRechargeResponseBody>("iot/Recharge", { mac })
 }
 
 /**
@@ -742,7 +750,7 @@ export function IotRecharge(mac: string) {
  * @returns 
  */
 export function UpdateIccids() {
-    return fecth<{ time: number, length: number }>("UpdateIccids")
+    return fetch<{ time: number, length: number }>("UpdateIccids")
 }
 
 /**
@@ -751,7 +759,7 @@ export function UpdateIccids() {
 * @returns 
 */
 export function delUserTerminal(user: string, mac: string) {
-    return fecth("delUserTerminal", { user, mac })
+    return fetch("delUserTerminal", { user, mac })
 }
 
 /**
@@ -761,7 +769,7 @@ export function delUserTerminal(user: string, mac: string) {
 * @returns 
 */
 export const modifyTerminalRemark = (mac: string, remark: string) => {
-    return fecth('modifyTerminalRemark', { mac, remark })
+    return fetch('modifyTerminalRemark', { mac, remark })
 }
 
 /**
@@ -771,7 +779,7 @@ export const modifyTerminalRemark = (mac: string, remark: string) => {
 * @returns 
 */
 export const setTerminalOnline = (mac: string, online: boolean) => {
-    return fecth('setTerminalOnline', { mac, online })
+    return fetch('setTerminalOnline', { mac, online })
 }
 
 /**
@@ -781,7 +789,7 @@ export const setTerminalOnline = (mac: string, online: boolean) => {
 * @returns 
 */
 export const modifyUserRemark = (user: string, remark: string) => {
-    return fecth('modifyUserRemark', { user, remark })
+    return fetch('modifyUserRemark', { user, remark })
 }
 
 /**
@@ -790,7 +798,7 @@ export const modifyUserRemark = (user: string, remark: string) => {
  * @returns 
  */
 export const getUser = (user: string) => {
-    return fecth<Uart.UserInfo>('getUser', { user })
+    return fetch<Uart.UserInfo>('getUser', { user })
 }
 
 
@@ -802,7 +810,7 @@ export const getUser = (user: string) => {
  * @returns 
  */
 export const getAlarm = (user: string, start: number, end: number) => {
-    return fecth<Uart.uartAlarmObject[]>("userLoguartterminaldatatransfinites", { user, start, end })
+    return fetch<Uart.uartAlarmObject[]>("userLoguartterminaldatatransfinites", { user, start, end })
 }
 
 /**
@@ -811,7 +819,7 @@ export const getAlarm = (user: string, start: number, end: number) => {
  * @returns 
  */
 export const getTerminalUser = (mac: string) => {
-    return fecth<string>('getTerminalUser', { mac })
+    return fetch<string>('getTerminalUser', { mac })
 }
 
 /**
@@ -821,7 +829,7 @@ export const getTerminalUser = (mac: string) => {
  * @returns 
  */
 export const modifyProtocolRemark = (protocol: string, remark: string) => {
-    return fecth("modifyProtocolRemark", { protocol, remark })
+    return fetch("modifyProtocolRemark", { protocol, remark })
 }
 
 
@@ -833,7 +841,7 @@ export type ossfiles = Pick<ObjectMeta, 'name' | 'lastModified' | 'size' | 'url'
  * @returns 
  */
 export const ossFilelist = (prefix?: string) => {
-    return fecth<ossfiles[]>("ossFilelist", { prefix })
+    return fetch<ossfiles[]>("oss/Filelist", { prefix })
 }
 
 /**
@@ -842,10 +850,10 @@ export const ossFilelist = (prefix?: string) => {
  * @returns 
  */
 export const ossDelete = (names: string[]) => {
-    return fecth<DeleteMultiResult>("ossDelete", { names })
+    return fetch<DeleteMultiResult>("oss/Delete", { names })
 }
 
 
 export const nodeRestart = (node: string) => {
-    return fecth<any>("nodeRestart", { node })
+    return fetch<any>("nodeRestart", { node })
 }

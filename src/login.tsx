@@ -37,9 +37,9 @@ const Login: React.FC = () => {
 
         if (!localStorage.getItem("token")) return false
         try {
-            const { user, code, userGroup } = await Get<universalResult<{ user: string, userGroup: string }>>('/api/auth/user')
+            const {data:{ user, userGroup }} = await Get<universalResult<{ user: string, userGroup: string }>>('/api/auth/user')
             // console.log({ user, code, userGroup });
-            if (code === 200 && user) {
+            if ( user) {
                 navi(['user', 'test'].includes(userGroup) ? '/main' : '/root')
                 return true
             } else {
@@ -95,15 +95,13 @@ const Login: React.FC = () => {
     const onFinish = async ({ username, password }: { username: string, password: string }) => {
         setLoginLoading(true)
         // 获取hash加密密码
-        const { hash } = await Get<universalResult<{ hash?: string }>>('/api/auth/hash', { user: username }).catch(() => message.error("hash获取出错"))
+        const { data:hash } = await Get<universalResult<{ hash?: string }>>('/api/auth/hash', { user: username }).catch(() => message.error("hash获取出错"))
 
         if (hash) {
-            const { code, msg, token } = await Post<universalResult<{ token: string }>>('/api/auth/login', { user: username, passwd: AES.encrypt(password, hash).toString() })
+            const { code, data,message:msg } = await Post<universalResult<string>>('/api/auth/login', { user: username, passwd: AES.encrypt(password, hash).toString() })
             if (code === 200) {
-                setToken(token)
+                setToken(data)
                 checkUser()
-                /* const { userGroup } = await Get<universalResult<{ userGroup: string }>>("/api/auth/userGroup")
-                navi(userGroup === 'user' ? '/' : '/root') */
             } else {
                 let m = ''
                 switch (msg) {
@@ -117,7 +115,6 @@ const Login: React.FC = () => {
                         m = "未知用户"
                         break
                     default:
-                        console.log({ code, msg, token });
                         m = "登录遇到未知错误"
                         break
                 }

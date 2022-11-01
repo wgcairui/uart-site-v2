@@ -10,7 +10,7 @@ export const header = () => {
     "content-type": "application/json",
   });
   const token = getToken();
-  token && header.append("token", token);
+  token && header.append("authorization", token);
   return header;
 };
 
