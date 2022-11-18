@@ -76,7 +76,7 @@ const UserInfo: React.FC = props => {
         const key = 'sadsxdssaa'
         message.loading({ content: '保存配置', key })
         modifyUserAlarmSetupTel(tels, mails).then(el => {
-            el.code ? message.success({ content: '保存成功', key }) : message.warn({ content: '保存失败' + el.msg, key })
+            el.code ? message.success({ content: '保存成功', key }) : message.warn({ content: '保存失败' + el.message, key })
         })
     }
 

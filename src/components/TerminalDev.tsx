@@ -608,7 +608,7 @@ export const TerminalAddMountDev: React.FC<addMountDev> = ({ visible, mac, onCan
                             onCancel && onCancel()
                             onChange && onChange()
                         } else {
-                            message.warn({ content: "添加失败:" + result.msg, key })
+                            message.warn({ content: "添加失败:" + result.message, key })
                         }
                     })
                 }

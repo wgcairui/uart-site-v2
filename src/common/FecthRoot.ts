@@ -44,8 +44,8 @@ export interface runInfo {
 export type logAggs<T = number> = Pick<Uart.logTerminals, "type" | "msg"> & { timeStamp: T }
 
 
-async function fetch<T = Uart.ApolloMongoResult>(type: string, datas?: any): Promise<universalResult<{ data: T }>> {
-    const result = await Post<universalResult<{ data: T }>>("/api/root/" + type, datas)
+async function fetch<T = Uart.ApolloMongoResult>(type: string, datas?: any): Promise<universalResult<T>> {
+    const result = await Post<universalResult<T>>("/api/root/" + type, datas)
     if(result.code === 0){
         switch (result.status){
             case 404:

@@ -44,7 +44,7 @@ const UserIndex: React.FC = (props) => {
                 if (result.code === 200) {
                     message.success({ content: '修改成功', key })
                 } else {
-                    message.warn({ content: "修改失败" + result.msg, key })
+                    message.warn({ content: "修改失败" + result.message, key })
                 }
             })
         }).catch(() => {
@@ -63,7 +63,7 @@ const UserIndex: React.FC = (props) => {
             if (result.code === 200) {
                 message.success({ content: '删除成功', key })
             } else {
-                message.warn({ content: "删除失败:" + result.msg, key })
+                message.warn({ content: "删除失败:" + result.message, key })
             }
         })
 

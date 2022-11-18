@@ -49,7 +49,7 @@ const AddProtocol: React.FC<props> = ({ ok }) => {
                     message.success({ content: '添加协议成功', key: name })
                     ok && ok(name)
                 } else {
-                    message.warn(el.msg)
+                    message.warn(el.message)
                 }
             })
     }

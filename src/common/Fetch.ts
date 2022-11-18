@@ -553,12 +553,12 @@ export const Crc = (data: any) => {
  * @param config
  * @returns
  */
-const axios = async <T>(
+const axios = async <T = any>(
   type: string,
   datas?: any
-): Promise<universalResult<{ data: T }>> => {
+): Promise<universalResult<T>> => {
   try {
-    const result = await Post<universalResult<{ data: T }>>(
+    const result = await Post<universalResult<T>>(
       "/api/" + type,
       datas
     );
@@ -718,7 +718,7 @@ async function AmapGet<T>(
   type: restype,
   params: Record<string, string>
 ): Promise<T> {
-  const result = await Get<universalResult<{ data: T }>>(ApiAddress + type, {
+  const result = await Get<universalResult<T>>(ApiAddress + type, {
     key: AmapKey,
     ...params,
   });

@@ -99,7 +99,7 @@ export const Terminals: React.FC = () => {
      */
     const UpdateAutoRechargeSwitch = async (iccid: string, open: boolean) => {
         IotUpdateAutoRechargeSwitch(iccid, open).then(el => {
-            message.info(el.code ? 'success' : el.msg)
+            message.info(el.code ? 'success' : el.message)
         })
     }
 

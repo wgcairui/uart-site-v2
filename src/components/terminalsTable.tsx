@@ -490,7 +490,7 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
             content: `是否确定初始化DTU:${DevMac} ??`,
             onOk: async () => {
                 const key = 'initTerminalm'
-                const { code, data, msg } = await initTerminal(DevMac)
+                const { code, data, message:msg } = await initTerminal(DevMac)
                 if (code) {
                     message.success({ content: `删除成功,耗时${data}ms`, key })
                 } else {

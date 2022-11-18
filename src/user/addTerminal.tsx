@@ -50,7 +50,7 @@ const AddTerminal: React.FC = () => {
                 })
             } else {
                 message.warn({
-                    content: '绑定失败:' + el.msg,
+                    content: '绑定失败:' + el.message,
                     duration: 5,
                     key
                 })
