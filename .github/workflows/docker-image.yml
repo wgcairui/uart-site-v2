@@ -43,7 +43,7 @@ jobs:
       uses: manusa/actions-publish-docker@v1.1.2
       with:
         # Name of the Docker image
-        name: uartsite-v2
+        name: wgcairui/uartsite-v2
         # Username for Docker registry
         username: ${{secrets.docker}}
         # Password for Docker registry
