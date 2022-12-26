@@ -23,8 +23,9 @@ jobs:
 
     - name: build app
       run: |
+        cd ..
+        echo $(ls -al)
         echo $(pwd)
-        echo $(ls -al ..)
         npm install
         npm run build
 
