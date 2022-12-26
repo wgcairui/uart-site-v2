@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { universalResult } from "../typing";
 
 export const getToken = () => {
@@ -14,6 +15,12 @@ export const header = () => {
   return header;
 };
 
+function validationStatus(res:universalResult<any>){
+  if(res.status === 403){
+    message.error('操作没有权限')
+  }
+}
+
 export const Post = async <T>(
   path: string,
   data: { [x: string]: any }
@@ -24,7 +31,9 @@ export const Post = async <T>(
     headers: header(),
     body,
   });
-  return await res.json();
+  const json = await res.json();
+  validationStatus(json)
+  return json
 };
 
 export const Get = async <T>(
@@ -40,7 +49,9 @@ export const Get = async <T>(
     method: "GET",
     headers: header(),
   });
-  return await res.json();
+  const json = await res.json();
+  validationStatus(json)
+  return json
 };
 
 /**
