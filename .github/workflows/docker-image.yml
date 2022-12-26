@@ -48,5 +48,6 @@ jobs:
         username: ${{secrets.docker}}
         # Password for Docker registry
         password: ${{secrets.docker_pw}}
+        tag: latest
 
       
