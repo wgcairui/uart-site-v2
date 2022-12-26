@@ -45,8 +45,8 @@ jobs:
         # Name of the Docker image
         name: uartsite-v2
         # Username for Docker registry
-        username: ${{github.docker}}
+        username: ${{secrets.docker}}
         # Password for Docker registry
-        password: ${{github.docker_pw}}
+        password: ${{secrets.docker_pw}}
 
       
