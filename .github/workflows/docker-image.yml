@@ -19,7 +19,11 @@ jobs:
         ls -lha
         pwd
         ls -lha ..
+        pwd
         ls -lha ../..
+        pwd
+        ls -lha ../../..
+        pwd
 
     - name: Setup Node.js environment
       uses: actions/setup-node@v3.5.1
