@@ -16,6 +16,7 @@ jobs:
 
     - name: echo
       run: |
+        git clone https://github.com/wgcairui/uart-site-v2.git -b main ./
         ls -lha
         pwd
         ls -lha ..
