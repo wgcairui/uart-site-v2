@@ -21,6 +21,11 @@ jobs:
         # Version Spec of the version to use. Examples: 12.x, 10.15.1, >=10.15.0.
         node-version: 16.x
 
+    - name: build app
+      run: |
+        npm install
+        npm run build
+
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag uartsite-v2:latest
