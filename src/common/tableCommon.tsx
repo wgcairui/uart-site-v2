@@ -17,7 +17,7 @@ export function getColumnSearchProp<T,>(dataIndex: keyof T, val: string = ''): P
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: FilterDropdownProps) => (
             <div style={{ padding: 8 }}>
                 <Input
-                    placeholder={`Search ${dataIndex}`}
+                    placeholder={`Search ${dataIndex as any}`}
                     value={selectedKeys[0]}
                     onChange={e => {
                         setSelectedKeys(e.target.value ? [e.target.value] : [])

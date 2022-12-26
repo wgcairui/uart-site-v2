@@ -14,17 +14,9 @@ jobs:
 
     steps:
 
-    - name: echo
+    - name: clone file
       run: |
         git clone https://github.com/wgcairui/uart-site-v2.git -b main ./
-        ls -lha
-        pwd
-        ls -lha ..
-        pwd
-        ls -lha ../..
-        pwd
-        ls -lha ../../..
-        pwd
 
     - name: Setup Node.js environment
       uses: actions/setup-node@v3.5.1
