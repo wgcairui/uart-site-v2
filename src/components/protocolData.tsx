@@ -2,7 +2,7 @@ import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { Button, Checkbox, CheckboxOptionType, Col, Divider, Form, Input, InputNumber, message, Modal, Row, Select, Space, Table, Tag } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import React, { useEffect, useMemo, useState } from "react";
-import { addDevConstent } from "../common/FecthRoot";
+import { addDevConstant } from "../common/FecthRoot";
 import { getProtocol, getProtocolSetup, setUserSetupProtocol } from "../common/Fetch";
 import { generateTableKey } from "../common/tableCommon";
 import { ProtocolInstructFormrizeParse } from "../common/util";
@@ -91,7 +91,7 @@ export const ProtocolOprate: React.FC<props> = ({ protocolName }) => {
      */
     const saveOprates = () => {
         const load = message.loading({ content: 'loading' })
-        addDevConstent(Protocol.data.ProtocolType, Protocol.data.Protocol, 'OprateInstruct', data)
+        addDevConstant(Protocol.data.ProtocolType, Protocol.data.Protocol, 'OprateInstruct', data)
             .then(el => {
                 load()
                 message.success("保存操作指令成功")
@@ -292,7 +292,7 @@ export const ProtocolContant: React.FC<props> = ({ protocolName }) => {
     const submit = (val: Partial<Uart.DevConstant>) => {
         console.log(val);
         const load = message.loading({ content: 'loading' })
-        addDevConstent(Protocol.data.ProtocolType, Protocol.data.Protocol, "Constant", val)
+        addDevConstant(Protocol.data.ProtocolType, Protocol.data.Protocol, "Constant", val)
             .then(el => {
                 load()
                 message.success("保存常量成功")
@@ -387,7 +387,7 @@ export const ProtocolThreshold: React.FC<props> = ({ protocolName }) => {
      */
     const saveOprates = () => {
         const load = message.loading({ content: 'loading' })
-        addDevConstent(Protocol.data.ProtocolType, Protocol.data.Protocol, "Threshold", data)
+        addDevConstant(Protocol.data.ProtocolType, Protocol.data.Protocol, "Threshold", data)
             .then(el => {
                 load()
                 message.success("保存阈值配置成功")
@@ -550,7 +550,7 @@ export const ProtocolAlarmStat: React.FC<props> = ({ protocolName }) => {
     const save = (values: Record<string, string[]>) => {
         const Threld = Object.entries(values).map(([name, alarmStat]) => ({ name, alarmStat }))
         const load = message.loading({ content: 'loading' })
-        addDevConstent(Protocol.data.ProtocolType, Protocol.data.Protocol, "AlarmStat", Threld)
+        addDevConstant(Protocol.data.ProtocolType, Protocol.data.Protocol, "AlarmStat", Threld)
             .then(el => {
                 load()
                 message.success("保存状态配置成功")
@@ -606,7 +606,7 @@ export const ProtocolShowTag: React.FC<props> = ({ protocolName }) => {
      */
     const save = () => {
         const load = message.loading({ content: 'loading' })
-        addDevConstent(Protocol.data.ProtocolType, Protocol.data.Protocol, "ShowTag", data)
+        addDevConstant(Protocol.data.ProtocolType, Protocol.data.Protocol, "ShowTag", data)
             .then(el => {
                 load()
                 message.success("保存显示参数配置成功")

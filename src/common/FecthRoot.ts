@@ -172,8 +172,8 @@ export function getProtocols() {
  * @param arg 
  * @returns 
  */
-export function addDevConstent(ProtocolType: string, Protocol: string, type: Uart.ConstantThresholdType, arg: any) {
-    return fetch("addDevConstent", { ProtocolType, Protocol, type, arg })
+export function addDevConstant(ProtocolType: string, Protocol: string, type: Uart.ConstantThresholdType, arg: any) {
+    return fetch("addDevConstant", { ProtocolType, Protocol, type, arg })
 }
 
 /**
