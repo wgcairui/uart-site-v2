@@ -22,8 +22,9 @@ const LoginWx: React.FC = () => {
             if (!code || !state) {
                 nav("/login")
             }
-            const { token } = await wxlogin(code!, state!) as any
-            setToken(token)
+            const data = await wxlogin(code!, state!) as any
+            console.log(data);
+            setToken(data.token)
             nav("/login")
         })()
     }, [])
