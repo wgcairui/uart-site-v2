@@ -64,7 +64,7 @@ export const OssUpload: React.FC = () => {
         console.log(file);
         const uploadUrl = await Get('/api/root/oss/upload_url',{name:file.name}) as any
         console.log(uploadUrl);
-        const res = await fetch(uploadUrl.data, {method:'PUT', body: file})
+        const res = await fetch((uploadUrl.data as string).replace('http:','https:'), {method:'PUT', body: file})
         console.log(res);
         
         return false
