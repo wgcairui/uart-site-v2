@@ -3,11 +3,11 @@ import { PutObjectResult } from "ali-oss"
 import { Badge, Button, Divider, Form, Input, message, Modal, Table, Upload } from "antd"
 import { ColumnsType } from "antd/lib/table"
 import { UploadChangeParam } from "antd/lib/upload"
-import { UploadFile } from "antd/lib/upload/interface"
+import { RcFile, UploadFile } from "antd/lib/upload/interface"
 import moment from "moment"
 import React, { useState } from "react"
 import { ossDelete, ossFilelist, ossfiles } from "../../common/FecthRoot"
-import { getToken } from "../../common/Fetch"
+import { Get, getToken } from "../../common/Fetch"
 import { generateTableKey } from "../../common/tableCommon"
 import { CopyClipboard } from "../../common/util"
 import { universalResult } from "../../typing"
@@ -58,8 +58,16 @@ export const OssUpload: React.FC = () => {
             setFiles([{ name: data.name, url: data.url, label: name, size: size!, lastModified: lastModifiedDate as any }, ...files])
             CopyClipboard(data.url)
         }
+    }
 
-
+    const upload = async (file: RcFile, FileList: RcFile[])=>{
+        console.log(file);
+        const uploadUrl = await Get('/api/root/oss/upload_url',{name:file.name}) as any
+        console.log(uploadUrl);
+        const res = await fetch(uploadUrl.data, {method:'PUT', body: file})
+        console.log(res);
+        
+        return false
     }
 
     return (
@@ -68,9 +76,10 @@ export const OssUpload: React.FC = () => {
             <Divider>上传文件到ali-oss</Divider>
             <Upload
                 onChange={s}
+                beforeUpload={upload}
                 multiple
-                action="/api/root/oss/upload"
-                headers={{ token: getToken() || '' }}
+                // action="/api/root/oss/upload"
+                // headers={{ token: getToken() || '' }}
             >
                 <Button icon={<UploadOutlined />}>Click to Upload</Button>
             </Upload>
