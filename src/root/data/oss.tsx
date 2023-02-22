@@ -60,15 +60,15 @@ export const OssUpload: React.FC = () => {
         }
     }
 
-    const upload = async (file: RcFile, FileList: RcFile[])=>{
-        console.log(file);
-        const uploadUrl = await Get('/api/root/oss/upload_url',{name:file.name}) as any
-        console.log(uploadUrl);
-        const res = await fetch((uploadUrl.data as string).replace('http:','https:'), {method:'PUT', body: file})
-        console.log(res);
+    // const upload = async (file: RcFile, FileList: RcFile[])=>{
+    //     console.log(file);
+    //     const uploadUrl = await Get('/api/root/oss/upload_url',{name:file.name}) as any
+    //     console.log(uploadUrl);
+    //     const res = await fetch((uploadUrl.data as string).replace('http:','https:'), {method:'PUT', body: file})
+    //     console.log(res);
         
-        return false
-    }
+    //     return false
+    // }
 
     return (
 
@@ -76,10 +76,10 @@ export const OssUpload: React.FC = () => {
             <Divider>上传文件到ali-oss</Divider>
             <Upload
                 onChange={s}
-                beforeUpload={upload}
+                // beforeUpload={upload}
                 multiple
-                // action="/api/root/oss/upload"
-                // headers={{ token: getToken() || '' }}
+                action="/api/root/oss/upload"
+                headers={{ token: getToken() || '' }}
             >
                 <Button icon={<UploadOutlined />}>Click to Upload</Button>
             </Upload>
