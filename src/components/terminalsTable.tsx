@@ -326,6 +326,9 @@ export const TerminalInfo: React.FC<infoProps> = (props) => {
                     <Descriptions.Item label="用户">
                         <TerminalUser mac={terminal.DevMac} />
                     </Descriptions.Item>
+                    <Descriptions.Item label="状态">
+                        <Switch checked={terminal.online}></Switch>
+                    </Descriptions.Item>
                     <Descriptions.Item label="mac">{terminal.DevMac}</Descriptions.Item>
                     <Descriptions.Item label="AT支持">
                         <Tag color="cyan">{terminal.AT ? '支持' : '不支持'}</Tag>
