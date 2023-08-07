@@ -26,6 +26,10 @@ export const TerminalAddDTU: React.FC = () => {
                 await addRegisterTerminal(mac, node)
                 message.success(`添加设备${mac}成功`)
             }
+            else{
+                await addRegisterTerminal(mac, node)
+                message.success(`添加设备${mac}成功`)
+            }
         }
 
     }
