@@ -11,6 +11,7 @@ import { TerminalInfo, TerminalMountDevs } from "../../components/terminalsTable
 import { usePromise } from "../../hook/usePromise";
 import { useTerminalUpdate } from "../../hook/useTerminalData";
 import { UserInfo } from "./userInfo";
+import { DevRealTimeLog } from "../../components/devRealTimeLog";
 
 
 interface props {
@@ -68,6 +69,9 @@ export const TerminalInfos: React.FC<props> = (props) => {
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="指令调试" key="query">
                         <TerminalOprate mac={data.DevMac} />
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab="mac实时log" key="listenMacLog">
+                        <DevRealTimeLog terminal={data} />
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="日志" key="log">
                         <TerminalRunLog mac={data.DevMac} ></TerminalRunLog>

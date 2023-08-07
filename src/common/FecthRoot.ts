@@ -857,3 +857,15 @@ export const ossDelete = (names: string[]) => {
 export const nodeRestart = (node: string) => {
     return fetch<any>("nodeRestart", { node })
 }
+
+export const addListenMac = (mac: string) => {
+    return fetch<string[]>("addListenMac", { mac })
+}
+
+export const delListenMac = (mac: string) => {
+    return fetch<string[]>("delListenMac", { mac })
+}
+
+export const cleanListenMac = () => {
+    return fetch<void>("cleanListenMac")
+}
