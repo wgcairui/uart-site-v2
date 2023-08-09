@@ -2,7 +2,6 @@ import { Affix, Button, Card, Collapse, Divider, InputNumber, Spin } from "antd"
 import React, { useEffect, useState } from "react";
 import { socketClient } from "../common/socket";
 import { addListenMac, delListenMac } from "../common/FecthRoot";
-import * as dayjs from "dayjs";
 import { JSONTree } from 'react-json-tree';
 import "./devRealTimeLog.css"
 
@@ -32,7 +31,7 @@ export const DevRealTimeLog: React.FC<props> = ({ terminal }) => {
     const subscribe = ()=>{
         socketClient.io.once('mac_log', (data: eventData) => {
             if (!data.time) {
-                data.time = dayjs().format('YYYY-MM-DD H:m:s');
+                data.time = new Date().toLocaleTimeString()
             }
             const newLogs = [...logs, data]
             if (newLogs.length > maxSum) {
