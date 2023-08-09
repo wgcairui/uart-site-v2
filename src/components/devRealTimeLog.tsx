@@ -1,5 +1,6 @@
 import { Affix, Button, Card, Collapse, Divider, InputNumber, Spin } from "antd";
 import React, { useEffect, useState } from "react";
+import moment from "moment"
 import { socketClient } from "../common/socket";
 import { addListenMac, delListenMac } from "../common/FecthRoot";
 import { JSONTree } from 'react-json-tree';
@@ -31,7 +32,7 @@ export const DevRealTimeLog: React.FC<props> = ({ terminal }) => {
     const subscribe = ()=>{
         socketClient.io.once('mac_log', (data: eventData) => {
             if (!data.time) {
-                data.time = new Date().toLocaleTimeString()
+                data.time = moment().format('YYYY-MM-DD H:m:s')
             }
             const newLogs = [...logs, data]
             if (newLogs.length > maxSum) {
