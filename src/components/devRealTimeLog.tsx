@@ -1,7 +1,7 @@
-import { Card, Collapse, Divider, Spin } from "antd";
+import { Affix, Button, Card, Collapse, Divider, InputNumber, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import { socketClient } from "../common/socket";
-import { addListenMac } from "../common/FecthRoot";
+import { addListenMac, delListenMac } from "../common/FecthRoot";
 import * as dayjs from "dayjs";
 import { JSONTree } from 'react-json-tree';
 import "./devRealTimeLog.css"
@@ -21,29 +21,46 @@ interface eventData {
 export const DevRealTimeLog: React.FC<props> = ({ terminal }) => {
 
     const [logs, setLogs] = useState<eventData[]>([])
-    useEffect(() => {
-        addListenMac(terminal.DevMac);
-    }, [])
+    const [maxSum, setMaxSum] = useState(10)
 
     useEffect(() => {
+        if(logs.length>0){
+            subscribe()
+        }
+    }, [logs])
+
+    const subscribe = ()=>{
         socketClient.io.once('mac_log', (data: eventData) => {
             if (!data.time) {
                 data.time = dayjs().format('YYYY-MM-DD H:m:s');
             }
             const newLogs = [...logs, data]
-            if (newLogs.length > 100) {
+            if (newLogs.length > maxSum) {
                 newLogs.shift();
             }
             console.log(newLogs);
 
             setLogs(newLogs)
         })
-    }, [logs])
+    }
+
+    const start = ()=>{
+        addListenMac(terminal.DevMac);
+        subscribe()
+    }
+
+    const stop = ()=>{
+        delListenMac(terminal.DevMac)
+    }
 
     return (
         <>
-            <Divider plain>显示mac设备日志(需要等待一段时间才会有数据, 一般在n秒左右)</Divider>
-
+            <Divider plain>显示mac设备日志(需要等待一段时间才会有数据, 一般在n秒左右) </Divider>
+            <Affix offsetTop={120} onChange={(affixed) => console.log(affixed)}>
+            <Button type='primary' onClick={start}>listen start</Button>
+            <Button type='primary' onClick={stop}>listen stop</Button>
+    <InputNumber value={maxSum} onChange={(n)=>setMaxSum(n || maxSum)}></InputNumber>
+  </Affix>
             {
                 logs.length === 0 ? <div className="example">
                     <Spin />
