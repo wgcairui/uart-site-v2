@@ -827,6 +827,22 @@ export const getTerminalUser = (mac: string) => {
 }
 
 /**
+ * @param mac 
+ * @returns 
+ */
+export const getTerminalBindUsers = (mac: string) => {
+    return fetch<Uart.UserInfo[]>('getTerminalBindUser', { mac })
+}
+
+/**
+ * @param mac 
+ * @returns 
+ */
+export const setTerminalOwner = (mac: string, user:string) => {
+    return fetch('setTerminalOwner', { mac, user })
+}
+
+/**
  * 修改协议备注
  * @param protocol 
  * @param remark 

@@ -1,11 +1,11 @@
 import { CheckCircleFilled, WarningFilled, EyeFilled, DeleteFilled, LoadingOutlined, ReloadOutlined, MoreOutlined, SyncOutlined, DownOutlined } from "@ant-design/icons";
-import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps, Modal, Spin, Dropdown, Menu, notification, ColProps, Switch, Empty } from "antd";
+import { Table, Tooltip, Button, Card, Descriptions, Tag, Divider, Row, Col, Space, Popconfirm, message, TableProps, Modal, Spin, Dropdown, Menu, notification, ColProps, Switch, Empty, Avatar } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { devType } from "../common/devImgSource";
-import { BindDev, changeShareApi, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryMac, getTerminals, getTerminalUser, initTerminal, IotQueryCardFlowInfo, IotQueryCardInfo, IotQueryIotCardOfferDtl, iotRemoteUrl, IotUpdateIccidInfo, modifyTerminalRemark, setTerminalOnline } from "../common/FecthRoot";
+import { BindDev, changeShareApi, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryMac, getTerminalBindUsers, getTerminals, getTerminalUser, initTerminal, IotQueryCardFlowInfo, IotQueryCardInfo, IotQueryIotCardOfferDtl, iotRemoteUrl, IotUpdateIccidInfo, modifyTerminalRemark, setTerminalOnline, setTerminalOwner } from "../common/FecthRoot";
 import { delTerminalMountDev, getTerminal, modifyTerminal, refreshDevTimeOut } from "../common/Fetch";
 import { prompt } from "../common/prompt";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../common/tableCommon";
@@ -199,7 +199,7 @@ export const TerminalIccidInfo: React.FC<{ iccid: string }> = (props) => {
         return result.data
     }, [], [props.iccid])
     return (
-        <Table
+        <Table 
             loading={loading}
             dataSource={generateTableKey(data, 'offerId')}
             columns={[
@@ -234,6 +234,135 @@ export const TerminalIccidInfo: React.FC<{ iccid: string }> = (props) => {
         >
 
         </Table>
+    )
+}
+
+
+const TerminalBindUsers: React.FC<{ mac: string, share:boolean, ownerId:string, update: ()=>void}> = (prop) => {
+const nav = useNav()
+    const { data: users, loading, setData, fecth } = usePromise(async () => {
+        const { data } = await getTerminalBindUsers(prop.mac)
+        return data
+    }, [])
+
+
+    /**
+     * 更新单个用户信息
+     * @param user 
+     */
+    const updateOwner = async (user: string) => {
+        setTerminalOwner(prop.mac, user).then(async el => {
+           prop.update()
+           fecth();
+        })
+    }
+
+    /**
+     * 解绑用户设备
+     * @param mac 
+     * @param user 
+     */
+    const unbindDev = (user: string) => {
+        Modal.confirm({
+                content: `是否删除设备设备{${prop.mac}}的绑定用户[${user}]?`,
+                onOk() {
+                    delUserTerminal(user, prop.mac).then((el) => {
+                        message.success("解绑成功");
+                        fecth()
+                    });
+                }
+            })
+    }
+    return (
+        <>
+            <Divider orientation="left">设备绑定用户 / {users.length}</Divider>
+            <Table
+                loading={loading}
+                dataSource={generateTableKey(users, 'user')}
+                scroll={{x:1000}}
+                columns={[
+                    {
+                        dataIndex: 'avanter',
+                        title: '头像',
+                        width: 40,
+                        render: (img?: string) => <Avatar src={img} alt="i"></Avatar>
+                    },
+                    {
+                        dataIndex: 'user',
+                        title: '用户',
+                        width: 150,
+                        ellipsis: true,
+                        ...getColumnSearchProp("user"),
+                        render: val => <MyCopy value={val} />
+                    },
+                    {
+                        dataIndex: 'name',
+                        title: '昵称',
+                        width: 120,
+                        ellipsis: true,
+                        ...getColumnSearchProp("name"),
+                        render: val => <MyCopy value={val} />
+                    },
+                    {
+                        dataIndex: 'tel',
+                        title: '手机',
+                        width: 120,
+                        ellipsis: true,
+                        ...getColumnSearchProp("tel"),
+                        render: val => <MyCopy value={val} />
+                    },
+                    {
+                        dataIndex: 'mail',
+                        title: '邮箱',
+                        width: 120,
+                        ellipsis: true,
+                        ...getColumnSearchProp("mail"),
+                        render: val => <MyCopy value={val} />
+                    },
+                    {
+                        dataIndex: 'rgtype',
+                        title: '注册类型',
+                        width: 70,
+                        ...tableColumnsFilter(users, 'rgtype'),
+                        render: (val) => <Tag>{val}</Tag>
+                    },
+                    {
+                        dataIndex: 'userGroup',
+                        title: '用户组',
+                        width: 50,
+                        render: (val) => <Tag>{val}</Tag>
+                    },
+                    {
+                        key: 'gz',
+                        title: 'wx状态',
+                        width: 60,
+                        render: (_, user) => <>
+                            {
+                                user.wxId && <Tag color="blue">公众号</Tag>
+                            }
+                            {
+                                user.wpId && <Tag color="cyan">小程序</Tag>
+                            }
+                        </>
+                    },
+                    {
+                        title: '操作',
+                        key: 'operate',
+                        width: 120,
+                        render: (_, user) => <>
+                            <Button type="link" onClick={() => nav('/root/node/user/userInfo', { user: user.user })}>查看</Button>
+                            {
+                                (prop?.share && prop?.ownerId !== user.user) && <>
+                             <Button type="link" onClick={() => updateOwner(user.user)}>设为所有者</Button>
+                                <Button type="link" onClick={() => unbindDev(user.user)}>删除</Button>
+                                </>
+                            }
+
+                        </>
+                    }
+                ] as ColumnsType<Uart.UserInfo>}
+            />
+        </>
     )
 }
 
@@ -353,6 +482,7 @@ export const TerminalInfo: React.FC<infoProps> = (props) => {
                         ></MyInput>
                     </Descriptions.Item>
                 </Descriptions>
+                <TerminalBindUsers mac={terminal.DevMac} share={terminal?.share ?? false} ownerId={(terminal as any)?.ownerId} update={fecth}></TerminalBindUsers>
                 {
                     terminal.iccidInfo &&
                     <>
@@ -471,6 +601,8 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                                     message.info('切换成功')
                                     fecth()
 
+            }else{
+                message.error(el.message)
             }
         })
     }
@@ -601,7 +733,7 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                         onFilter: (val, re) => re.share === val,
                         sorter: (a: any, b: any) => a.share - b.share,
                         render: (val) => <Tooltip title={val ? '' : '未打开'}>
-                            <p>{val?.share ? 'open': 'unOpen'}</p>
+                            <p>{val ? 'open': 'unOpen'}</p>
                         </Tooltip>
                     },
                     {

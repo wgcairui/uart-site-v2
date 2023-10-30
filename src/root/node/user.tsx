@@ -13,9 +13,7 @@ import { UserStat } from "../../components/userData";
 import { useNav } from "../../hook/useNav";
 
 export const User: React.FC = () => {
-
     const nav = useNav()
-
     const { data: users, loading, setData, fecth } = usePromise(async () => {
         const { data } = await getUsers()
         return data
@@ -219,18 +217,6 @@ export const User: React.FC = () => {
                         </>
                     }
                 ] as ColumnsType<Uart.UserInfo>}
-
-            /* expandable={{
-                expandedRowRender: (user) => {
-                    return (
-                        <>
-                            <UserDes user={user} updateUser={updateUser} />
-                            <UserAlarmPage user={user.user} />
-                            <TerminalsTable user={user.user} />
-                        </>
-                    )
-                }
-            }} */
             />
         </>
     )
