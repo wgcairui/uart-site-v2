@@ -297,6 +297,10 @@ export function iotRemoteUrl(mac: string) {
     return fetch<string>("iot/RemoteUrl", { mac })
 }
 
+export function changeShareApi(mac: string) {
+    return fetch<string>("setTerminalToShare", { mac })
+}
+
 /**
      * 获取设备使用流量
      */

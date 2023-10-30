@@ -5,7 +5,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { devType } from "../common/devImgSource";
-import { BindDev, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryMac, getTerminals, getTerminalUser, initTerminal, IotQueryCardFlowInfo, IotQueryCardInfo, IotQueryIotCardOfferDtl, iotRemoteUrl, IotUpdateIccidInfo, modifyTerminalRemark, setTerminalOnline } from "../common/FecthRoot";
+import { BindDev, changeShareApi, deleteRegisterTerminal, delUserTerminal, getNodeInstructQueryMac, getTerminals, getTerminalUser, initTerminal, IotQueryCardFlowInfo, IotQueryCardInfo, IotQueryIotCardOfferDtl, iotRemoteUrl, IotUpdateIccidInfo, modifyTerminalRemark, setTerminalOnline } from "../common/FecthRoot";
 import { delTerminalMountDev, getTerminal, modifyTerminal, refreshDevTimeOut } from "../common/Fetch";
 import { prompt } from "../common/prompt";
 import { generateTableKey, getColumnSearchProp, tableColumnsFilter } from "../common/tableCommon";
@@ -465,6 +465,16 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
         })
     }
 
+    const changeShare = (mac: string) => {
+        changeShareApi(mac).then(el => {
+            if (el.code) {
+                                    message.info('切换成功')
+                                    fecth()
+
+            }
+        })
+    }
+
     const deleteRegisterTerminalm = (DevMac: string) => {
         Modal.confirm({
             content: `是否确定删除DTU:${DevMac} ??`,
@@ -575,6 +585,26 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                         </Tooltip>
                     },
                     {
+                        dataIndex: 'share',
+                        title: '共享状态',
+                        width: 70,
+                        filters: [
+                            {
+                                text: '打开',
+                                value: true
+                            },
+                            {
+                                text: '未打开',
+                                value: false
+                            }
+                        ],
+                        onFilter: (val, re) => re.share === val,
+                        sorter: (a: any, b: any) => a.share - b.share,
+                        render: (val) => <Tooltip title={val ? '' : '未打开'}>
+                            <p>{val?.share ? 'open': 'unOpen'}</p>
+                        </Tooltip>
+                    },
+                    {
                         dataIndex: 'name',
                         title: '名称',
                         ellipsis: true,
@@ -659,6 +689,7 @@ export const TerminalsTable: React.FC<Omit<TableProps<Uart.Terminal>, 'dataSourc
                                 <Menu>
                                     <Menu.Item onClick={() => setOnlineSataus(t.DevMac, !t.online)} key={1}>设置{t.online? '离':'在'}线</Menu.Item>
                                     <Menu.Item onClick={() => itoRemoteUrl(t.DevMac)} key={1}>远程配置</Menu.Item>
+                                    <Menu.Item onClick={() => changeShare(t.DevMac)} key={11}>切换共享状态</Menu.Item>
                                     <Menu.Item onClick={() => deleteRegisterTerminalm(t.DevMac)} key={2}>delete</Menu.Item>
                                     <Menu.Item onClick={() => initTerminalm(t.DevMac)} key={3}>初始化</Menu.Item>
                                     {t.ICCID && <Menu.Item onClick={() => iccdInfo(t.ICCID!, t.DevMac)} key={4}>ICCID更新</Menu.Item>}
