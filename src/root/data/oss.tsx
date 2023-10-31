@@ -77,7 +77,7 @@ export const OssUpload: React.FC = () => {
     return (
 
         <>
-            <Divider>上传文件到ali-oss</Divider>
+            <Divider>上传文件到ali-oss, 如果上传失败,请将文件压缩之后重试</Divider>
             <Upload
                 onChange={s}
                 // beforeUpload={upload}
