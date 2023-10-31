@@ -54,6 +54,10 @@ export const OssUpload: React.FC = () => {
             console.log({ file });
             const { name, response, size, lastModifiedDate } = file
             const data = response?.data!
+            if(response?.code === 0){
+                message.error(response.message)
+                return ;
+            }
             message.success(`${name}上传已完成`)
             setFiles([{ name: data.name, url: data.url, label: name, size: size!, lastModified: lastModifiedDate as any }, ...files])
             CopyClipboard(data.url)
