@@ -44,7 +44,7 @@ const Wei: React.FC = () => {
 		form.submit();
 	}, []);
 
-	const onFormLayoutChange = (_, value: { origData: string; filterText: string }) => {
+	const onFormLayoutChange = (_: any, value: { origData: string; filterText: string }) => {
 		if (value.filterText && value.filterText !== filterTextCache) {
 			localStorage.setItem("filterText", value.filterText);
 		}
