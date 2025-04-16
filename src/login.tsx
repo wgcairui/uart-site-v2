@@ -120,6 +120,7 @@ const Login: React.FC = () => {
 			}
 		} else {
 			message.error("hash空");
+			localStorage.clear();
 			setLoginLoading(false);
 		}
 	};

@@ -1,4 +1,16 @@
-import { CheckCircleFilled, WarningFilled, EyeFilled, DeleteFilled, LoadingOutlined, ReloadOutlined, MoreOutlined, SyncOutlined, DownOutlined } from "@ant-design/icons";
+import {
+	CheckCircleFilled,
+	WarningFilled,
+	EyeFilled,
+	DeleteFilled,
+	LoadingOutlined,
+	ReloadOutlined,
+	MoreOutlined,
+	SyncOutlined,
+	DownOutlined,
+	CloudUploadOutlined,
+	CloudDownloadOutlined,
+} from "@ant-design/icons";
 import {
 	Table,
 	Tooltip,
@@ -199,17 +211,24 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
 		<Row>
 			{terminal?.mountDevs &&
 				terminal.mountDevs.map((el) => (
-					<Col span={24} md={8} {...props.col} key={terminal.DevMac + el.pid}>
+					<Col span={24} md={10} {...props.col} key={terminal.DevMac + el.pid}>
 						<DevCard
 							img={devType[el.Type]}
 							title={
 								<Space>
 									<Tooltip title={el.online ? "在线" : "离线"}>{el.online ? <CheckCircleFilled style={{ color: "#67C23A" }} /> : <WarningFilled style={{ color: "#E6A23C" }} />}</Tooltip>
-									{el.mountDev}
+									{`${el.mountDev} - PID: ${el.pid}`}
 								</Space>
 							}
 							avatar={devTypeIcon[el.Type]}
-							subtitle={terminal.DevMac + "-" + el.pid}
+							subtitle={
+								"lastEmit" in el && (
+									<Descriptions size="small" column={1}>
+										<Descriptions.Item label={<CloudUploadOutlined />}>{moment((el as any).lastEmit).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>
+										{"lastRecord" in el && <Descriptions.Item label={<CloudDownloadOutlined />}>{moment((el as any).lastRecord).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>}
+									</Descriptions>
+								)
+							}
 							actions={[
 								<Tooltip title="编辑查看">
 									<EyeFilled style={{ color: "#67C23B" }} onClick={() => nav("/dev/" + terminal.DevMac + el.pid)} />
