@@ -13,78 +13,78 @@ import { useTerminalUpdate } from "../../hook/useTerminalData";
 import { UserInfo } from "./userInfo";
 import { DevRealTimeLog } from "../../components/devRealTimeLog";
 
-
 interface props {
-    mac?: string
+	mac?: string;
 }
 
 /**
  * 列出设备详细信息
- * @returns 
+ * @returns
  */
 export const TerminalInfos: React.FC<props> = (props) => {
+	const [query] = useSearchParams();
 
-    const [query] = useSearchParams()
+	const mac = query.get("mac") || props.mac || "";
+	const { data, loading, setData, fecth } = usePromise(async () => {
+		const { data } = await getTerminal(mac);
+		return data;
+	});
 
-    const mac = query.get('mac') || props.mac || ''
-    const { data, loading, setData, fecth } = usePromise(async () => {
-        const { data } = await getTerminal(mac)
-        return data
-    })
+	const ter = useTerminalUpdate([mac]);
 
-    const ter = useTerminalUpdate([mac])
+	useEffect(() => {
+		if (ter.data) {
+			setData(ter.data);
+		}
+	}, [ter.data]);
 
-    useEffect(() => {
-        if (ter.data) {
-            setData(ter.data)
-        }
-    }, [ter.data])
+	return loading ? (
+		<Spin />
+	) : (
+		<>
+			<h2>
+				{data.DevMac}/{data.name}
+			</h2>
+			<Tabs>
+				<Tabs.TabPane tab="详细信息" key="info">
+					<TerminalInfo terminal={data} ex={true} showTitle={false}></TerminalInfo>
+				</Tabs.TabPane>
+				<Tabs.TabPane tab="挂载设备" key="mountDevs">
+					<TerminalMountDevs terminal={data} ex={true} showTitle={false} InterValShow onChange={fecth}></TerminalMountDevs>
+				</Tabs.TabPane>
+				<Tabs.TabPane tab="设备定位" key="position">
+					<DevPosition terminal={data} />
+				</Tabs.TabPane>
+				<Tabs.TabPane tab="耗时" key="useTime">
+					<DevUseTime terminal={data} />
+				</Tabs.TabPane>
+				<Tabs.TabPane tab="使用流量" key="use">
+					<TerminalUseBytes mac={data.DevMac} />
+				</Tabs.TabPane>
+				<Tabs.TabPane tab="工作状态" key="workstat">
+					<TerminalBusyStat mac={data.DevMac} />
+				</Tabs.TabPane>
+				<Tabs.TabPane tab="AT调试" key="at">
+					<TerminalAT mac={data.DevMac} />
+				</Tabs.TabPane>
+				<Tabs.TabPane tab="指令调试" key="query">
+					<TerminalOprate mac={data.DevMac} />
+				</Tabs.TabPane>
+				<Tabs.TabPane tab="console" key="listenMacLog">
+					<DevRealTimeLog terminal={data} />
+				</Tabs.TabPane>
+				<Tabs.TabPane tab="日志" key="log">
+					<TerminalRunLog mac={data.DevMac}></TerminalRunLog>
+				</Tabs.TabPane>
+				{data.mountDevs &&
+					data.mountDevs.map((dev) => (
+						<Tabs.TabPane tab={dev.mountDev + dev.pid} key={dev.mountDev + dev.pid}>
+							<TerminalDevPage mac={data.DevMac} pid={dev.pid}></TerminalDevPage>
+						</Tabs.TabPane>
+					))}
+			</Tabs>
+		</>
+	);
+};
 
-    return (
-        loading ? <Spin />
-            :
-            <>
-                <h2>{data.DevMac}/{data.name}</h2>
-                <Tabs>
-                    <Tabs.TabPane tab="详细信息" key="info">
-                        <TerminalInfo terminal={data} ex={true} showTitle={false}></TerminalInfo>
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="挂载设备" key="mountDevs">
-                        <TerminalMountDevs terminal={data} ex={true} showTitle={false} InterValShow onChange={fecth}></TerminalMountDevs>
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="设备定位" key="position">
-                        <DevPosition terminal={data}/>
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="耗时" key="useTime">
-                        <DevUseTime terminal={data}/>
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="使用流量" key="use">
-                        <TerminalUseBytes mac={data.DevMac} />
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="工作状态" key="workstat">
-                        <TerminalBusyStat mac={data.DevMac} />
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="AT调试" key="at">
-                        <TerminalAT mac={data.DevMac} />
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="指令调试" key="query">
-                        <TerminalOprate mac={data.DevMac} />
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="mac实时log" key="listenMacLog">
-                        <DevRealTimeLog terminal={data} />
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="日志" key="log">
-                        <TerminalRunLog mac={data.DevMac} ></TerminalRunLog>
-                    </Tabs.TabPane>
-                    {
-                        data.mountDevs && data.mountDevs.map(dev => <Tabs.TabPane tab={dev.mountDev + dev.pid} key={dev.mountDev + dev.pid}>
-                            <TerminalDevPage mac={data.DevMac} pid={dev.pid}></TerminalDevPage>
-                        </Tabs.TabPane>
-                        )
-                    }
-                </Tabs>
-            </>
-    )
-}
-
-export default TerminalInfos
+export default TerminalInfos;

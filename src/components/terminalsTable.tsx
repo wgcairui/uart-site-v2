@@ -78,7 +78,7 @@ import { TerminalAddMountDev } from "./TerminalDev";
  * @param param0
  * @returns
  */
-const InterValToop: React.FC<{ mac: string; pid: number; show: boolean }> = ({ mac, pid, show }) => {
+const InterValToop: React.FC<{ mac: string; pid: number; show: boolean; minQueryLimit?: number }> = ({ mac, pid, show, minQueryLimit }) => {
 	const {
 		data: Interval,
 		loading,
@@ -107,14 +107,15 @@ const InterValToop: React.FC<{ mac: string; pid: number; show: boolean }> = ({ m
 	const refreshInterval = () => {
 		prompt({
 			title: "设置设备查询间隔",
-			placeholder: "输入间隔毫秒数,(值为x500的倍数),未设置则为默认值",
+			placeholder: "输入间隔毫秒数,(值为x1000的倍数),未设置则为默认值",
+			value: minQueryLimit ? minQueryLimit.toString() : undefined,
 			onOk(val) {
 				const n = Number(val);
 				if (val && !Number.isNaN(n)) {
-					if (n < 500) {
+					if (n < 1000) {
 						val = undefined;
-					} else if (n % 500 > 0) {
-						val = String(n - (n % 500));
+					} else if (n % 1000 > 0) {
+						val = String(n - (n % 1000));
 					}
 				}
 				refreshDevTimeOut(mac, pid, Number(val)).then(() => {
@@ -222,12 +223,12 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
 							}
 							avatar={devTypeIcon[el.Type]}
 							subtitle={
-								"lastEmit" in el && (
-									<Descriptions size="small" column={1}>
-										<Descriptions.Item label={<CloudUploadOutlined />}>{moment((el as any).lastEmit).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>
-										{"lastRecord" in el && <Descriptions.Item label={<CloudDownloadOutlined />}>{moment((el as any).lastRecord).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>}
-									</Descriptions>
-								)
+								<Descriptions size="small" column={1}>
+									<Descriptions.Item label="protocol">{el.protocol}</Descriptions.Item>
+									{"minQueryLimit" in el && <Descriptions.Item label="minQueryLimit">{el.minQueryLimit}</Descriptions.Item>}
+									{"lastEmit" in el && <Descriptions.Item label={<CloudUploadOutlined />}>{moment((el as any).lastEmit).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>}
+									{"lastRecord" in el && <Descriptions.Item label={<CloudDownloadOutlined />}>{moment((el as any).lastRecord).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>}
+								</Descriptions>
 							}
 							actions={[
 								<Tooltip title="编辑查看">
