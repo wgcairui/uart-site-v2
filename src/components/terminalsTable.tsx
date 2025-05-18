@@ -225,7 +225,7 @@ export const TerminalMountDevs: React.FC<infoProps> = (props) => {
 							subtitle={
 								<Descriptions size="small" column={1}>
 									<Descriptions.Item label="protocol">{el.protocol}</Descriptions.Item>
-									{"minQueryLimit" in el && <Descriptions.Item label="minQueryLimit">{el.minQueryLimit}</Descriptions.Item>}
+									{"minQueryLimit" in el && <Descriptions.Item label="minQueryLimit">{(el as any).minQueryLimit}</Descriptions.Item>}
 									{"lastEmit" in el && <Descriptions.Item label={<CloudUploadOutlined />}>{moment((el as any).lastEmit).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>}
 									{"lastRecord" in el && <Descriptions.Item label={<CloudDownloadOutlined />}>{moment((el as any).lastRecord).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>}
 								</Descriptions>
