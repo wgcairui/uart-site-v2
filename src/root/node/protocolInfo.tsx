@@ -2,9 +2,9 @@ import { CopyFilled, DeleteFilled, UploadOutlined } from "@ant-design/icons";
 import { Button, Card, Checkbox, Descriptions, Form, Input, InputNumber, message, Modal, Select, Space, Spin, Table, Tabs, Tag, Upload } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { RcFile } from "antd/lib/upload";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { modifyProtocolRemark, setProtocol, updateProtocol } from "../../common/FecthRoot";
+import { getProtocols, modifyProtocolRemark, setProtocol, updateProtocol } from "../../common/FecthRoot";
 import { getProtocol } from "../../common/Fetch";
 import { prompt } from "../../common/prompt";
 import { generateTableKey } from "../../common/tableCommon";
@@ -13,6 +13,7 @@ import { ProtocolAlarmStat, ProtocolContant, ProtocolOprate, ProtocolShowTag, Pr
 import { usePromise } from "../../hook/usePromise";
 
 interface ProtocolInstructFormResizeInputProps {
+	protocolItemFun: (name: string) => Uart.protocolInstructFormrize;
 	/**
 	 * 指令单个参数
 	 */
@@ -28,14 +29,24 @@ interface ProtocolInstructFormResizeInputProps {
  * @param param0
  * @returns
  */
-const ProtocolInstructFormResizeInput: React.FC<ProtocolInstructFormResizeInputProps> = ({ re, onChange }) => {
+const ProtocolInstructFormResizeInput: React.FC<ProtocolInstructFormResizeInputProps> = ({ protocolItemFun, re, onChange }) => {
 	const [form] = Form.useForm<Uart.protocolInstructFormrize>();
 
 	useEffect(() => {
+		const m = protocolItemFun(re.name);
+		if (m) {
+			re.bl = m.bl;
+			re.unit = m.unit;
+		}
 		form.setFieldsValue(re);
 	}, [re]);
 
 	const change = (_value: Partial<Uart.protocolInstructFormrize>, item: Uart.protocolInstructFormrize) => {
+		const m = protocolItemFun(item.name);
+		if (m) {
+			item.bl = m.bl;
+			item.unit = m.unit;
+		}
 		item.isState = Boolean(item.unit && /^{.*}$/.test(item.unit));
 		onChange(item);
 	};
@@ -96,6 +107,8 @@ const ProtocolInstructFormResizeInput: React.FC<ProtocolInstructFormResizeInputP
 };
 
 interface ProtocolInstructFormResizeProps {
+	protocolItemFun: (name: string) => Uart.protocolInstructFormrize;
+	meta: Uart.protocolInstruct;
 	/**
 	 * 协议指令参数集合
 	 */
@@ -110,7 +123,7 @@ interface ProtocolInstructFormResizeProps {
  * @param param0
  * @returns
  */
-const ProtocolInstructFormResize: React.FC<ProtocolInstructFormResizeProps> = ({ formResize, onChange }) => {
+const ProtocolInstructFormResize: React.FC<ProtocolInstructFormResizeProps> = ({ meta, formResize, onChange, protocolItemFun }) => {
 	const [data, setData] = useState(formResize);
 
 	useEffect(() => {
@@ -127,13 +140,14 @@ const ProtocolInstructFormResize: React.FC<ProtocolInstructFormResizeProps> = ({
 		else data.splice(index, 1);
 		setData([...data]);
 		onChange(data);
+		window.scrollBy(0, 1000);
 	};
 
 	/**
 	 * 添加新的参数
 	 */
 	const addforResize = () => {
-		const { regx, unit, bl } = data[data.length - 1] || { regx: "0-1", unit: "V", bl: "0.1" };
+		const { regx, unit, bl } = data[data.length - 1] || { regx: `0-1`, unit: "V", bl: "0.1" };
 		const [start, len] = regx!?.split("-").map(Number);
 		data.push({
 			name: "未命名" + (start + len),
@@ -149,7 +163,7 @@ const ProtocolInstructFormResize: React.FC<ProtocolInstructFormResizeProps> = ({
 		<Card>
 			<Space direction="vertical">
 				{data.map((el, i) => (
-					<ProtocolInstructFormResizeInput re={el} onChange={(item) => argModify(i, item)} key={el.name}></ProtocolInstructFormResizeInput>
+					<ProtocolInstructFormResizeInput protocolItemFun={protocolItemFun} re={el} onChange={(item) => argModify(i, item)} key={el.name + i}></ProtocolInstructFormResizeInput>
 				))}
 				<Button type="primary" onClick={() => addforResize()}>
 					添加参数
@@ -167,7 +181,11 @@ interface props {
  * @param param0
  * @returns
  */
-const ProtocolInstruct: React.FC<{ item: Uart.protocolInstruct; onChange: (item: Uart.protocolInstruct) => void }> = ({ item, onChange }) => {
+const ProtocolInstruct: React.FC<{ item: Uart.protocolInstruct; onChange: (item: Uart.protocolInstruct) => void; protocolItemFun: (name: string) => Uart.protocolInstructFormrize }> = ({
+	item,
+	onChange,
+	protocolItemFun,
+}) => {
 	const [form] = Form.useForm<Uart.protocolInstruct>();
 
 	const [formResize, setFormResize] = useState(item.formResize);
@@ -182,7 +200,6 @@ const ProtocolInstruct: React.FC<{ item: Uart.protocolInstruct; onChange: (item:
 
 	const change = (value: Partial<Uart.protocolInstruct>, item: Uart.protocolInstruct) => {
 		if (Object.prototype.hasOwnProperty.call(value, "resize")) {
-			console.log(value.resize);
 			if (value.resize) {
 				// 分割字符串并刷选出有内容的 ["系统1吸气温度+1-2+0.1+℃","送风温度+3-2+0.1+℃"]
 				const split = value.resize
@@ -233,6 +250,10 @@ const ProtocolInstruct: React.FC<{ item: Uart.protocolInstruct; onChange: (item:
 		});
 		value.remark = value.remark || "";
 		onChange(value);
+		window.scrollTo({
+			top: document.body.scrollHeight,
+			behavior: "smooth", // 平滑滚动
+		});
 		message.success({ content: "保存指令更改", key: "saveInstruct" });
 	};
 
@@ -356,7 +377,7 @@ const ProtocolInstruct: React.FC<{ item: Uart.protocolInstruct; onChange: (item:
 					</Button>
 				</Form.Item>
 			</Form>
-			<ProtocolInstructFormResize formResize={formResize} onChange={FormResizeChange}></ProtocolInstructFormResize>
+			<ProtocolInstructFormResize protocolItemFun={protocolItemFun} meta={item} formResize={formResize} onChange={FormResizeChange}></ProtocolInstructFormResize>
 		</Card>
 	);
 };
@@ -373,6 +394,18 @@ export const ProtocolDes: React.FC<props> = ({ Protocol }) => {
 		const { data } = await getProtocol(Protocol);
 		return data;
 	});
+
+	const { data: protocolInstructs } = usePromise(async () => {
+		const { data } = await getProtocols();
+		return data.flatMap((i) => i.instruct).flatMap((i) => i.formResize);
+	});
+
+	const protocolItemFun = useCallback(
+		(name: string) => {
+			return protocolInstructs.filter((el) => el.name.includes(name)).sort((a, b) => a.name.length - b.name.length)[0];
+		},
+		[protocolInstructs]
+	);
 
 	useEffect(() => {
 		if (data && data.instruct) {
@@ -560,7 +593,7 @@ export const ProtocolDes: React.FC<props> = ({ Protocol }) => {
 						] as ColumnsType<Uart.protocolInstruct>
 					}
 					expandable={{
-						expandedRowRender: (re) => <ProtocolInstruct item={re} onChange={modifyInstruct}></ProtocolInstruct>,
+						expandedRowRender: (re) => <ProtocolInstruct protocolItemFun={protocolItemFun} item={re} onChange={modifyInstruct}></ProtocolInstruct>,
 					}}
 				></Table>
 			)}
